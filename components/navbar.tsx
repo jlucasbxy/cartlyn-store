@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
+import { Button } from '@/components/button';
 
 export default function Navbar() {
     const { data: session } = useSession();
@@ -16,7 +17,7 @@ export default function Navbar() {
                         <div className="ml-10 flex items-baseline space-x-4">
                             <Link
                                 href="/store"
-                                className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium"
+                                className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
                             >
                                 Loja
                             </Link>
@@ -24,13 +25,13 @@ export default function Navbar() {
                                 <>
                                     <Link
                                         href="/seller/products"
-                                        className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium"
+                                        className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
                                     >
                                         Meus Produtos
                                     </Link>
                                     <Link
                                         href="/seller/dashboard"
-                                        className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium"
+                                        className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
                                     >
                                         Dashboard
                                     </Link>
@@ -40,19 +41,19 @@ export default function Navbar() {
                                 <>
                                     <Link
                                         href="/favorites"
-                                        className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium"
+                                        className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
                                     >
                                         Favoritos
                                     </Link>
                                     <Link
                                         href="/cart"
-                                        className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium"
+                                        className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
                                     >
                                         Carrinho
                                     </Link>
                                     <Link
                                         href="/orders"
-                                        className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium"
+                                        className="text-gray-700 hover:text-primary px-3 py-2 rounded-md text-sm font-medium"
                                     >
                                         Pedidos
                                     </Link>
@@ -66,18 +67,19 @@ export default function Navbar() {
                                 <span className="text-sm text-gray-700">
                                     {session.user.name} ({session.user.role})
                                 </span>
-                                <button
+                                <Button
                                     onClick={() => signOut()}
-                                    className="bg-red-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-700"
+                                    variant="danger"
+                                    size="sm"
                                 >
                                     Sair
-                                </button>
+                                </Button>
                             </div>
                         ) : (
                             <div className="flex space-x-2">
                                 <Link
                                     href="/login"
-                                    className="bg-indigo-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-indigo-700"
+                                    className="bg-primary text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-primary/90"
                                 >
                                     Entrar
                                 </Link>
