@@ -2,6 +2,9 @@
     "name": "desafio-caplink",
     "version": "0.1.0",
     "private": true,
+    "prisma": {
+        "seed": "tsx prisma/seed/index.ts"
+    },
     "scripts": {
         "dev": "next dev --turbopack",
         "build": "next build --turbopack",
