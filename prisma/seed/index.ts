@@ -20,7 +20,8 @@ async function main() {
     console.log('👥 Creating users...');
 
     // Hash password for all users
-    const hashedPassword = await bcrypt.hash('123456', 10);
+    const password = "12345678"
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Create sellers
     const seller1 = await prisma.user.create({
@@ -300,11 +301,11 @@ async function main() {
     console.log('🔐 Login Credentials:');
     console.log('==================');
     console.log('Sellers:');
-    console.log('  - joao@vendedor.com / 123456');
-    console.log('  - maria@vendedor.com / 123456');
+    console.log(`  - joao@vendedor.com / ${password}`);
+    console.log(`  - maria@vendedor.com / ${password}`);
     console.log('\nClients:');
-    console.log('  - carlos@cliente.com / 123456');
-    console.log('  - ana@cliente.com / 123456');
+    console.log(`  - carlos@cliente.com / ${password}`);
+    console.log(`  - ana@cliente.com / ${password}`);
 }
 
 main()
