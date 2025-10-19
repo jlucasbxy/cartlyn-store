@@ -1,6 +1,20 @@
+'use client';
+
+import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import Link from "next/link";
 
 export default function HomePage() {
+    const router = useRouter();
+    const { status } = useSession();
+
+    useEffect(() => {
+        if (status === 'authenticated') {
+            router.push('/store');
+        }
+    }, [status, router]);
+
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
             <main className="text-center max-w-2xl">
