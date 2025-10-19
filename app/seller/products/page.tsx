@@ -239,7 +239,7 @@ export default function SellerProductsPage() {
                             rows={4}
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
                         />
                     </div>
                     <FormInput
@@ -290,7 +290,7 @@ export default function SellerProductsPage() {
                             onChange={(e) => setCsvFile(e.target.files?.[0] || null)}
                             className="w-full"
                         />
-                        <p className="text-xs text-gray-500 mt-1">
+                        <p className="text-xs text-gray-600 mt-1">
                             Formato: name,price,description,imageUrl
                         </p>
                     </div>
