@@ -10,6 +10,7 @@ import { Button } from '@/components/button';
 import { FormInput } from '@/components/form-input';
 import { Card } from '@/components/card';
 import { ArrowLeftIcon } from '@/components/icons';
+import { toast } from 'react-toastify';
 
 interface Product {
     id: string;
@@ -41,11 +42,12 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                     const data = await response.json();
                     setProduct(data);
                 } else {
-                    alert('Produto não encontrado');
+                    toast.error('Produto não encontrado');
                     router.push('/store');
                 }
             } catch (error) {
                 console.error('Error fetching product:', error);
+                toast.error('Erro ao carregar produto');
             } finally {
                 setLoading(false);
             }
@@ -57,7 +59,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
     const handleAddToCart = async () => {
         if (!session) {
-            alert('Por favor, faça login para adicionar ao carrinho');
+            toast.warning('Por favor, faça login para adicionar ao carrinho');
             router.push('/login');
             return;
         }
@@ -71,14 +73,14 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             });
 
             if (response.ok) {
-                alert('Produto adicionado ao carrinho!');
+                toast.success('Produto adicionado ao carrinho!');
                 router.push('/cart');
             } else {
                 const data = await response.json();
-                alert(data.error || 'Erro ao adicionar ao carrinho');
+                toast.error(data.error || 'Erro ao adicionar ao carrinho');
             }
         } catch {
-            alert('Erro ao adicionar ao carrinho');
+            toast.error('Erro ao adicionar ao carrinho');
         } finally {
             setActionLoading(false);
         }
@@ -86,7 +88,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
     const handleAddToFavorites = async () => {
         if (!session) {
-            alert('Por favor, faça login para favoritar');
+            toast.warning('Por favor, faça login para favoritar');
             router.push('/login');
             return;
         }
@@ -100,13 +102,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             });
 
             if (response.ok) {
-                alert('Produto adicionado aos favoritos!');
+                toast.success('Produto adicionado aos favoritos!');
             } else {
                 const data = await response.json();
-                alert(data.error || 'Erro ao adicionar aos favoritos');
+                toast.error(data.error || 'Erro ao adicionar aos favoritos');
             }
         } catch {
-            alert('Erro ao adicionar aos favoritos');
+            toast.error('Erro ao adicionar aos favoritos');
         } finally {
             setActionLoading(false);
         }

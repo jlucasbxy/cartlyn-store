@@ -9,6 +9,7 @@ import { PageLayout } from '@/components/page-layout';
 import { EmptyState } from '@/components/empty-state';
 import { Card } from '@/components/card';
 import { Button } from '@/components/button';
+import { toast } from 'react-toastify';
 
 interface CartItem {
     id: string;
@@ -69,9 +70,10 @@ export default function CartPage() {
 
             if (response.ok) {
                 fetchCart();
+                toast.success('Quantidade atualizada');
             }
         } catch {
-            alert('Erro ao atualizar quantidade');
+            toast.error('Erro ao atualizar quantidade');
         }
     };
 
@@ -85,15 +87,16 @@ export default function CartPage() {
 
             if (response.ok) {
                 fetchCart();
+                toast.success('Item removido do carrinho');
             }
         } catch {
-            alert('Erro ao remover item');
+            toast.error('Erro ao remover item');
         }
     };
 
     const handleCheckout = async () => {
         if (cartItems.length === 0) {
-            alert('Seu carrinho está vazio');
+            toast.warning('Seu carrinho está vazio');
             return;
         }
 
@@ -108,14 +111,14 @@ export default function CartPage() {
             });
 
             if (response.ok) {
-                alert('Pedido realizado com sucesso!');
+                toast.success('Pedido realizado com sucesso!');
                 router.push('/orders');
             } else {
                 const data = await response.json();
-                alert(data.error || 'Erro ao finalizar pedido');
+                toast.error(data.error || 'Erro ao finalizar pedido');
             }
         } catch {
-            alert('Erro ao finalizar pedido');
+            toast.error('Erro ao finalizar pedido');
         } finally {
             setCheckoutLoading(false);
         }

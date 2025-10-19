@@ -10,6 +10,7 @@ import { StatsCard } from '@/components/stats-card';
 import { Card } from '@/components/card';
 import { EmptyState } from '@/components/empty-state';
 import { Button } from '@/components/button';
+import { toast } from 'react-toastify';
 
 interface DashboardData {
     totalProducts: number;
@@ -37,7 +38,7 @@ export default function SellerDashboardPage() {
         }
         if (status === 'authenticated') {
             if (session?.user.role !== 'SELLER') {
-                alert('Acesso negado. Apenas vendedores podem acessar esta página.');
+                toast.error('Acesso negado. Apenas vendedores podem acessar esta página.');
                 router.push('/');
                 return;
             }

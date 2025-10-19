@@ -12,6 +12,7 @@ import { FormInput } from '@/components/form-input';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { EmptyState } from '@/components/empty-state';
+import { toast } from 'react-toastify';
 
 interface Product {
     id: string;
@@ -62,7 +63,7 @@ export default function SellerProductsPage() {
         }
         if (status === 'authenticated') {
             if (session?.user.role !== 'SELLER') {
-                alert('Acesso negado. Apenas vendedores podem acessar esta página.');
+                toast.error('Acesso negado. Apenas vendedores podem acessar esta página.');
                 router.push('/');
                 return;
             }
@@ -92,17 +93,17 @@ export default function SellerProductsPage() {
             });
 
             if (response.ok) {
-                alert(editingProduct ? 'Produto atualizado!' : 'Produto criado!');
+                toast.success(editingProduct ? 'Produto atualizado!' : 'Produto criado!');
                 setShowForm(false);
                 setEditingProduct(null);
                 setFormData({ name: '', price: '', description: '', imageUrl: '' });
                 fetchProducts();
             } else {
                 const data = await response.json();
-                alert(data.error || 'Erro ao salvar produto');
+                toast.error(data.error || 'Erro ao salvar produto');
             }
         } catch {
-            alert('Erro ao salvar produto');
+            toast.error('Erro ao salvar produto');
         } finally {
             setUploadLoading(false);
         }
@@ -111,7 +112,7 @@ export default function SellerProductsPage() {
     const handleCSVUpload = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!csvFile) {
-            alert('Selecione um arquivo CSV');
+            toast.warning('Selecione um arquivo CSV');
             return;
         }
 
@@ -128,15 +129,15 @@ export default function SellerProductsPage() {
             const data = await response.json();
 
             if (response.ok) {
-                alert(data.message);
+                toast.success(data.message);
                 setShowCSVUpload(false);
                 setCsvFile(null);
                 fetchProducts();
             } else {
-                alert(data.error || 'Erro ao fazer upload');
+                toast.error(data.error || 'Erro ao fazer upload');
             }
         } catch {
-            alert('Erro ao fazer upload');
+            toast.error('Erro ao fazer upload');
         } finally {
             setUploadLoading(false);
         }
@@ -162,13 +163,13 @@ export default function SellerProductsPage() {
             });
 
             if (response.ok) {
-                alert('Produto excluído!');
+                toast.success('Produto excluído!');
                 fetchProducts();
             } else {
-                alert('Erro ao excluir produto');
+                toast.error('Erro ao excluir produto');
             }
         } catch {
-            alert('Erro ao excluir produto');
+            toast.error('Erro ao excluir produto');
         }
     };
 
