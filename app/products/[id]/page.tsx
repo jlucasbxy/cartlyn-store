@@ -4,8 +4,11 @@ import { useState, useEffect, use } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import Navbar from '@/components/navbar';
 import Loading from '@/components/loading';
+import { PageLayout } from '@/components/page-layout';
+import { Button } from '@/components/button';
+import { FormInput } from '@/components/form-input';
+import { Card } from '@/components/card';
 
 interface Product {
     id: string;
@@ -110,10 +113,9 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
     if (loading) {
         return (
-            <>
-                <Navbar />
+            <PageLayout>
                 <Loading />
-            </>
+            </PageLayout>
         );
     }
 
@@ -122,19 +124,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     }
 
     return (
-        <>
-            <Navbar />
-            <div className="min-h-screen bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <button
-                        onClick={() => router.back()}
-                        className="mb-6 text-indigo-600 hover:text-indigo-800 font-medium"
-                    >
-                        ← Voltar
-                    </button>
+        <PageLayout>
+            <Button
+                onClick={() => router.back()}
+                variant="outline"
+                className="mb-6"
+            >
+                ← Voltar
+            </Button>
 
-                    <div className="bg-white rounded-lg shadow-md overflow-hidden">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+            <Card padding="none" className="overflow-hidden">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
                             {/* Product Image */}
                             <div className="relative h-96 w-full rounded-lg overflow-hidden">
                                 <Image
@@ -181,38 +181,35 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                 {session?.user.role === 'CLIENT' && (
                                     <div className="mt-auto">
                                         <div className="mb-4">
-                                            <label
-                                                htmlFor="quantity"
-                                                className="block text-sm font-medium text-gray-700 mb-2"
-                                            >
-                                                Quantidade
-                                            </label>
-                                            <input
+                                            <FormInput
+                                                label="Quantidade"
                                                 type="number"
                                                 id="quantity"
                                                 min="1"
                                                 value={quantity}
                                                 onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                                                className="w-24 px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                                className="w-24"
                                             />
                                         </div>
 
                                         <div className="flex gap-4">
-                                            <button
+                                            <Button
                                                 onClick={handleAddToCart}
                                                 disabled={actionLoading}
-                                                className="flex-1 bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 disabled:opacity-50 font-medium text-lg"
+                                                size="lg"
+                                                fullWidth
                                             >
                                                 {actionLoading ? 'Adicionando...' : 'Adicionar ao Carrinho'}
-                                            </button>
-                                            <button
+                                            </Button>
+                                            <Button
                                                 onClick={handleAddToFavorites}
                                                 disabled={actionLoading}
-                                                className="px-6 py-3 border-2 border-indigo-600 text-indigo-600 rounded-md hover:bg-indigo-50 disabled:opacity-50 font-medium"
+                                                variant="outline"
+                                                size="lg"
                                                 title="Adicionar aos favoritos"
                                             >
                                                 ❤️
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                 )}
@@ -222,19 +219,18 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                                         <p className="text-gray-600 mb-4">
                                             Faça login para comprar este produto
                                         </p>
-                                        <button
+                                        <Button
                                             onClick={() => router.push('/login')}
-                                            className="w-full bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 font-medium text-lg"
+                                            size="lg"
+                                            fullWidth
                                         >
                                             Fazer Login
-                                        </button>
+                                        </Button>
                                     </div>
                                 )}
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </>
+                    </Card>
+        </PageLayout>
     );
 }
