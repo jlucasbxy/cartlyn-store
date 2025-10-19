@@ -71,7 +71,7 @@ export default function SellerDashboardPage() {
         return (
             <PageLayout>
                 <div className="flex items-center justify-center">
-                    <p className="text-gray-500">Erro ao carregar dashboard</p>
+                    <p className="text-gray-700">Erro ao carregar dashboard</p>
                 </div>
             </PageLayout>
         );
