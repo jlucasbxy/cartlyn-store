@@ -29,7 +29,7 @@ export default function HomePage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-primary/20 p-4">
             <main className="text-center max-w-2xl">
                 <h1 className="text-5xl font-bold text-gray-900 mb-4">
                     Caplink Store
@@ -40,13 +40,13 @@ export default function HomePage() {
                 <div className="flex gap-4 justify-center flex-wrap">
                     <Link
                         href="/login"
-                        className="px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors font-medium"
+                        className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors font-medium"
                     >
                         Entrar
                     </Link>
                     <Link
                         href="/register"
-                        className="px-6 py-3 bg-white text-indigo-600 border-2 border-indigo-600 rounded-lg hover:bg-indigo-50 transition-colors font-medium"
+                        className="px-6 py-3 bg-white text-primary border-2 border-primary rounded-lg hover:bg-primary/10 transition-colors font-medium"
                     >
                         Criar Conta
                     </Link>

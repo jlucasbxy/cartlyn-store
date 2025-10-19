@@ -240,7 +240,7 @@ export default function SellerProductsPage() {
                             rows={4}
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+                            className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
                         />
                     </div>
                     <FormInput
@@ -340,7 +340,7 @@ export default function SellerProductsPage() {
                                         <p className="text-sm text-gray-600 line-clamp-2 mt-1">
                                             {product.description}
                                         </p>
-                                        <p className="text-lg font-bold text-indigo-600 mt-2">
+                                        <p className="text-lg font-bold text-primary mt-2">
                                             R$ {product.price.toFixed(2)}
                                         </p>
                             </div>

@@ -98,7 +98,7 @@ export default function ProductCard({ product, onFavoriteToggle, isFavorite = fa
             </Link>
             <div className="p-4">
                 <Link href={`/products/${product.id}`}>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-indigo-600">
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-primary">
                         {product.name}
                     </h3>
                 </Link>
@@ -109,7 +109,7 @@ export default function ProductCard({ product, onFavoriteToggle, isFavorite = fa
                     Vendedor: {product.seller.name}
                 </p>
                 <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-indigo-600">
+                    <span className="text-2xl font-bold text-primary">
                         R$ {product.price.toFixed(2)}
                     </span>
                 </div>
@@ -118,7 +118,7 @@ export default function ProductCard({ product, onFavoriteToggle, isFavorite = fa
                         <button
                             onClick={handleAddToCart}
                             disabled={loading}
-                            className="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-md hover:bg-indigo-700 disabled:opacity-50 text-sm font-medium"
+                            className="flex-1 bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 disabled:opacity-50 text-sm font-medium"
                         >
                             {loading ? 'Adicionando...' : 'Adicionar ao Carrinho'}
                         </button>

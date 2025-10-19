@@ -132,10 +132,10 @@ export default function SellerDashboardPage() {
                     <StatsCard
                         label="Faturamento Total"
                         value={`R$ ${dashboardData.totalRevenue.toFixed(2)}`}
-                        bgColor="bg-indigo-100"
+                        bgColor="bg-primary/10"
                         icon={
                             <svg
-                                className="w-8 h-8 text-indigo-600"
+                                className="w-8 h-8 text-primary"
                                 fill="none"
                                 stroke="currentColor"
                                 viewBox="0 0 24 24"
@@ -182,9 +182,9 @@ export default function SellerDashboardPage() {
                                         {dashboardData.bestSellingProduct.quantitySold}
                                     </p>
                                 </div>
-                                <div className="bg-indigo-100 px-4 py-2 rounded-lg">
+                                <div className="bg-primary/10 px-4 py-2 rounded-lg">
                                     <p className="text-sm text-gray-600">Receita Gerada</p>
-                                    <p className="text-2xl font-bold text-indigo-600">
+                                    <p className="text-2xl font-bold text-primary">
                                         R${' '}
                                         {(
                                             dashboardData.bestSellingProduct.price *

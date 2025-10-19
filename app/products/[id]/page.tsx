@@ -157,7 +157,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         </h1>
 
                         <div className="mb-4">
-                            <span className="text-4xl font-bold text-indigo-600">
+                            <span className="text-4xl font-bold text-primary">
                                 R$ {product.price.toFixed(2)}
                             </span>
                         </div>

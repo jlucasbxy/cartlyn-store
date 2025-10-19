@@ -123,7 +123,7 @@ export default function RegisterPage() {
                             <select
                                 id="role"
                                 name="role"
-                                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
                                 value={formData.role}
                                 onChange={(e) =>
                                     setFormData({
@@ -151,7 +151,7 @@ export default function RegisterPage() {
                     <div className="text-center">
                         <Link
                             href="/login"
-                            className="font-medium text-indigo-600 hover:text-indigo-500"
+                            className="font-medium text-primary hover:text-primary/80"
                         >
                             Já tem uma conta? Entre aqui
                         </Link>

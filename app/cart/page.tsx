@@ -166,7 +166,7 @@ export default function CartPage() {
                                     <p className="text-sm text-gray-600 mt-1">
                                         Vendedor: {item.product.seller.name}
                                     </p>
-                                    <p className="text-lg font-bold text-indigo-600 mt-2">
+                                    <p className="text-lg font-bold text-primary mt-2">
                                         R$ {item.product.price.toFixed(2)}
                                     </p>
                                 </div>
