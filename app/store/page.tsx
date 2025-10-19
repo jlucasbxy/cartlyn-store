@@ -142,7 +142,7 @@ export default function StorePage() {
                 <Loading />
             ) : products.length === 0 ? (
                 <div className="text-center py-12">
-                    <p className="text-gray-500 text-lg">Nenhum produto encontrado</p>
+                    <p className="text-gray-700 text-lg">Nenhum produto encontrado</p>
                 </div>
             ) : (
                 <>
