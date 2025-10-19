@@ -4,8 +4,11 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import Navbar from '@/components/navbar';
 import Loading from '@/components/loading';
+import { PageLayout } from '@/components/page-layout';
+import { EmptyState } from '@/components/empty-state';
+import { Card } from '@/components/card';
+import { Button } from '@/components/button';
 
 interface CartItem {
     id: string;
@@ -120,43 +123,30 @@ export default function CartPage() {
 
     if (status === 'loading' || loading) {
         return (
-            <>
-                <Navbar />
+            <PageLayout>
                 <Loading />
-            </>
+            </PageLayout>
         );
     }
 
     return (
-        <>
-            <Navbar />
-            <div className="min-h-screen bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-8">
-                        Carrinho de Compras
-                    </h1>
+        <PageLayout>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">
+                Carrinho de Compras
+            </h1>
 
-                    {cartItems.length === 0 ? (
-                        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-                            <p className="text-gray-500 text-lg mb-4">
-                                Seu carrinho está vazio
-                            </p>
-                            <button
-                                onClick={() => router.push('/store')}
-                                className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700"
-                            >
-                                Continuar Comprando
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                            {/* Cart Items */}
-                            <div className="lg:col-span-2 space-y-4">
-                                {cartItems.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        className="bg-white rounded-lg shadow-md p-6 flex gap-4"
-                                    >
+            {cartItems.length === 0 ? (
+                <EmptyState
+                    title="Seu carrinho está vazio"
+                    actionLabel="Continuar Comprando"
+                    onAction={() => router.push('/store')}
+                />
+            ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    {/* Cart Items */}
+                    <div className="lg:col-span-2 space-y-4">
+                        {cartItems.map((item) => (
+                            <Card key={item.id} className="flex gap-4">
                                         <div className="relative h-24 w-24 flex-shrink-0">
                                             <Image
                                                 src={item.product.imageUrl}
@@ -178,12 +168,13 @@ export default function CartPage() {
                                             </p>
                                         </div>
                                         <div className="flex flex-col items-end justify-between">
-                                            <button
+                                            <Button
                                                 onClick={() => removeItem(item.product.id)}
-                                                className="text-red-600 hover:text-red-800 text-sm font-medium"
+                                                variant="danger"
+                                                size="sm"
                                             >
                                                 Remover
-                                            </button>
+                                            </Button>
                                             <div className="flex items-center gap-2">
                                                 <button
                                                     onClick={() =>
@@ -210,13 +201,13 @@ export default function CartPage() {
                                                 {(item.product.price * item.quantity).toFixed(2)}
                                             </p>
                                         </div>
-                                    </div>
+                                    </Card>
                                 ))}
                             </div>
 
                             {/* Order Summary */}
                             <div className="lg:col-span-1">
-                                <div className="bg-white rounded-lg shadow-md p-6 sticky top-8">
+                                <Card className="sticky top-8">
                                     <h2 className="text-xl font-bold text-gray-900 mb-4">
                                         Resumo do Pedido
                                     </h2>
@@ -236,25 +227,26 @@ export default function CartPage() {
                                             </div>
                                         </div>
                                     </div>
-                                    <button
+                                    <Button
                                         onClick={handleCheckout}
                                         disabled={checkoutLoading}
-                                        className="w-full bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 disabled:opacity-50 font-medium"
+                                        fullWidth
+                                        size="lg"
                                     >
                                         {checkoutLoading ? 'Finalizando...' : 'Finalizar Compra'}
-                                    </button>
-                                    <button
+                                    </Button>
+                                    <Button
                                         onClick={() => router.push('/store')}
-                                        className="w-full mt-2 bg-gray-200 text-gray-700 px-6 py-2 rounded-md hover:bg-gray-300 font-medium"
+                                        variant="secondary"
+                                        fullWidth
+                                        className="mt-2"
                                     >
                                         Continuar Comprando
-                                    </button>
-                                </div>
+                                    </Button>
+                                </Card>
                             </div>
                         </div>
                     )}
-                </div>
-            </div>
-        </>
+        </PageLayout>
     );
 }
