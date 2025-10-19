@@ -9,6 +9,7 @@ import { PageLayout } from '@/components/page-layout';
 import { Button } from '@/components/button';
 import { FormInput } from '@/components/form-input';
 import { Card } from '@/components/card';
+import { ArrowLeftIcon } from '@/components/icons';
 
 interface Product {
     id: string;
@@ -128,9 +129,10 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             <Button
                 onClick={() => router.back()}
                 variant="outline"
-                className="mb-6 flex item-center justify-center"
+                className="mb-6 flex items-center gap-2"
             >
-                ← Voltar
+                <ArrowLeftIcon />
+                <span>Voltar</span>
             </Button>
 
             <Card padding="none" className="overflow-hidden">
