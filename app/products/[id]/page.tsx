@@ -128,109 +128,109 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
             <Button
                 onClick={() => router.back()}
                 variant="outline"
-                className="mb-6"
+                className="mb-6 flex item-center justify-center"
             >
                 ← Voltar
             </Button>
 
             <Card padding="none" className="overflow-hidden">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-                            {/* Product Image */}
-                            <div className="relative h-96 w-full rounded-lg overflow-hidden">
-                                <Image
-                                    src={product.imageUrl}
-                                    alt={product.name}
-                                    fill
-                                    className="object-cover"
-                                    unoptimized
-                                />
-                            </div>
+                    {/* Product Image */}
+                    <div className="relative h-96 w-full rounded-lg overflow-hidden">
+                        <Image
+                            src={product.imageUrl}
+                            alt={product.name}
+                            fill
+                            className="object-cover"
+                            unoptimized
+                        />
+                    </div>
 
-                            {/* Product Info */}
-                            <div className="flex flex-col">
-                                <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                                    {product.name}
-                                </h1>
+                    {/* Product Info */}
+                    <div className="flex flex-col">
+                        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                            {product.name}
+                        </h1>
 
-                                <div className="mb-4">
-                                    <span className="text-4xl font-bold text-indigo-600">
-                                        R$ {product.price.toFixed(2)}
-                                    </span>
-                                </div>
-
-                                <div className="mb-6">
-                                    <h2 className="text-lg font-semibold text-gray-900 mb-2">
-                                        Descrição
-                                    </h2>
-                                    <p className="text-gray-700 leading-relaxed">
-                                        {product.description}
-                                    </p>
-                                </div>
-
-                                <div className="mb-6">
-                                    <p className="text-sm text-gray-600">
-                                        <span className="font-semibold">Vendedor:</span>{' '}
-                                        {product.seller.name}
-                                    </p>
-                                    <p className="text-sm text-gray-600">
-                                        <span className="font-semibold">Publicado em:</span>{' '}
-                                        {new Date(product.publishedAt).toLocaleDateString('pt-BR')}
-                                    </p>
-                                </div>
-
-                                {session?.user.role === 'CLIENT' && (
-                                    <div className="mt-auto">
-                                        <div className="mb-4">
-                                            <FormInput
-                                                label="Quantidade"
-                                                type="number"
-                                                id="quantity"
-                                                min="1"
-                                                value={quantity}
-                                                onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
-                                                className="w-24"
-                                            />
-                                        </div>
-
-                                        <div className="flex gap-4">
-                                            <Button
-                                                onClick={handleAddToCart}
-                                                disabled={actionLoading}
-                                                size="lg"
-                                                fullWidth
-                                            >
-                                                {actionLoading ? 'Adicionando...' : 'Adicionar ao Carrinho'}
-                                            </Button>
-                                            <Button
-                                                onClick={handleAddToFavorites}
-                                                disabled={actionLoading}
-                                                variant="outline"
-                                                size="lg"
-                                                title="Adicionar aos favoritos"
-                                            >
-                                                ❤️
-                                            </Button>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {!session && (
-                                    <div className="mt-auto">
-                                        <p className="text-gray-600 mb-4">
-                                            Faça login para comprar este produto
-                                        </p>
-                                        <Button
-                                            onClick={() => router.push('/login')}
-                                            size="lg"
-                                            fullWidth
-                                        >
-                                            Fazer Login
-                                        </Button>
-                                    </div>
-                                )}
-                            </div>
+                        <div className="mb-4">
+                            <span className="text-4xl font-bold text-indigo-600">
+                                R$ {product.price.toFixed(2)}
+                            </span>
                         </div>
-                    </Card>
+
+                        <div className="mb-6">
+                            <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                                Descrição
+                            </h2>
+                            <p className="text-gray-700 leading-relaxed">
+                                {product.description}
+                            </p>
+                        </div>
+
+                        <div className="mb-6">
+                            <p className="text-sm text-gray-600">
+                                <span className="font-semibold">Vendedor:</span>{' '}
+                                {product.seller.name}
+                            </p>
+                            <p className="text-sm text-gray-600">
+                                <span className="font-semibold">Publicado em:</span>{' '}
+                                {new Date(product.publishedAt).toLocaleDateString('pt-BR')}
+                            </p>
+                        </div>
+
+                        {session?.user.role === 'CLIENT' && (
+                            <div className="mt-auto">
+                                <div className="mb-4">
+                                    <FormInput
+                                        label="Quantidade"
+                                        type="number"
+                                        id="quantity"
+                                        min="1"
+                                        value={quantity}
+                                        onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                                        className="w-24"
+                                    />
+                                </div>
+
+                                <div className="flex gap-4">
+                                    <Button
+                                        onClick={handleAddToCart}
+                                        disabled={actionLoading}
+                                        size="lg"
+                                        fullWidth
+                                    >
+                                        {actionLoading ? 'Adicionando...' : 'Adicionar ao Carrinho'}
+                                    </Button>
+                                    <Button
+                                        onClick={handleAddToFavorites}
+                                        disabled={actionLoading}
+                                        variant="outline"
+                                        size="lg"
+                                        title="Adicionar aos favoritos"
+                                    >
+                                        ❤️
+                                    </Button>
+                                </div>
+                            </div>
+                        )}
+
+                        {!session && (
+                            <div className="mt-auto">
+                                <p className="text-gray-600 mb-4">
+                                    Faça login para comprar este produto
+                                </p>
+                                <Button
+                                    onClick={() => router.push('/login')}
+                                    size="lg"
+                                    fullWidth
+                                >
+                                    Fazer Login
+                                </Button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </Card>
         </PageLayout>
     );
 }
