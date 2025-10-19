@@ -4,8 +4,10 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import Navbar from '@/components/navbar';
 import Loading from '@/components/loading';
+import { PageLayout } from '@/components/page-layout';
+import { EmptyState } from '@/components/empty-state';
+import { Card } from '@/components/card';
 
 interface OrderItem {
     id: string;
@@ -58,41 +60,28 @@ export default function OrdersPage() {
 
     if (status === 'loading' || loading) {
         return (
-            <>
-                <Navbar />
+            <PageLayout>
                 <Loading />
-            </>
+            </PageLayout>
         );
     }
 
     return (
-        <>
-            <Navbar />
-            <div className="min-h-screen bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-8">
-                        Histórico de Pedidos
-                    </h1>
+        <PageLayout>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">
+                Histórico de Pedidos
+            </h1>
 
-                    {orders.length === 0 ? (
-                        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-                            <p className="text-gray-500 text-lg mb-4">
-                                Você ainda não realizou nenhum pedido
-                            </p>
-                            <button
-                                onClick={() => router.push('/store')}
-                                className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700"
-                            >
-                                Começar a Comprar
-                            </button>
-                        </div>
-                    ) : (
-                        <div className="space-y-6">
-                            {orders.map((order) => (
-                                <div
-                                    key={order.id}
-                                    className="bg-white rounded-lg shadow-md overflow-hidden"
-                                >
+            {orders.length === 0 ? (
+                <EmptyState
+                    title="Você ainda não realizou nenhum pedido"
+                    actionLabel="Começar a Comprar"
+                    onAction={() => router.push('/store')}
+                />
+            ) : (
+                <div className="space-y-6">
+                    {orders.map((order) => (
+                        <Card key={order.id} padding="none" className="overflow-hidden">
                                     <div className="bg-gray-100 px-6 py-4 border-b">
                                         <div className="flex justify-between items-center flex-wrap gap-4">
                                             <div>
@@ -159,12 +148,10 @@ export default function OrdersPage() {
                                             ))}
                                         </div>
                                     </div>
-                                </div>
+                                </Card>
                             ))}
                         </div>
                     )}
-                </div>
-            </div>
-        </>
+        </PageLayout>
     );
 }
