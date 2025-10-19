@@ -124,7 +124,7 @@ async function main() {
                 name: 'Cadeira Gamer',
                 price: 899.99,
                 description: 'Cadeira gamer ergonômica com apoio lombar ajustável, reclinável até 180°, rodas silenciosas, suporta até 150kg.',
-                imageUrl: 'https://images.unsplash.com/photo-1598550487518-dfe6650655f7?w=800',
+                imageUrl: 'https://images.unsplash.com/photo-1580480055273-228ff5388ef8?w=800',
                 sellerId: seller2.id,
             },
             {
