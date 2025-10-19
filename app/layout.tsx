@@ -26,7 +26,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="pt-BR">
+        <html lang="pt-BR" className="dark">
             <body
                 className={`${geistSans.variable} ${geistMono.variable} antialiased`}
             >
@@ -42,7 +42,7 @@ export default function RootLayout({
                         pauseOnFocusLoss
                         draggable
                         pauseOnHover
-                        theme="light"
+                        theme="auto"
                     />
                 </SessionProvider>
             </body>
