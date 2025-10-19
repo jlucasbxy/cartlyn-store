@@ -167,7 +167,7 @@ export default function CartPage() {
                                                 R$ {item.product.price.toFixed(2)}
                                             </p>
                                         </div>
-                                        <div className="flex flex-col items-end justify-between">
+                                        <div className="flex flex-col items-end gap-3">
                                             <Button
                                                 onClick={() => removeItem(item.product.id)}
                                                 variant="danger"
@@ -180,23 +180,23 @@ export default function CartPage() {
                                                     onClick={() =>
                                                         updateQuantity(item.product.id, item.quantity - 1)
                                                     }
-                                                    className="w-8 h-8 bg-gray-200 rounded hover:bg-gray-300"
+                                                    className="w-8 h-8 bg-gray-200 text-gray-900 font-bold rounded hover:bg-gray-300 transition-colors"
                                                 >
                                                     -
                                                 </button>
-                                                <span className="w-12 text-center font-medium">
+                                                <span className="w-12 text-center font-bold text-gray-900">
                                                     {item.quantity}
                                                 </span>
                                                 <button
                                                     onClick={() =>
                                                         updateQuantity(item.product.id, item.quantity + 1)
                                                     }
-                                                    className="w-8 h-8 bg-gray-200 rounded hover:bg-gray-300"
+                                                    className="w-8 h-8 bg-gray-200 text-gray-900 font-bold rounded hover:bg-gray-300 transition-colors"
                                                 >
                                                     +
                                                 </button>
                                             </div>
-                                            <p className="text-sm text-gray-600 mt-2">
+                                            <p className="text-sm text-gray-600">
                                                 Subtotal: R${' '}
                                                 {(item.product.price * item.quantity).toFixed(2)}
                                             </p>
