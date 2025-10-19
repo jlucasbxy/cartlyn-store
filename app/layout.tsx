@@ -4,32 +4,32 @@ import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 
 const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+    variable: "--font-geist-sans",
+    subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+    variable: "--font-geist-mono",
+    subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-  title: "Caplink Store - Loja Online",
-  description: "Plataforma de e-commerce completa",
+    title: "Caplink Store - Loja Online",
+    description: "Plataforma de e-commerce completa",
 };
 
 export default function RootLayout({
-  children,
+    children,
 }: Readonly<{
-  children: React.ReactNode;
+    children: React.ReactNode;
 }>) {
-  return (
-    <html lang="pt-BR">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <SessionProvider>{children}</SessionProvider>
-      </body>
-    </html>
-  );
+    return (
+        <html lang="pt-BR">
+            <body
+                className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            >
+                <SessionProvider>{children}</SessionProvider>
+            </body>
+        </html>
+    );
 }
