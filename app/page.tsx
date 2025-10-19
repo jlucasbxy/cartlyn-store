@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from "next/link";
+import Loading from '@/components/loading';
 
 export default function HomePage() {
     const router = useRouter();
@@ -11,9 +12,21 @@ export default function HomePage() {
 
     useEffect(() => {
         if (status === 'authenticated') {
-            router.push('/store');
+            router.replace('/store');
         }
     }, [status, router]);
+
+    if (status === 'loading') {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <Loading />
+            </div>
+        );
+    }
+
+    if (status === 'authenticated') {
+        return null;
+    }
 
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
