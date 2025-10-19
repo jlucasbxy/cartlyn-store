@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { FormInput } from '@/components/form-input';
 import { Button } from '@/components/button';
+import Loading from '@/components/loading';
 
 export default function LoginPage() {
     const router = useRouter();
@@ -18,9 +19,21 @@ export default function LoginPage() {
 
     useEffect(() => {
         if (status === 'authenticated') {
-            router.push('/store');
+            router.replace('/store');
         }
     }, [status, router]);
+
+    if (status === 'loading') {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <Loading />
+            </div>
+        );
+    }
+
+    if (status === 'authenticated') {
+        return null;
+    }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
