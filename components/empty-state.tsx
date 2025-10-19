@@ -13,7 +13,7 @@ export function EmptyState({
 }: EmptyStateProps) {
     return (
         <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <p className="text-gray-500 text-lg mb-4">{title}</p>
+            <p className="text-gray-700 text-lg mb-4">{title}</p>
             {description && <p className="text-gray-600 mb-6">{description}</p>}
             {actionLabel && onAction && (
                 <button
