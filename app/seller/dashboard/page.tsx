@@ -4,8 +4,12 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import Navbar from '@/components/navbar';
 import Loading from '@/components/loading';
+import { PageLayout } from '@/components/page-layout';
+import { StatsCard } from '@/components/stats-card';
+import { Card } from '@/components/card';
+import { EmptyState } from '@/components/empty-state';
+import { Button } from '@/components/button';
 
 interface DashboardData {
     totalProducts: number;
@@ -57,208 +61,173 @@ export default function SellerDashboardPage() {
 
     if (status === 'loading' || loading) {
         return (
-            <>
-                <Navbar />
+            <PageLayout>
                 <Loading />
-            </>
+            </PageLayout>
         );
     }
 
     if (!dashboardData) {
         return (
-            <>
-                <Navbar />
-                <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+            <PageLayout>
+                <div className="flex items-center justify-center">
                     <p className="text-gray-500">Erro ao carregar dashboard</p>
                 </div>
-            </>
+            </PageLayout>
         );
     }
 
     return (
-        <>
-            <Navbar />
-            <div className="min-h-screen bg-gray-50">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-8">
-                        Dashboard do Vendedor
-                    </h1>
+        <PageLayout>
+            <h1 className="text-3xl font-bold text-gray-900 mb-8">
+                Dashboard do Vendedor
+            </h1>
 
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-                        {/* Total Products */}
-                        <div className="bg-white rounded-lg shadow-md p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-gray-600 mb-1">
-                                        Produtos Cadastrados
-                                    </p>
-                                    <p className="text-3xl font-bold text-gray-900">
-                                        {dashboardData.totalProducts}
-                                    </p>
-                                </div>
-                                <div className="bg-blue-100 p-3 rounded-full">
-                                    <svg
-                                        className="w-8 h-8 text-blue-600"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                                        />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                <StatsCard
+                    label="Produtos Cadastrados"
+                    value={dashboardData.totalProducts}
+                    bgColor="bg-blue-100"
+                    icon={
+                        <svg
+                            className="w-8 h-8 text-blue-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                            />
+                        </svg>
+                    }
+                />
 
-                        {/* Products Sold */}
-                        <div className="bg-white rounded-lg shadow-md p-6">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-gray-600 mb-1">
-                                        Produtos Vendidos
-                                    </p>
-                                    <p className="text-3xl font-bold text-gray-900">
-                                        {dashboardData.totalProductsSold}
-                                    </p>
-                                </div>
-                                <div className="bg-green-100 p-3 rounded-full">
-                                    <svg
-                                        className="w-8 h-8 text-green-600"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
-                                        />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
+                <StatsCard
+                    label="Produtos Vendidos"
+                    value={dashboardData.totalProductsSold}
+                    bgColor="bg-green-100"
+                    icon={
+                        <svg
+                            className="w-8 h-8 text-green-600"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+                            />
+                        </svg>
+                    }
+                />
 
-                        {/* Total Revenue */}
-                        <div className="bg-white rounded-lg shadow-md p-6 md:col-span-2">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <p className="text-sm text-gray-600 mb-1">
-                                        Faturamento Total
-                                    </p>
-                                    <p className="text-3xl font-bold text-indigo-600">
-                                        R$ {dashboardData.totalRevenue.toFixed(2)}
-                                    </p>
-                                </div>
-                                <div className="bg-indigo-100 p-3 rounded-full">
-                                    <svg
-                                        className="w-8 h-8 text-indigo-600"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        viewBox="0 0 24 24"
-                                    >
-                                        <path
-                                            strokeLinecap="round"
-                                            strokeLinejoin="round"
-                                            strokeWidth={2}
-                                            d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                                        />
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Best Selling Product */}
-                    {dashboardData.bestSellingProduct ? (
-                        <div className="bg-white rounded-lg shadow-md p-6">
-                            <h2 className="text-xl font-bold text-gray-900 mb-4">
-                                Produto Mais Vendido
-                            </h2>
-                            <div className="flex gap-6 items-center">
-                                <div className="relative h-32 w-32 flex-shrink-0">
-                                    <Image
-                                        src={dashboardData.bestSellingProduct.imageUrl}
-                                        alt={dashboardData.bestSellingProduct.name}
-                                        fill
-                                        className="object-cover rounded-lg"
-                                        unoptimized
-                                    />
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="text-2xl font-semibold text-gray-900 mb-2">
-                                        {dashboardData.bestSellingProduct.name}
-                                    </h3>
-                                    <p className="text-lg text-gray-600 mb-2">
-                                        Preço: R$ {dashboardData.bestSellingProduct.price.toFixed(2)}
-                                    </p>
-                                    <div className="flex items-center gap-4">
-                                        <div className="bg-green-100 px-4 py-2 rounded-lg">
-                                            <p className="text-sm text-gray-600">Unidades Vendidas</p>
-                                            <p className="text-2xl font-bold text-green-600">
-                                                {dashboardData.bestSellingProduct.quantitySold}
-                                            </p>
-                                        </div>
-                                        <div className="bg-indigo-100 px-4 py-2 rounded-lg">
-                                            <p className="text-sm text-gray-600">Receita Gerada</p>
-                                            <p className="text-2xl font-bold text-indigo-600">
-                                                R${' '}
-                                                {(
-                                                    dashboardData.bestSellingProduct.price *
-                                                    dashboardData.bestSellingProduct.quantitySold
-                                                ).toFixed(2)}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ) : (
-                        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-                            <p className="text-gray-500 text-lg">
-                                Nenhuma venda realizada ainda
-                            </p>
-                            <button
-                                onClick={() => router.push('/seller/products')}
-                                className="mt-4 bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700"
+                <div className="md:col-span-2">
+                    <StatsCard
+                        label="Faturamento Total"
+                        value={`R$ ${dashboardData.totalRevenue.toFixed(2)}`}
+                        bgColor="bg-indigo-100"
+                        icon={
+                            <svg
+                                className="w-8 h-8 text-indigo-600"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
                             >
-                                Cadastrar Produtos
-                            </button>
-                        </div>
-                    )}
-
-                    {/* Quick Actions */}
-                    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <button
-                            onClick={() => router.push('/seller/products')}
-                            className="bg-white rounded-lg shadow-md p-6 text-left hover:shadow-lg transition-shadow"
-                        >
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                Gerenciar Produtos
-                            </h3>
-                            <p className="text-gray-600">
-                                Adicione, edite ou remova seus produtos
-                            </p>
-                        </button>
-                        <button
-                            onClick={() => router.push('/store')}
-                            className="bg-white rounded-lg shadow-md p-6 text-left hover:shadow-lg transition-shadow"
-                        >
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                                Ver Loja
-                            </h3>
-                            <p className="text-gray-600">
-                                Veja como seus produtos aparecem para os clientes
-                            </p>
-                        </button>
-                    </div>
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                                />
+                            </svg>
+                        }
+                    />
                 </div>
             </div>
-        </>
+
+            {/* Best Selling Product */}
+            {dashboardData.bestSellingProduct ? (
+                <Card>
+                    <h2 className="text-xl font-bold text-gray-900 mb-4">
+                        Produto Mais Vendido
+                    </h2>
+                    <div className="flex gap-6 items-center">
+                        <div className="relative h-32 w-32 flex-shrink-0">
+                            <Image
+                                src={dashboardData.bestSellingProduct.imageUrl}
+                                alt={dashboardData.bestSellingProduct.name}
+                                fill
+                                className="object-cover rounded-lg"
+                                unoptimized
+                            />
+                        </div>
+                        <div className="flex-1">
+                            <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                                {dashboardData.bestSellingProduct.name}
+                            </h3>
+                            <p className="text-lg text-gray-600 mb-2">
+                                Preço: R$ {dashboardData.bestSellingProduct.price.toFixed(2)}
+                            </p>
+                            <div className="flex items-center gap-4">
+                                <div className="bg-green-100 px-4 py-2 rounded-lg">
+                                    <p className="text-sm text-gray-600">Unidades Vendidas</p>
+                                    <p className="text-2xl font-bold text-green-600">
+                                        {dashboardData.bestSellingProduct.quantitySold}
+                                    </p>
+                                </div>
+                                <div className="bg-indigo-100 px-4 py-2 rounded-lg">
+                                    <p className="text-sm text-gray-600">Receita Gerada</p>
+                                    <p className="text-2xl font-bold text-indigo-600">
+                                        R${' '}
+                                        {(
+                                            dashboardData.bestSellingProduct.price *
+                                            dashboardData.bestSellingProduct.quantitySold
+                                        ).toFixed(2)}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </Card>
+            ) : (
+                <EmptyState
+                    title="Nenhuma venda realizada ainda"
+                    actionLabel="Cadastrar Produtos"
+                    onAction={() => router.push('/seller/products')}
+                />
+            )}
+
+            {/* Quick Actions */}
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                <button
+                    onClick={() => router.push('/seller/products')}
+                    className="bg-white rounded-lg shadow-md p-6 text-left hover:shadow-lg transition-shadow"
+                >
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        Gerenciar Produtos
+                    </h3>
+                    <p className="text-gray-600">
+                        Adicione, edite ou remova seus produtos
+                    </p>
+                </button>
+                <button
+                    onClick={() => router.push('/store')}
+                    className="bg-white rounded-lg shadow-md p-6 text-left hover:shadow-lg transition-shadow"
+                >
+                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                        Ver Loja
+                    </h3>
+                    <p className="text-gray-600">
+                        Veja como seus produtos aparecem para os clientes
+                    </p>
+                </button>
+            </div>
+        </PageLayout>
     );
 }
