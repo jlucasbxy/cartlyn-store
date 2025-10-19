@@ -205,28 +205,38 @@ export default function SellerDashboardPage() {
 
             {/* Quick Actions */}
             <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <button
-                    onClick={() => router.push('/seller/products')}
-                    className="bg-white rounded-lg shadow-md p-6 text-left hover:shadow-lg transition-shadow"
-                >
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        Gerenciar Produtos
-                    </h3>
-                    <p className="text-gray-600">
-                        Adicione, edite ou remova seus produtos
-                    </p>
-                </button>
-                <button
-                    onClick={() => router.push('/store')}
-                    className="bg-white rounded-lg shadow-md p-6 text-left hover:shadow-lg transition-shadow"
-                >
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                        Ver Loja
-                    </h3>
-                    <p className="text-gray-600">
-                        Veja como seus produtos aparecem para os clientes
-                    </p>
-                </button>
+                <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                    <Button
+                        onClick={() => router.push('/seller/products')}
+                        variant="outline"
+                        className="w-full text-left justify-start h-auto p-0 border-0 hover:bg-transparent"
+                    >
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                Gerenciar Produtos
+                            </h3>
+                            <p className="text-gray-600 font-normal">
+                                Adicione, edite ou remova seus produtos
+                            </p>
+                        </div>
+                    </Button>
+                </Card>
+                <Card className="cursor-pointer hover:shadow-lg transition-shadow">
+                    <Button
+                        onClick={() => router.push('/store')}
+                        variant="outline"
+                        className="w-full text-left justify-start h-auto p-0 border-0 hover:bg-transparent"
+                    >
+                        <div>
+                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                                Ver Loja
+                            </h3>
+                            <p className="text-gray-600 font-normal">
+                                Veja como seus produtos aparecem para os clientes
+                            </p>
+                        </div>
+                    </Button>
+                </Card>
             </div>
         </PageLayout>
     );
