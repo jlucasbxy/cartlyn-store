@@ -102,7 +102,7 @@ export default function ProductCard({ product, onFavoriteToggle, isFavorite = fa
                 <p className="text-sm text-gray-600 mb-2 line-clamp-2">
                     {product.description}
                 </p>
-                <p className="text-xs text-gray-500 mb-3">
+                <p className="text-xs text-gray-600 mb-3">
                     Vendedor: {product.seller.name}
                 </p>
                 <div className="flex items-center justify-between">
