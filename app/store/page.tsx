@@ -80,6 +80,7 @@ export default function StorePage() {
         setPagination((prev) => ({ ...prev, page: 1 }));
     };
 
+    const sInput = "w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 text-gray-700"
     return (
         <>
             <Navbar />
@@ -101,7 +102,7 @@ export default function StorePage() {
                                         value={searchInput}
                                         onChange={(e) => setSearchInput(e.target.value)}
                                         placeholder="Nome ou descrição..."
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                        className={sInput}
                                     />
                                 </div>
                                 <div>
@@ -116,7 +117,7 @@ export default function StorePage() {
                                         placeholder="R$ 0"
                                         min="0"
                                         step="0.01"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                        className={sInput}
                                     />
                                 </div>
                                 <div>
@@ -131,7 +132,7 @@ export default function StorePage() {
                                         placeholder="R$ 10000"
                                         min="0"
                                         step="0.01"
-                                        className="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+                                        className={sInput}
                                     />
                                 </div>
                             </div>
