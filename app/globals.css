@@ -6,6 +6,7 @@
 }
 
 /* React Toastify Custom Styles */
+/* Light Mode */
 :root:not(.dark) .Toastify__toast {
   background-color: #ffffff;
   color: #1f2937;
@@ -35,5 +36,38 @@
 }
 
 :root:not(.dark) .Toastify__close-button:hover {
+  opacity: 1;
+}
+
+/* Dark Mode */
+.dark .Toastify__toast {
+  background-color: #1f2937;
+  color: #f9fafb;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  border: 1px solid #374151;
+}
+
+.dark .Toastify__progress-bar--success {
+  background: #10b981;
+}
+
+.dark .Toastify__progress-bar--error {
+  background: #ef4444;
+}
+
+.dark .Toastify__progress-bar--warning {
+  background: #f59e0b;
+}
+
+.dark .Toastify__progress-bar--info {
+  background: #3b82f6;
+}
+
+.dark .Toastify__close-button {
+  color: #9ca3af;
+  opacity: 0.8;
+}
+
+.dark .Toastify__close-button:hover {
   opacity: 1;
 }
