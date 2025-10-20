@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Loading from '@/components/loading';
-import { ProductWithSeller } from '@/types';
 import { PageLayout } from '@/components/page-layout';
 import { Modal } from '@/components/modal';
 import { FormInput } from '@/components/form-input';
@@ -13,6 +12,10 @@ import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { EmptyState } from '@/components/empty-state';
 import { toast } from 'react-toastify';
+import { useProductForm } from '@/hooks/use-product-form';
+import { useSellerProducts } from '@/hooks/use-seller-products';
+import { useProductDelete } from '@/hooks/use-product-delete';
+import { useCSVUpload } from '@/hooks/use-csv-upload';
 
 interface Product {
     id: string;
@@ -27,150 +30,49 @@ interface Product {
 export default function SellerProductsPage() {
     const router = useRouter();
     const { data: session, status } = useSession();
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
     const [showForm, setShowForm] = useState(false);
     const [showCSVUpload, setShowCSVUpload] = useState(false);
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-    const [formData, setFormData] = useState({
-        name: '',
-        price: '',
-        description: '',
-        imageUrl: '',
-    });
-    const [csvFile, setCsvFile] = useState<File | null>(null);
-    const [uploadLoading, setUploadLoading] = useState(false);
 
-    const fetchProducts = useCallback(async () => {
-        try {
-            const response = await fetch('/api/products');
-            if (response.ok) {
-                const data = await response.json();
-                // Filter only seller's products
-                setProducts(data.products.filter((p: ProductWithSeller) => p.seller.id === session?.user.id));
-            }
-        } catch (error) {
-            console.error('Error fetching products:', error);
-        } finally {
-            setLoading(false);
-        }
-    }, [session?.user.id]);
+    // Custom hooks
+    const { products, loading, refetch } = useSellerProducts();
+
+    const productForm = useProductForm({
+        onSuccess: () => {
+            toast.success(editingProduct ? 'Produto atualizado!' : 'Produto criado!');
+            setShowForm(false);
+            setEditingProduct(null);
+            refetch();
+        },
+        editingProduct,
+    });
+
+    const { deleteProduct } = useProductDelete({
+        onSuccess: refetch,
+    });
+
+    const csvUpload = useCSVUpload({
+        onSuccess: () => {
+            setShowCSVUpload(false);
+            refetch();
+        },
+    });
 
     useEffect(() => {
         if (status === 'unauthenticated') {
             router.push('/login');
             return;
         }
-        if (status === 'authenticated') {
-            if (session?.user.role !== 'SELLER') {
-                toast.error('Acesso negado. Apenas vendedores podem acessar esta página.');
-                router.push('/');
-                return;
-            }
-            fetchProducts();
+        if (status === 'authenticated' && session?.user.role !== 'SELLER') {
+            toast.error('Acesso negado. Apenas vendedores podem acessar esta página.');
+            router.push('/');
         }
-    }, [status, session, router, fetchProducts]);
-
-
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setUploadLoading(true);
-
-        try {
-            const url = editingProduct
-                ? `/api/products/${editingProduct.id}`
-                : '/api/products';
-            const method = editingProduct ? 'PATCH' : 'POST';
-
-            const response = await fetch(url, {
-                method,
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    ...formData,
-                    price: parseFloat(formData.price),
-                }),
-            });
-
-            if (response.ok) {
-                toast.success(editingProduct ? 'Produto atualizado!' : 'Produto criado!');
-                setShowForm(false);
-                setEditingProduct(null);
-                setFormData({ name: '', price: '', description: '', imageUrl: '' });
-                fetchProducts();
-            } else {
-                const data = await response.json();
-                toast.error(data.error || 'Erro ao salvar produto');
-            }
-        } catch {
-            toast.error('Erro ao salvar produto');
-        } finally {
-            setUploadLoading(false);
-        }
-    };
-
-    const handleCSVUpload = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!csvFile) {
-            toast.warning('Selecione um arquivo CSV');
-            return;
-        }
-
-        setUploadLoading(true);
-        const formData = new FormData();
-        formData.append('file', csvFile);
-
-        try {
-            const response = await fetch('/api/products/bulk', {
-                method: 'POST',
-                body: formData,
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                toast.success(data.message);
-                setShowCSVUpload(false);
-                setCsvFile(null);
-                fetchProducts();
-            } else {
-                toast.error(data.error || 'Erro ao fazer upload');
-            }
-        } catch {
-            toast.error('Erro ao fazer upload');
-        } finally {
-            setUploadLoading(false);
-        }
-    };
+    }, [status, session, router]);
 
     const handleEdit = (product: Product) => {
         setEditingProduct(product);
-        setFormData({
-            name: product.name,
-            price: product.price.toString(),
-            description: product.description,
-            imageUrl: product.imageUrl,
-        });
+        productForm.setEditData(product);
         setShowForm(true);
-    };
-
-    const handleDelete = async (productId: string) => {
-        if (!confirm('Deseja realmente excluir este produto?')) return;
-
-        try {
-            const response = await fetch(`/api/products/${productId}`, {
-                method: 'DELETE',
-            });
-
-            if (response.ok) {
-                toast.success('Produto excluído!');
-                fetchProducts();
-            } else {
-                toast.error('Erro ao excluir produto');
-            }
-        } catch {
-            toast.error('Erro ao excluir produto');
-        }
     };
 
     if (status === 'loading' || loading) {
@@ -190,7 +92,7 @@ export default function SellerProductsPage() {
                         onClick={() => {
                             setShowForm(true);
                             setEditingProduct(null);
-                            setFormData({ name: '', price: '', description: '', imageUrl: '' });
+                            productForm.resetForm();
                         }}
                     >
                         + Novo Produto
@@ -210,45 +112,52 @@ export default function SellerProductsPage() {
                 onClose={() => {
                     setShowForm(false);
                     setEditingProduct(null);
+                    productForm.resetForm();
                 }}
                 title={editingProduct ? 'Editar Produto' : 'Novo Produto'}
                 maxWidth="2xl"
             >
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={productForm.handleSubmit} className="space-y-4">
                     <FormInput
                         label="Nome *"
                         type="text"
-                        required
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                        value={productForm.formData.name}
+                        onChange={(e) => productForm.setFormData({ ...productForm.formData, name: e.target.value })}
+                        errorMsg={productForm.errors.name}
                     />
                     <FormInput
                         label="Preço *"
                         type="number"
-                        required
                         step="0.01"
                         min="0"
-                        value={formData.price}
-                        onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                        value={productForm.formData.price}
+                        onChange={(e) => productForm.setFormData({ ...productForm.formData, price: e.target.value })}
+                        errorMsg={productForm.errors.price}
                     />
                     <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Descrição *
                         </label>
                         <textarea
-                            required
                             rows={4}
-                            value={formData.description}
-                            onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm transition-colors"
+                            value={productForm.formData.description}
+                            onChange={(e) => productForm.setFormData({ ...productForm.formData, description: e.target.value })}
+                            className={`appearance-none rounded relative block w-full px-3 py-2 border placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm transition-colors ${
+                                productForm.errors.description
+                                    ? 'border-red-500 dark:border-red-500'
+                                    : 'border-gray-300 dark:border-gray-600'
+                            }`}
                         />
+                        {productForm.errors.description && (
+                            <p className="mt-1 text-sm text-red-600 dark:text-red-400">{productForm.errors.description}</p>
+                        )}
                     </div>
                     <FormInput
                         label="URL da Imagem *"
                         type="url"
-                        required
-                        value={formData.imageUrl}
-                        onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                        value={productForm.formData.imageUrl}
+                        onChange={(e) => productForm.setFormData({ ...productForm.formData, imageUrl: e.target.value })}
+                        errorMsg={productForm.errors.imageUrl}
                     />
                     <div className="flex gap-2 justify-end">
                         <Button
@@ -256,6 +165,7 @@ export default function SellerProductsPage() {
                             onClick={() => {
                                 setShowForm(false);
                                 setEditingProduct(null);
+                                productForm.resetForm();
                             }}
                             variant="secondary"
                         >
@@ -263,9 +173,9 @@ export default function SellerProductsPage() {
                         </Button>
                         <Button
                             type="submit"
-                            disabled={uploadLoading}
+                            disabled={productForm.loading}
                         >
-                            {uploadLoading ? 'Salvando...' : 'Salvar'}
+                            {productForm.loading ? 'Salvando...' : 'Salvar'}
                         </Button>
                     </div>
                 </form>
@@ -276,11 +186,11 @@ export default function SellerProductsPage() {
                 isOpen={showCSVUpload}
                 onClose={() => {
                     setShowCSVUpload(false);
-                    setCsvFile(null);
+                    csvUpload.resetFile();
                 }}
                 title="Upload CSV"
             >
-                <form onSubmit={handleCSVUpload} className="space-y-4">
+                <form onSubmit={csvUpload.handleUpload} className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Arquivo CSV
@@ -288,7 +198,7 @@ export default function SellerProductsPage() {
                         <input
                             type="file"
                             accept=".csv"
-                            onChange={(e) => setCsvFile(e.target.files?.[0] || null)}
+                            onChange={(e) => csvUpload.setCsvFile(e.target.files?.[0] || null)}
                             className="w-full text-gray-900 dark:text-white"
                         />
                         <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
@@ -300,7 +210,7 @@ export default function SellerProductsPage() {
                             type="button"
                             onClick={() => {
                                 setShowCSVUpload(false);
-                                setCsvFile(null);
+                                csvUpload.resetFile();
                             }}
                             variant="secondary"
                         >
@@ -308,10 +218,10 @@ export default function SellerProductsPage() {
                         </Button>
                         <Button
                             type="submit"
-                            disabled={uploadLoading || !csvFile}
+                            disabled={csvUpload.uploading || !csvUpload.csvFile}
                             variant="success"
                         >
-                            {uploadLoading ? 'Enviando...' : 'Enviar'}
+                            {csvUpload.uploading ? 'Enviando...' : 'Enviar'}
                         </Button>
                     </div>
                 </form>
@@ -356,7 +266,7 @@ export default function SellerProductsPage() {
                                     Editar
                                 </button>
                                 <button
-                                    onClick={() => handleDelete(product.id)}
+                                    onClick={() => deleteProduct(product.id)}
                                     className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
                                     title="Excluir produto"
                                 >
