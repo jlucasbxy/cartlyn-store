@@ -38,6 +38,9 @@ export async function GET(request: NextRequest) {
 
         const where: Prisma.ProductWhereInput = {
             active: true,
+            seller: {
+                active: true, // Only show products from active sellers
+            },
         };
 
         // Filter by seller if sellerId is provided
