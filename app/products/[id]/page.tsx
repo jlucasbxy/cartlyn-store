@@ -166,17 +166,17 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                                 Descrição
                             </h2>
-                            <p className="text-gray-700 leading-relaxed">
+                            <p className="text-gray-900 dark:text-gray-100 leading-relaxed">
                                 {product.description}
                             </p>
                         </div>
 
                         <div className="mb-6">
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-base text-gray-900 dark:text-gray-100">
                                 <span className="font-semibold">Vendedor:</span>{' '}
                                 {product.seller.name}
                             </p>
-                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                            <p className="text-base text-gray-900 dark:text-gray-100">
                                 <span className="font-semibold">Publicado em:</span>{' '}
                                 {new Date(product.publishedAt).toLocaleDateString('pt-BR')}
                             </p>
@@ -220,7 +220,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
                         {!session && (
                             <div className="mt-auto">
-                                <p className="text-gray-600 mb-4">
+                                <p className="text-gray-900 dark:text-gray-100 text-base mb-4">
                                     Faça login para comprar este produto
                                 </p>
                                 <Button
