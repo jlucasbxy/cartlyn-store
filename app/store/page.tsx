@@ -6,6 +6,7 @@ import { PageLayout } from '@/components/page-layout';
 import { Card } from '@/components/card';
 import { FormInput } from '@/components/form-input';
 import { Button } from '@/components/button';
+import { Pagination } from '@/components/pagination';
 import { useStoreProducts } from '@/hooks/use-store-products';
 
 export default function StorePage() {
@@ -21,6 +22,7 @@ export default function StorePage() {
         setMaxPrice,
         handleSearch,
         handleClearFilters,
+        goToPage,
         nextPage,
         previousPage,
     } = useStoreProducts();
@@ -88,36 +90,21 @@ export default function StorePage() {
                 </div>
             ) : (
                 <>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                         {products.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
 
-                    {/* Pagination */}
-                    {pagination.totalPages > 1 && (
-                        <div className="flex justify-center items-center gap-2">
-                            <Button
-                                onClick={previousPage}
-                                disabled={pagination.page === 1}
-                                variant="outline"
-                            >
-                                Anterior
-                            </Button>
-                            <span className="text-gray-700 dark:text-gray-300">
-                                Página {pagination.page} de {pagination.totalPages}
-                            </span>
-                            <Button
-                                onClick={nextPage}
-                                disabled={pagination.page === pagination.totalPages}
-                                variant="outline"
-                            >
-                                Próxima
-                            </Button>
-                        </div>
-                    )}
+                    <Pagination
+                        currentPage={pagination.page}
+                        totalPages={pagination.totalPages}
+                        onPageChange={goToPage}
+                        onNext={nextPage}
+                        onPrevious={previousPage}
+                    />
 
-                    <div className="text-center mt-4 text-sm text-gray-600">
+                    <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
                         Total de produtos: {pagination.total}
                     </div>
                 </>
