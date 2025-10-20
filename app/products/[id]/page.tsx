@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, use } from 'react';
+import { use } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -10,109 +10,21 @@ import { Button } from '@/components/button';
 import { FormInput } from '@/components/form-input';
 import { Card } from '@/components/card';
 import { ArrowLeftIcon } from '@/components/icons';
-import { toast } from 'react-toastify';
-
-interface Product {
-    id: string;
-    name: string;
-    price: number;
-    description: string;
-    imageUrl: string;
-    publishedAt: string;
-    seller: {
-        id: string;
-        name: string;
-    };
-}
+import { useProductDetails } from '@/hooks/use-product-details';
 
 export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
     const resolvedParams = use(params);
     const router = useRouter();
     const { data: session } = useSession();
-    const [product, setProduct] = useState<Product | null>(null);
-    const [loading, setLoading] = useState(true);
-    const [quantity, setQuantity] = useState(1);
-    const [actionLoading, setActionLoading] = useState(false);
-
-    useEffect(() => {
-        const fetchProduct = async () => {
-            try {
-                const response = await fetch(`/api/products/${resolvedParams.id}`);
-                if (response.ok) {
-                    const data = await response.json();
-                    setProduct(data);
-                } else {
-                    toast.error('Produto não encontrado');
-                    router.push('/store');
-                }
-            } catch (error) {
-                console.error('Error fetching product:', error);
-                toast.error('Erro ao carregar produto');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProduct();
-    }, [resolvedParams.id, router]);
-
-
-
-    const handleAddToCart = async () => {
-        if (!session) {
-            toast.warning('Por favor, faça login para adicionar ao carrinho');
-            router.push('/login');
-            return;
-        }
-
-        setActionLoading(true);
-        try {
-            const response = await fetch('/api/cart', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId: resolvedParams.id, quantity }),
-            });
-
-            if (response.ok) {
-                toast.success('Produto adicionado ao carrinho!');
-                router.push('/cart');
-            } else {
-                const data = await response.json();
-                toast.error(data.error || 'Erro ao adicionar ao carrinho');
-            }
-        } catch {
-            toast.error('Erro ao adicionar ao carrinho');
-        } finally {
-            setActionLoading(false);
-        }
-    };
-
-    const handleAddToFavorites = async () => {
-        if (!session) {
-            toast.warning('Por favor, faça login para favoritar');
-            router.push('/login');
-            return;
-        }
-
-        setActionLoading(true);
-        try {
-            const response = await fetch('/api/favorites', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId: resolvedParams.id }),
-            });
-
-            if (response.ok) {
-                toast.success('Produto adicionado aos favoritos!');
-            } else {
-                const data = await response.json();
-                toast.error(data.error || 'Erro ao adicionar aos favoritos');
-            }
-        } catch {
-            toast.error('Erro ao adicionar aos favoritos');
-        } finally {
-            setActionLoading(false);
-        }
-    };
+    const {
+        product,
+        loading,
+        quantity,
+        setQuantity,
+        actionLoading,
+        handleAddToCart,
+        handleAddToFavorites,
+    } = useProductDetails({ productId: resolvedParams.id, session });
 
     if (loading) {
         return (

@@ -1,87 +1,30 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import ProductCard from '@/components/product-card';
 import Loading from '@/components/loading';
 import { PageLayout } from '@/components/page-layout';
 import { Card } from '@/components/card';
 import { FormInput } from '@/components/form-input';
 import { Button } from '@/components/button';
-
-interface Product {
-    id: string;
-    name: string;
-    price: number;
-    description: string;
-    imageUrl: string;
-    seller: {
-        id: string;
-        name: string;
-    };
-}
-
-interface Pagination {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-}
+import { useStoreProducts } from '@/hooks/use-store-products';
 
 export default function StorePage() {
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [pagination, setPagination] = useState<Pagination>({
-        page: 1,
-        limit: 12,
-        total: 0,
-        totalPages: 0,
-    });
-    const [searchQuery, setSearchQuery] = useState('');
-    const [minPrice, setMinPrice] = useState('');
-    const [maxPrice, setMaxPrice] = useState('');
-    const [searchInput, setSearchInput] = useState('');
-
-    useEffect(() => {
-        const fetchProducts = async () => {
-            setLoading(true);
-            try {
-                const params = new URLSearchParams({
-                    page: pagination.page.toString(),
-                    limit: pagination.limit.toString(),
-                });
-
-                if (searchQuery) params.append('query', searchQuery);
-                if (minPrice) params.append('minPrice', minPrice);
-                if (maxPrice) params.append('maxPrice', maxPrice);
-
-                const response = await fetch(`/api/products?${params}`);
-                const data = await response.json();
-
-                setProducts(data.products);
-                setPagination(data.pagination);
-            } catch (error) {
-                console.error('Error fetching products:', error);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProducts();
-    }, [pagination.page, searchQuery, minPrice, maxPrice, pagination.limit]);
-
-
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        setSearchQuery(searchInput);
-        setPagination((prev) => ({ ...prev, page: 1 }));
-    };
-
-    const handleClearFilters = () => {
-        setSearchQuery('');
-        setSearchInput('');
-        setMinPrice('');
-        setMaxPrice('');
-        setPagination((prev) => ({ ...prev, page: 1 }));
-    };
+    const {
+        products,
+        loading,
+        pagination,
+        searchInput,
+        setSearchInput,
+        minPrice,
+        setMinPrice,
+        maxPrice,
+        setMaxPrice,
+        handleSearch,
+        handleClearFilters,
+        goToPage,
+        nextPage,
+        previousPage,
+    } = useStoreProducts();
 
     return (
         <PageLayout>
@@ -156,17 +99,17 @@ export default function StorePage() {
                     {pagination.totalPages > 1 && (
                         <div className="flex justify-center items-center gap-2">
                             <Button
-                                onClick={() => setPagination((prev) => ({ ...prev, page: prev.page - 1 }))}
+                                onClick={previousPage}
                                 disabled={pagination.page === 1}
                                 variant="outline"
                             >
                                 Anterior
                             </Button>
-                            <span className="text-gray-700">
+                            <span className="text-gray-700 dark:text-gray-300">
                                 Página {pagination.page} de {pagination.totalPages}
                             </span>
                             <Button
-                                onClick={() => setPagination((prev) => ({ ...prev, page: prev.page + 1 }))}
+                                onClick={nextPage}
                                 disabled={pagination.page === pagination.totalPages}
                                 variant="outline"
                             >

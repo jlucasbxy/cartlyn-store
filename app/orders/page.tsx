@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -8,55 +7,12 @@ import Loading from '@/components/loading';
 import { PageLayout } from '@/components/page-layout';
 import { EmptyState } from '@/components/empty-state';
 import { Card } from '@/components/card';
-
-interface OrderItem {
-    id: string;
-    quantity: number;
-    price: number;
-    productName: string;
-    product: {
-        id: string;
-        name: string;
-        imageUrl: string;
-    };
-}
-
-interface Order {
-    id: string;
-    total: number;
-    createdAt: string;
-    items: OrderItem[];
-}
+import { useOrders } from '@/hooks/use-orders';
 
 export default function OrdersPage() {
     const router = useRouter();
     const { status } = useSession();
-    const [orders, setOrders] = useState<Order[]>([]);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        if (status === 'unauthenticated') {
-            router.push('/login');
-            return;
-        }
-        if (status === 'authenticated') {
-            fetchOrders();
-        }
-    }, [status, router]);
-
-    const fetchOrders = async () => {
-        try {
-            const response = await fetch('/api/orders');
-            if (response.ok) {
-                const data = await response.json();
-                setOrders(data);
-            }
-        } catch (error) {
-            console.error('Error fetching orders:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { orders, loading } = useOrders(status);
 
     if (status === 'loading' || loading) {
         return (
