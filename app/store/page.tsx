@@ -85,7 +85,7 @@ export default function StorePage() {
 
     return (
         <PageLayout>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">Loja</h1>
+            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Loja</h1>
 
             {/* Search and Filters */}
             <Card className="mb-8">

@@ -152,7 +152,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
                     {/* Product Info */}
                     <div className="flex flex-col">
-                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
                             {product.name}
                         </h1>
 

@@ -92,7 +92,7 @@ export default function SellerProductsPage() {
     return (
         <PageLayout>
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Meus Produtos</h1>
+                <h1 className="text-4xl font-bold text-gray-900 dark:text-white">Meus Produtos</h1>
                 <div className="flex gap-2">
                     <Button
                         onClick={() => {
