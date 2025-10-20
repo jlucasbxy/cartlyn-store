@@ -1,64 +1,16 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import Loading from '@/components/loading';
 import { PageLayout } from '@/components/page-layout';
 import { StatsCard } from '@/components/stats-card';
 import { Card } from '@/components/card';
 import { EmptyState } from '@/components/empty-state';
 import { Button } from '@/components/button';
-import { toast } from 'react-toastify';
-
-interface DashboardData {
-    totalProducts: number;
-    totalProductsSold: number;
-    totalRevenue: number;
-    bestSellingProduct: {
-        id: string;
-        name: string;
-        price: number;
-        imageUrl: string;
-        quantitySold: number;
-    } | null;
-}
+import { useSellerDashboard } from '@/hooks/use-seller-dashboard';
 
 export default function SellerDashboardPage() {
-    const router = useRouter();
-    const { data: session, status } = useSession();
-    const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        if (status === 'unauthenticated') {
-            router.push('/login');
-            return;
-        }
-        if (status === 'authenticated') {
-            if (session?.user.role !== 'SELLER') {
-                toast.error('Acesso negado. Apenas vendedores podem acessar esta página.');
-                router.push('/');
-                return;
-            }
-            fetchDashboard();
-        }
-    }, [status, session, router]);
-
-    const fetchDashboard = async () => {
-        try {
-            const response = await fetch('/api/seller/dashboard');
-            if (response.ok) {
-                const data = await response.json();
-                setDashboardData(data);
-            }
-        } catch (error) {
-            console.error('Error fetching dashboard:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+    const { dashboardData, loading, status, router } = useSellerDashboard();
 
     if (status === 'loading' || loading) {
         return (
