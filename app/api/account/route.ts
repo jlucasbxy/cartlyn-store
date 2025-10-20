@@ -1,12 +1,11 @@
 import { NextResponse } from 'next/server';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/lib/auth';
-import prisma from '@/lib/prisma';
+import { auth } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 
 // DELETE - Delete client account or deactivate seller account
 export async function DELETE() {
     try {
-        const session = await getServerSession(authOptions);
+        const session = await auth();
 
         if (!session) {
             return NextResponse.json({ error: 'Não autenticado' }, { status: 401 });
