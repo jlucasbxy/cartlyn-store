@@ -4,7 +4,7 @@ Uma plataforma completa de e-commerce desenvolvida com Next.js 15, TypeScript e 
 
 ## 🌐 Ambiente de Demonstração
 
-**Acesse a aplicação em produção:** [https://caplink-store-demo.vercel.app](https://caplink-store-demo.vercel.app)
+**Acesse a aplicação em produção:** [https://desafio-fullstack-caplink.vercel.app](https://desafio-fullstack-caplink.vercel.app)
 
 Utilize as [credenciais de teste](#credenciais-de-teste) para fazer login.
 
