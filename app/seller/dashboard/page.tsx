@@ -72,7 +72,7 @@ export default function SellerDashboardPage() {
         return (
             <PageLayout>
                 <div className="flex items-center justify-center">
-                    <p className="text-gray-700">Erro ao carregar dashboard</p>
+                    <p className="text-gray-700 dark:text-gray-300">Erro ao carregar dashboard</p>
                 </div>
             </PageLayout>
         );
@@ -169,22 +169,22 @@ export default function SellerDashboardPage() {
                             />
                         </div>
                         <div className="flex-1">
-                            <h3 className="text-2xl font-semibold text-gray-900 mb-2">
+                            <h3 className="text-2xl font-semibold text-gray-900 dark:text-white mb-2">
                                 {dashboardData.bestSellingProduct.name}
                             </h3>
-                            <p className="text-lg text-gray-600 mb-2">
+                            <p className="text-lg text-gray-600 dark:text-gray-400 mb-2">
                                 Preço: R$ {dashboardData.bestSellingProduct.price.toFixed(2)}
                             </p>
                             <div className="flex items-center gap-4">
-                                <div className="bg-green-100 px-4 py-2 rounded-lg">
-                                    <p className="text-sm text-gray-600">Unidades Vendidas</p>
-                                    <p className="text-2xl font-bold text-green-600">
+                                <div className="bg-green-100 dark:bg-green-900/30 px-4 py-2 rounded-lg">
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Unidades Vendidas</p>
+                                    <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                                         {dashboardData.bestSellingProduct.quantitySold}
                                     </p>
                                 </div>
-                                <div className="bg-primary/10 px-4 py-2 rounded-lg">
-                                    <p className="text-sm text-gray-600">Receita Gerada</p>
-                                    <p className="text-2xl font-bold text-primary">
+                                <div className="bg-primary/10 dark:bg-primary/20 px-4 py-2 rounded-lg">
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">Receita Gerada</p>
+                                    <p className="text-2xl font-bold text-primary dark:text-primary">
                                         R${' '}
                                         {(
                                             dashboardData.bestSellingProduct.price *
@@ -216,7 +216,7 @@ export default function SellerDashboardPage() {
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                                 Gerenciar Produtos
                             </h3>
-                            <p className="text-gray-600 font-normal">
+                            <p className="text-gray-600 dark:text-gray-400 font-normal">
                                 Adicione, edite ou remova seus produtos
                             </p>
                         </div>
@@ -232,7 +232,7 @@ export default function SellerDashboardPage() {
                             <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                                 Ver Loja
                             </h3>
-                            <p className="text-gray-600 font-normal">
+                            <p className="text-gray-600 dark:text-gray-400 font-normal">
                                 Veja como seus produtos aparecem para os clientes
                             </p>
                         </div>
