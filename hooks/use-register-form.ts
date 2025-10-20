@@ -38,6 +38,7 @@ export function useRegisterForm() {
 
         try {
             // Remove confirmPassword before sending to API
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { confirmPassword, ...registerData } = formData;
 
             const response = await fetch('/api/auth/register', {

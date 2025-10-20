@@ -11,13 +11,6 @@ interface Product {
     publishedAt: string;
 }
 
-interface ProductWithSeller extends Product {
-    seller: {
-        id: string;
-        name: string;
-    };
-}
-
 interface Pagination {
     page: number;
     limit: number;
@@ -63,7 +56,7 @@ export function useSellerProducts(itemsPerPage: number = 10) {
 
     useEffect(() => {
         fetchProducts(1);
-    }, [session?.user.id, itemsPerPage]);
+    }, [session?.user.id, itemsPerPage, fetchProducts]);
 
     const goToPage = (page: number) => {
         if (page >= 1 && page <= pagination.totalPages) {
