@@ -28,12 +28,14 @@ interface NavItem {
 const sellerLinks: NavItem[] = [
     { href: '/seller/products', label: 'Produtos' },
     { href: '/seller/dashboard', label: 'Dashboard' },
+    { href: '/settings', label: 'Configurações' },
 ];
 
 const clientLinks: NavItem[] = [
     { href: '/favorites', label: 'Favoritos' },
     { href: '/cart', label: 'Carrinho' },
     { href: '/orders', label: 'Pedidos' },
+    { href: '/settings', label: 'Configurações' },
 ];
 
 export default function Navbar() {
