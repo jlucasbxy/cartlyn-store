@@ -1,10 +1,9 @@
 'use client';
-import { useState, useEffect } from 'react';
-import { signIn, useSession } from 'next-auth/react';
+import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { loginSchema } from '@/lib/validations';
-import { formatZodError } from '@/lib/format-zod-error';
+import { useLoginForm } from '@/hooks/use-login-form';
 import { FormInput } from '@/components/form-input';
 import { Button } from '@/components/button';
 import Loading from '@/components/loading';
@@ -12,13 +11,7 @@ import Loading from '@/components/loading';
 export default function LoginPage() {
     const router = useRouter();
     const { status } = useSession();
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
-    const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    const { formData, setFormData, errors, error, loading, handleSubmit } = useLoginForm();
 
     useEffect(() => {
         if (status === 'authenticated') {
@@ -37,41 +30,6 @@ export default function LoginPage() {
     if (status === 'authenticated') {
         return null;
     }
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
-        setErrors({});
-
-        // Validate with Zod
-        const validation = loginSchema.safeParse(formData);
-
-        if (!validation.success) {
-            setErrors(formatZodError(validation.error));
-            setLoading(false);
-            return;
-        }
-
-        try {
-            const result = await signIn('credentials', {
-                email: formData.email,
-                password: formData.password,
-                redirect: false,
-            });
-
-            if (result?.error) {
-                setError('Email ou senha inválidos');
-            } else {
-                router.push('/store');
-                router.refresh();
-            }
-        } catch {
-            setError('Erro ao fazer login');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors">
