@@ -3,13 +3,27 @@ import { toast } from 'react-toastify';
 
 interface UseProductDeleteProps {
     onSuccess: () => void;
+    onConfirm: (options: {
+        title: string;
+        message: string;
+        confirmText?: string;
+        cancelText?: string;
+        variant?: 'danger' | 'primary' | 'success';
+    }) => Promise<boolean>;
 }
 
-export function useProductDelete({ onSuccess }: UseProductDeleteProps) {
+export function useProductDelete({ onSuccess, onConfirm }: UseProductDeleteProps) {
     const [deleting, setDeleting] = useState(false);
 
     const deleteProduct = async (productId: string) => {
-        if (!confirm('Deseja realmente excluir este produto?')) return;
+        const confirmed = await onConfirm({
+            title: 'Excluir Produto',
+            message: 'Deseja realmente excluir este produto?',
+            confirmText: 'Excluir',
+            variant: 'danger',
+        });
+
+        if (!confirmed) return;
 
         setDeleting(true);
         try {

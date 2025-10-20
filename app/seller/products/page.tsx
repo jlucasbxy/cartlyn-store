@@ -16,6 +16,8 @@ import { useProductForm } from '@/hooks/use-product-form';
 import { useSellerProducts } from '@/hooks/use-seller-products';
 import { useProductDelete } from '@/hooks/use-product-delete';
 import { useCSVUpload } from '@/hooks/use-csv-upload';
+import { useConfirm } from '@/hooks/use-confirm';
+import { ConfirmModal } from '@/components/confirm-modal';
 import { Pagination } from '@/components/pagination';
 
 interface Product {
@@ -38,6 +40,8 @@ export default function SellerProductsPage() {
     // Custom hooks
     const { products, loading, pagination, currentPage, goToPage, nextPage, previousPage, refetch } = useSellerProducts(10);
 
+    const { confirm, confirmState, handleClose } = useConfirm();
+
     const productForm = useProductForm({
         onSuccess: () => {
             toast.success(editingProduct ? 'Produto atualizado!' : 'Produto criado!');
@@ -50,6 +54,7 @@ export default function SellerProductsPage() {
 
     const { deleteProduct } = useProductDelete({
         onSuccess: refetch,
+        onConfirm: confirm,
     });
 
     const csvUpload = useCSVUpload({
@@ -291,6 +296,18 @@ export default function SellerProductsPage() {
                     />
                 </>
             )}
+
+            {/* Confirmation Modal */}
+            <ConfirmModal
+                isOpen={confirmState.isOpen}
+                onClose={handleClose}
+                onConfirm={confirmState.onConfirm}
+                title={confirmState.title}
+                message={confirmState.message}
+                confirmText={confirmState.confirmText}
+                cancelText={confirmState.cancelText}
+                variant={confirmState.variant}
+            />
         </PageLayout>
     );
 }
