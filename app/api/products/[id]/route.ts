@@ -139,8 +139,11 @@ export async function DELETE(
             );
         }
 
-        await prisma.product.delete({
+        // Soft delete: set active to false instead of hard delete
+        // This preserves order history and prevents foreign key constraint errors
+        await prisma.product.update({
             where: { id },
+            data: { active: false },
         });
 
         return NextResponse.json({
