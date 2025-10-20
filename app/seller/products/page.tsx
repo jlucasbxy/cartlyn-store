@@ -250,6 +250,10 @@ export default function SellerProductsPage() {
                         onNext={nextPage}
                         onPrevious={previousPage}
                     />
+
+                    <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
+                        Total de produtos: {pagination.total}
+                    </div>
                 </>
             )}
 
