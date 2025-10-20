@@ -1,4 +1,6 @@
-import { z } from 'zod';
+import { z, locales } from "zod";
+
+z.config(locales.pt());
 
 // User validations
 export const registerSchema = z.object({
