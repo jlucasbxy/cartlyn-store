@@ -30,7 +30,7 @@ export function useSellerProducts(itemsPerPage: number = 10) {
         totalPages: 0,
     });
 
-    const fetchProducts = useCallback(async (page: number = currentPage) => {
+    const fetchProducts = useCallback(async (page: number) => {
         if (!session?.user.id) return;
 
         setLoading(true);
@@ -52,7 +52,7 @@ export function useSellerProducts(itemsPerPage: number = 10) {
         } finally {
             setLoading(false);
         }
-    }, [session?.user.id, currentPage, itemsPerPage]);
+    }, [session?.user.id, itemsPerPage]);
 
     useEffect(() => {
         fetchProducts(1);
