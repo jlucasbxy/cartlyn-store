@@ -1,11 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { registerWithConfirmSchema } from '@/lib/validations';
-import { formatZodError } from '@/lib/format-zod-error';
+import { useRegisterForm } from '@/hooks/use-register-form';
 import { FormInput } from '@/components/form-input';
 import { Button } from '@/components/button';
 import Loading from '@/components/loading';
@@ -13,16 +12,7 @@ import Loading from '@/components/loading';
 export default function RegisterPage() {
     const router = useRouter();
     const { status } = useSession();
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        role: 'CLIENT' as 'CLIENT' | 'SELLER',
-    });
-    const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string; confirmPassword?: string }>({});
-    const [error, setError] = useState('');
-    const [loading, setLoading] = useState(false);
+    const { formData, setFormData, errors, error, loading, handleSubmit } = useRegisterForm();
 
     useEffect(() => {
         if (status === 'authenticated') {
@@ -41,45 +31,6 @@ export default function RegisterPage() {
     if (status === 'authenticated') {
         return null;
     }
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setError('');
-        setErrors({});
-
-        // Validate with Zod
-        const validation = registerWithConfirmSchema.safeParse(formData);
-
-        if (!validation.success) {
-            setErrors(formatZodError(validation.error));
-            setLoading(false);
-            return;
-        }
-
-        try {
-            // Remove confirmPassword before sending to API
-            const { confirmPassword, ...registerData } = formData;
-
-            const response = await fetch('/api/auth/register', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(registerData),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                setError(data.error || 'Erro ao criar conta');
-            } else {
-                router.push('/login?registered=true');
-            }
-        } catch {
-            setError('Erro ao criar conta');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors">
