@@ -16,6 +16,7 @@ import { useProductForm } from '@/hooks/use-product-form';
 import { useSellerProducts } from '@/hooks/use-seller-products';
 import { useProductDelete } from '@/hooks/use-product-delete';
 import { useCSVUpload } from '@/hooks/use-csv-upload';
+import { Pagination } from '@/components/pagination';
 
 interface Product {
     id: string;
@@ -35,7 +36,7 @@ export default function SellerProductsPage() {
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
 
     // Custom hooks
-    const { products, loading, refetch } = useSellerProducts();
+    const { products, loading, pagination, currentPage, goToPage, nextPage, previousPage, refetch } = useSellerProducts(10);
 
     const productForm = useProductForm({
         onSuccess: () => {
@@ -228,57 +229,67 @@ export default function SellerProductsPage() {
             </Modal>
 
             {/* Products List */}
-            {products.length === 0 ? (
+            {products.length === 0 && !loading ? (
                 <EmptyState title="Você ainda não cadastrou nenhum produto" />
             ) : (
-                <div className="grid grid-cols-1 gap-4">
-                    {products.map((product) => (
-                        <Card key={product.id} className="flex gap-4">
-                                    <div className="relative h-24 w-24 flex-shrink-0">
-                                        <Image
-                                            src={product.imageUrl}
-                                            alt={product.name}
-                                            fill
-                                            className="object-cover rounded"
-                                            unoptimized
-                                        />
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                                            {product.name}
-                                        </h3>
-                                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mt-1">
-                                            {product.description}
-                                        </p>
-                                        <p className="text-lg font-bold text-primary mt-2">
-                                            R$ {product.price.toFixed(2)}
-                                        </p>
-                            </div>
-                            <div className="flex flex-col gap-2 justify-center">
-                                <button
-                                    onClick={() => handleEdit(product)}
-                                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors"
-                                    title="Editar produto"
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                                    </svg>
-                                    Editar
-                                </button>
-                                <button
-                                    onClick={() => deleteProduct(product.id)}
-                                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
-                                    title="Excluir produto"
-                                >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                    </svg>
-                                    Excluir
-                                </button>
-                            </div>
-                        </Card>
-                    ))}
-                </div>
+                <>
+                    <div className="grid grid-cols-1 gap-4">
+                        {products.map((product) => (
+                            <Card key={product.id} className="flex gap-4">
+                                        <div className="relative h-24 w-24 flex-shrink-0">
+                                            <Image
+                                                src={product.imageUrl}
+                                                alt={product.name}
+                                                fill
+                                                className="object-cover rounded"
+                                                unoptimized
+                                            />
+                                        </div>
+                                        <div className="flex-1">
+                                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                                                {product.name}
+                                            </h3>
+                                            <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mt-1">
+                                                {product.description}
+                                            </p>
+                                            <p className="text-lg font-bold text-primary mt-2">
+                                                R$ {product.price.toFixed(2)}
+                                            </p>
+                                </div>
+                                <div className="flex flex-col gap-2 justify-center">
+                                    <button
+                                        onClick={() => handleEdit(product)}
+                                        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors"
+                                        title="Editar produto"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg>
+                                        Editar
+                                    </button>
+                                    <button
+                                        onClick={() => deleteProduct(product.id)}
+                                        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors"
+                                        title="Excluir produto"
+                                    >
+                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        </svg>
+                                        Excluir
+                                    </button>
+                                </div>
+                            </Card>
+                        ))}
+                    </div>
+
+                    <Pagination
+                        currentPage={currentPage}
+                        totalPages={pagination.totalPages}
+                        onPageChange={goToPage}
+                        onNext={nextPage}
+                        onPrevious={previousPage}
+                    />
+                </>
             )}
         </PageLayout>
     );
