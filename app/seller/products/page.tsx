@@ -1,9 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
 import Loading from '@/components/loading';
 import { PageLayout } from '@/components/page-layout';
 import { Modal } from '@/components/modal';
@@ -11,75 +8,34 @@ import { FormInput } from '@/components/form-input';
 import { Button } from '@/components/button';
 import { Card } from '@/components/card';
 import { EmptyState } from '@/components/empty-state';
-import { toast } from 'react-toastify';
-import { useProductForm } from '@/hooks/use-product-form';
-import { useSellerProducts } from '@/hooks/use-seller-products';
-import { useProductDelete } from '@/hooks/use-product-delete';
-import { useCSVUpload } from '@/hooks/use-csv-upload';
-import { useConfirm } from '@/hooks/use-confirm';
 import { ConfirmModal } from '@/components/confirm-modal';
 import { Pagination } from '@/components/pagination';
-
-interface Product {
-    id: string;
-    name: string;
-    price: number;
-    description: string;
-    imageUrl: string;
-    active: boolean;
-    publishedAt: string;
-}
+import { useSellerProductsPage } from '@/hooks/use-seller-products-page';
 
 export default function SellerProductsPage() {
-    const router = useRouter();
-    const { data: session, status } = useSession();
-    const [showForm, setShowForm] = useState(false);
-    const [showCSVUpload, setShowCSVUpload] = useState(false);
-    const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-
-    // Custom hooks
-    const { products, loading, pagination, currentPage, goToPage, nextPage, previousPage, refetch } = useSellerProducts(10);
-
-    const { confirm, confirmState, handleClose } = useConfirm();
-
-    const productForm = useProductForm({
-        onSuccess: () => {
-            toast.success(editingProduct ? 'Produto atualizado!' : 'Produto criado!');
-            setShowForm(false);
-            setEditingProduct(null);
-            refetch();
-        },
+    const {
+        showForm,
+        showCSVUpload,
         editingProduct,
-    });
-
-    const { deleteProduct } = useProductDelete({
-        onSuccess: refetch,
-        onConfirm: confirm,
-    });
-
-    const csvUpload = useCSVUpload({
-        onSuccess: () => {
-            setShowCSVUpload(false);
-            refetch();
-        },
-    });
-
-    useEffect(() => {
-        if (status === 'unauthenticated') {
-            router.push('/login');
-            return;
-        }
-        if (status === 'authenticated' && session?.user.role !== 'SELLER') {
-            toast.error('Acesso negado. Apenas vendedores podem acessar esta página.');
-            router.push('/');
-        }
-    }, [status, session, router]);
-
-    const handleEdit = (product: Product) => {
-        setEditingProduct(product);
-        productForm.setEditData(product);
-        setShowForm(true);
-    };
+        products,
+        loading,
+        pagination,
+        currentPage,
+        status,
+        productForm,
+        csvUpload,
+        confirmState,
+        handleEdit,
+        handleNewProduct,
+        handleCloseForm,
+        handleOpenCSVUpload,
+        handleCloseCSVUpload,
+        deleteProduct,
+        goToPage,
+        nextPage,
+        previousPage,
+        handleClose,
+    } = useSellerProductsPage();
 
     if (status === 'loading' || loading) {
         return (
@@ -95,18 +51,14 @@ export default function SellerProductsPage() {
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">Meus Produtos</h1>
                 <div className="flex gap-2 w-full sm:w-auto">
                     <Button
-                        onClick={() => {
-                            setShowForm(true);
-                            setEditingProduct(null);
-                            productForm.resetForm();
-                        }}
+                        onClick={handleNewProduct}
                         size="sm"
                         className="flex-1 sm:flex-initial"
                     >
                         + Novo
                     </Button>
                     <Button
-                        onClick={() => setShowCSVUpload(true)}
+                        onClick={handleOpenCSVUpload}
                         variant="success"
                         size="sm"
                         className="flex-1 sm:flex-initial"
@@ -119,11 +71,7 @@ export default function SellerProductsPage() {
             {/* Product Form Modal */}
             <Modal
                 isOpen={showForm}
-                onClose={() => {
-                    setShowForm(false);
-                    setEditingProduct(null);
-                    productForm.resetForm();
-                }}
+                onClose={handleCloseForm}
                 title={editingProduct ? 'Editar Produto' : 'Novo Produto'}
                 maxWidth="2xl"
             >
@@ -172,11 +120,7 @@ export default function SellerProductsPage() {
                     <div className="flex gap-2 justify-end">
                         <Button
                             type="button"
-                            onClick={() => {
-                                setShowForm(false);
-                                setEditingProduct(null);
-                                productForm.resetForm();
-                            }}
+                            onClick={handleCloseForm}
                             variant="secondary"
                         >
                             Cancelar
@@ -194,10 +138,7 @@ export default function SellerProductsPage() {
             {/* CSV Upload Modal */}
             <Modal
                 isOpen={showCSVUpload}
-                onClose={() => {
-                    setShowCSVUpload(false);
-                    csvUpload.resetFile();
-                }}
+                onClose={handleCloseCSVUpload}
                 title="Upload CSV"
             >
                 <form onSubmit={csvUpload.handleUpload} className="space-y-4">
@@ -218,10 +159,7 @@ export default function SellerProductsPage() {
                     <div className="flex gap-2 justify-end">
                         <Button
                             type="button"
-                            onClick={() => {
-                                setShowCSVUpload(false);
-                                csvUpload.resetFile();
-                            }}
+                            onClick={handleCloseCSVUpload}
                             variant="secondary"
                         >
                             Cancelar
