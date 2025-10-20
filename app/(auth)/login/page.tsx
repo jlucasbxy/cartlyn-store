@@ -11,7 +11,7 @@ import Loading from '@/components/loading';
 export default function LoginPage() {
     const router = useRouter();
     const { status } = useSession();
-    const { formData, setFormData, errors, error, loading, handleSubmit } = useLoginForm();
+    const { formRef, errors, error, loading, handleSubmit } = useLoginForm();
 
     useEffect(() => {
         if (status === 'authenticated') {
@@ -39,7 +39,7 @@ export default function LoginPage() {
                         Entrar na sua conta
                     </h2>
                 </div>
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                <form ref={formRef} className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     {error && (
                         <div className="rounded-md bg-red-50 dark:bg-red-900/30 p-4">
                             <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
@@ -51,10 +51,6 @@ export default function LoginPage() {
                             name="email"
                             type="email"
                             placeholder="Email"
-                            value={formData.email}
-                            onChange={(e) =>
-                                setFormData({ ...formData, email: e.target.value })
-                            }
                             errorMsg={errors.email}
                         />
                         <FormInput
@@ -62,10 +58,6 @@ export default function LoginPage() {
                             name="password"
                             type="password"
                             placeholder="Senha"
-                            value={formData.password}
-                            onChange={(e) =>
-                                setFormData({ ...formData, password: e.target.value })
-                            }
                             errorMsg={errors.password}
                         />
                     </div>

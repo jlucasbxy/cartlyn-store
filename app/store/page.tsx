@@ -11,15 +11,10 @@ import { useStoreProducts } from '@/hooks/use-store-products';
 
 export default function StorePage() {
     const {
+        formRef,
         products,
         loading,
         pagination,
-        searchInput,
-        setSearchInput,
-        minPrice,
-        setMinPrice,
-        maxPrice,
-        setMaxPrice,
         handleSearch,
         handleClearFilters,
         goToPage,
@@ -33,15 +28,14 @@ export default function StorePage() {
 
             {/* Search and Filters */}
             <Card className="mb-8">
-                <form onSubmit={handleSearch} className="space-y-4">
+                <form ref={formRef} onSubmit={handleSearch} className="space-y-4">
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                         <div className="md:col-span-2">
                             <FormInput
                                 type="text"
                                 id="search"
+                                name="search"
                                 label="Buscar produtos"
-                                value={searchInput}
-                                onChange={(e) => setSearchInput(e.target.value)}
                                 placeholder="Nome ou descrição..."
                             />
                         </div>
@@ -49,9 +43,8 @@ export default function StorePage() {
                             <FormInput
                                 type="number"
                                 id="minPrice"
+                                name="minPrice"
                                 label="Preço mínimo"
-                                value={minPrice}
-                                onChange={(e) => setMinPrice(e.target.value)}
                                 placeholder="R$ 0"
                                 min="0"
                                 step="0.01"
@@ -61,9 +54,8 @@ export default function StorePage() {
                             <FormInput
                                 type="number"
                                 id="maxPrice"
+                                name="maxPrice"
                                 label="Preço máximo"
-                                value={maxPrice}
-                                onChange={(e) => setMaxPrice(e.target.value)}
                                 placeholder="R$ 10000"
                                 min="0"
                                 step="0.01"

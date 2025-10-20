@@ -12,7 +12,7 @@ import Loading from '@/components/loading';
 export default function RegisterPage() {
     const router = useRouter();
     const { status } = useSession();
-    const { formData, setFormData, errors, error, loading, handleSubmit } = useRegisterForm();
+    const { formRef, errors, error, loading, handleSubmit } = useRegisterForm();
 
     useEffect(() => {
         if (status === 'authenticated') {
@@ -40,7 +40,7 @@ export default function RegisterPage() {
                         Criar nova conta
                     </h2>
                 </div>
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+                <form ref={formRef} className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     {error && (
                         <div className="rounded-md bg-red-50 dark:bg-red-900/30 p-4">
                             <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
@@ -52,10 +52,6 @@ export default function RegisterPage() {
                             name="name"
                             type="text"
                             placeholder="Nome completo"
-                            value={formData.name}
-                            onChange={(e) =>
-                                setFormData({ ...formData, name: e.target.value })
-                            }
                             errorMsg={errors.name}
                         />
                         <FormInput
@@ -63,10 +59,6 @@ export default function RegisterPage() {
                             name="email"
                             type="text"
                             placeholder="Email"
-                            value={formData.email}
-                            onChange={(e) =>
-                                setFormData({ ...formData, email: e.target.value })
-                            }
                             errorMsg={errors.email}
                         />
                         <FormInput
@@ -74,10 +66,6 @@ export default function RegisterPage() {
                             name="password"
                             type="password"
                             placeholder="Senha (mínimo 8 caracteres)"
-                            value={formData.password}
-                            onChange={(e) =>
-                                setFormData({ ...formData, password: e.target.value })
-                            }
                             errorMsg={errors.password}
                         />
                         <FormInput
@@ -85,10 +73,6 @@ export default function RegisterPage() {
                             name="confirmPassword"
                             type="password"
                             placeholder="Confirmar senha"
-                            value={formData.confirmPassword}
-                            onChange={(e) =>
-                                setFormData({ ...formData, confirmPassword: e.target.value })
-                            }
                             errorMsg={errors.confirmPassword}
                         />
                         <div>
@@ -101,14 +85,8 @@ export default function RegisterPage() {
                             <select
                                 id="role"
                                 name="role"
+                                defaultValue="CLIENT"
                                 className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm transition-colors"
-                                value={formData.role}
-                                onChange={(e) =>
-                                    setFormData({
-                                        ...formData,
-                                        role: e.target.value as 'CLIENT' | 'SELLER',
-                                    })
-                                }
                             >
                                 <option value="CLIENT">Cliente</option>
                                 <option value="SELLER">Vendedor</option>

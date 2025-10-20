@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface Product {
     id: string;
@@ -20,6 +20,7 @@ interface Pagination {
 }
 
 export function useStoreProducts() {
+    const formRef = useRef<HTMLFormElement>(null);
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [pagination, setPagination] = useState<Pagination>({
@@ -29,9 +30,8 @@ export function useStoreProducts() {
         totalPages: 0,
     });
     const [searchQuery, setSearchQuery] = useState('');
-    const [minPrice, setMinPrice] = useState('');
-    const [maxPrice, setMaxPrice] = useState('');
-    const [searchInput, setSearchInput] = useState('');
+    const [minPriceFilter, setMinPriceFilter] = useState('');
+    const [maxPriceFilter, setMaxPriceFilter] = useState('');
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -43,8 +43,8 @@ export function useStoreProducts() {
                 });
 
                 if (searchQuery) params.append('query', searchQuery);
-                if (minPrice) params.append('minPrice', minPrice);
-                if (maxPrice) params.append('maxPrice', maxPrice);
+                if (minPriceFilter) params.append('minPrice', minPriceFilter);
+                if (maxPriceFilter) params.append('maxPrice', maxPriceFilter);
 
                 const response = await fetch(`/api/products?${params}`);
                 const data = await response.json();
@@ -58,19 +58,29 @@ export function useStoreProducts() {
             }
         };
         fetchProducts();
-    }, [pagination.page, searchQuery, minPrice, maxPrice, pagination.limit]);
+    }, [pagination.page, searchQuery, minPriceFilter, maxPriceFilter, pagination.limit]);
 
     const handleSearch = (e: React.FormEvent) => {
         e.preventDefault();
-        setSearchQuery(searchInput);
+
+        if (!formRef.current) return;
+
+        const formData = new FormData(formRef.current);
+        const searchInput = formData.get('search') as string;
+        const minPrice = formData.get('minPrice') as string;
+        const maxPrice = formData.get('maxPrice') as string;
+
+        setSearchQuery(searchInput || '');
+        setMinPriceFilter(minPrice || '');
+        setMaxPriceFilter(maxPrice || '');
         setPagination((prev) => ({ ...prev, page: 1 }));
     };
 
     const handleClearFilters = () => {
         setSearchQuery('');
-        setSearchInput('');
-        setMinPrice('');
-        setMaxPrice('');
+        setMinPriceFilter('');
+        setMaxPriceFilter('');
+        formRef.current?.reset();
         setPagination((prev) => ({ ...prev, page: 1 }));
     };
 
@@ -91,15 +101,10 @@ export function useStoreProducts() {
     };
 
     return {
+        formRef,
         products,
         loading,
         pagination,
-        searchInput,
-        setSearchInput,
-        minPrice,
-        setMinPrice,
-        maxPrice,
-        setMaxPrice,
         handleSearch,
         handleClearFilters,
         goToPage,

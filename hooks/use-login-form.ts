@@ -1,4 +1,4 @@
-import { useState, FormEvent } from 'react';
+import { useState, useRef, FormEvent } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { loginSchema } from '@/lib/validations';
@@ -6,10 +6,7 @@ import { formatZodError } from '@/lib/format-zod-error';
 
 export function useLoginForm() {
     const router = useRouter();
-    const [formData, setFormData] = useState({
-        email: '',
-        password: '',
-    });
+    const formRef = useRef<HTMLFormElement>(null);
     const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -20,8 +17,16 @@ export function useLoginForm() {
         setError('');
         setErrors({});
 
+        if (!formRef.current) return;
+
+        const formData = new FormData(formRef.current);
+        const data = {
+            email: formData.get('email') as string,
+            password: formData.get('password') as string,
+        };
+
         // Validate with Zod
-        const validation = loginSchema.safeParse(formData);
+        const validation = loginSchema.safeParse(data);
 
         if (!validation.success) {
             setErrors(formatZodError(validation.error));
@@ -31,8 +36,8 @@ export function useLoginForm() {
 
         try {
             const result = await signIn('credentials', {
-                email: formData.email,
-                password: formData.password,
+                email: data.email,
+                password: data.password,
                 redirect: false,
             });
 
@@ -50,8 +55,7 @@ export function useLoginForm() {
     };
 
     return {
-        formData,
-        setFormData,
+        formRef,
         errors,
         error,
         loading,

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { Session } from 'next-auth';
@@ -23,9 +23,9 @@ interface UseProductDetailsProps {
 
 export function useProductDetails({ productId, session }: UseProductDetailsProps) {
     const router = useRouter();
+    const quantityRef = useRef<HTMLInputElement>(null);
     const [product, setProduct] = useState<Product | null>(null);
     const [loading, setLoading] = useState(true);
-    const [quantity, setQuantity] = useState(1);
     const [actionLoading, setActionLoading] = useState(false);
 
     useEffect(() => {
@@ -55,6 +55,8 @@ export function useProductDetails({ productId, session }: UseProductDetailsProps
             router.push('/login');
             return;
         }
+
+        const quantity = parseInt(quantityRef.current?.value || '1');
 
         setActionLoading(true);
         try {
@@ -109,8 +111,7 @@ export function useProductDetails({ productId, session }: UseProductDetailsProps
     return {
         product,
         loading,
-        quantity,
-        setQuantity,
+        quantityRef,
         actionLoading,
         handleAddToCart,
         handleAddToFavorites,

@@ -1,17 +1,11 @@
-import { useState, FormEvent } from 'react';
+import { useState, useRef, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
 import { registerWithConfirmSchema } from '@/lib/validations';
 import { formatZodError } from '@/lib/format-zod-error';
 
 export function useRegisterForm() {
     const router = useRouter();
-    const [formData, setFormData] = useState({
-        name: '',
-        email: '',
-        password: '',
-        confirmPassword: '',
-        role: 'CLIENT' as 'CLIENT' | 'SELLER',
-    });
+    const formRef = useRef<HTMLFormElement>(null);
     const [errors, setErrors] = useState<{
         name?: string;
         email?: string;
@@ -26,6 +20,17 @@ export function useRegisterForm() {
         setLoading(true);
         setError('');
         setErrors({});
+
+        if (!formRef.current) return;
+
+        const formDataObj = new FormData(formRef.current);
+        const formData = {
+            name: formDataObj.get('name') as string,
+            email: formDataObj.get('email') as string,
+            password: formDataObj.get('password') as string,
+            confirmPassword: formDataObj.get('confirmPassword') as string,
+            role: formDataObj.get('role') as 'CLIENT' | 'SELLER',
+        };
 
         // Validate with Zod
         const validation = registerWithConfirmSchema.safeParse(formData);
@@ -62,8 +67,7 @@ export function useRegisterForm() {
     };
 
     return {
-        formData,
-        setFormData,
+        formRef,
         errors,
         error,
         loading,

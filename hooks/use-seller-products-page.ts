@@ -65,7 +65,6 @@ export function useSellerProductsPage() {
 
     const handleEdit = (product: Product) => {
         setEditingProduct(product);
-        productForm.setEditData(product);
         setShowForm(true);
     };
 

@@ -19,8 +19,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
     const {
         product,
         loading,
-        quantity,
-        setQuantity,
+        quantityRef,
         actionLoading,
         handleAddToCart,
         handleAddToFavorites,
@@ -98,12 +97,13 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                             <div className="mt-auto">
                                 <div className="mb-4">
                                     <FormInput
+                                        ref={quantityRef}
                                         label="Quantidade"
                                         type="number"
                                         id="quantity"
+                                        name="quantity"
                                         min="1"
-                                        value={quantity}
-                                        onChange={(e) => setQuantity(parseInt(e.target.value) || 1)}
+                                        defaultValue="1"
                                         className="w-24"
                                     />
                                 </div>

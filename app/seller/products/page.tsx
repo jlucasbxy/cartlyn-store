@@ -76,21 +76,19 @@ export default function SellerProductsPage() {
                 title={editingProduct ? 'Editar Produto' : 'Novo Produto'}
                 maxWidth="2xl"
             >
-                <form onSubmit={productForm.handleSubmit} className="space-y-4">
+                <form ref={productForm.formRef} onSubmit={productForm.handleSubmit} className="space-y-4">
                     <FormInput
                         label="Nome *"
+                        name="name"
                         type="text"
-                        value={productForm.formData.name}
-                        onChange={(e) => productForm.setFormData({ ...productForm.formData, name: e.target.value })}
                         errorMsg={productForm.errors.name}
                     />
                     <FormInput
                         label="Preço *"
+                        name="price"
                         type="number"
                         step="0.01"
                         min="0"
-                        value={productForm.formData.price}
-                        onChange={(e) => productForm.setFormData({ ...productForm.formData, price: e.target.value })}
                         errorMsg={productForm.errors.price}
                     />
                     <div>
@@ -98,9 +96,8 @@ export default function SellerProductsPage() {
                             Descrição *
                         </label>
                         <textarea
+                            name="description"
                             rows={4}
-                            value={productForm.formData.description}
-                            onChange={(e) => productForm.setFormData({ ...productForm.formData, description: e.target.value })}
                             className={`appearance-none rounded relative block w-full px-3 py-2 border placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm transition-colors ${
                                 productForm.errors.description
                                     ? 'border-red-500 dark:border-red-500'
@@ -113,9 +110,8 @@ export default function SellerProductsPage() {
                     </div>
                     <FormInput
                         label="URL da Imagem *"
+                        name="imageUrl"
                         type="url"
-                        value={productForm.formData.imageUrl}
-                        onChange={(e) => productForm.setFormData({ ...productForm.formData, imageUrl: e.target.value })}
                         errorMsg={productForm.errors.imageUrl}
                     />
                     <div className="flex gap-2 justify-end">
