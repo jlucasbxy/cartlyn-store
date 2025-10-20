@@ -184,7 +184,7 @@ export default function SellerProductsPage() {
     return (
         <PageLayout>
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-900">Meus Produtos</h1>
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">Meus Produtos</h1>
                 <div className="flex gap-2">
                     <Button
                         onClick={() => {
@@ -232,7 +232,7 @@ export default function SellerProductsPage() {
                         onChange={(e) => setFormData({ ...formData, price: e.target.value })}
                     />
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Descrição *
                         </label>
                         <textarea
@@ -240,7 +240,7 @@ export default function SellerProductsPage() {
                             rows={4}
                             value={formData.description}
                             onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                            className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-400 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm"
+                            className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm transition-colors"
                         />
                     </div>
                     <FormInput
@@ -334,10 +334,10 @@ export default function SellerProductsPage() {
                                         />
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="text-lg font-semibold text-gray-900">
+                                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                                             {product.name}
                                         </h3>
-                                        <p className="text-sm text-gray-600 line-clamp-2 mt-1">
+                                        <p className="text-sm text-gray-600 dark:text-gray-400 line-clamp-2 mt-1">
                                             {product.description}
                                         </p>
                                         <p className="text-lg font-bold text-primary mt-2">

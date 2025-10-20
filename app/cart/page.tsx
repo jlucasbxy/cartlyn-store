@@ -134,7 +134,7 @@ export default function CartPage() {
 
     return (
         <PageLayout>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
                 Carrinho de Compras
             </h1>
 
@@ -160,10 +160,10 @@ export default function CartPage() {
                                     />
                                 </div>
                                 <div className="flex-1">
-                                    <h3 className="text-lg font-semibold text-gray-900">
+                                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                                         {item.product.name}
                                     </h3>
-                                    <p className="text-sm text-gray-600 mt-1">
+                                    <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
                                         Vendedor: {item.product.seller.name}
                                     </p>
                                     <p className="text-lg font-bold text-primary mt-2">
@@ -199,7 +199,7 @@ export default function CartPage() {
                                             +
                                         </button>
                                     </div>
-                                    <p className="text-sm text-gray-600">
+                                    <p className="text-sm text-gray-600 dark:text-gray-400">
                                         Subtotal: R${' '}
                                         {(item.product.price * item.quantity).toFixed(2)}
                                     </p>
@@ -211,7 +211,7 @@ export default function CartPage() {
                     {/* Order Summary */}
                     <div className="lg:col-span-1">
                         <Card className="sticky top-8">
-                            <h2 className="text-xl font-bold text-gray-900 mb-4">
+                            <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                                 Resumo do Pedido
                             </h2>
                             <div className="space-y-2 mb-4">
@@ -224,7 +224,7 @@ export default function CartPage() {
                                     <span>Grátis</span>
                                 </div>
                                 <div className="border-t pt-2 mt-2">
-                                    <div className="flex justify-between text-xl font-bold text-gray-900">
+                                    <div className="flex justify-between text-xl font-bold text-gray-900 dark:text-white">
                                         <span>Total</span>
                                         <span>R$ {total.toFixed(2)}</span>
                                     </div>

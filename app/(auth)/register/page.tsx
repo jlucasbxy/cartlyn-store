@@ -28,7 +28,7 @@ export default function RegisterPage() {
 
     if (status === 'loading') {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-white">
+            <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
                 <Loading />
             </div>
         );
@@ -65,17 +65,17 @@ export default function RegisterPage() {
     };
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900 py-12 px-4 sm:px-6 lg:px-8 transition-colors">
             <div className="max-w-md w-full space-y-8">
                 <div>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900 dark:text-white">
                         Criar nova conta
                     </h2>
                 </div>
                 <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
                     {error && (
-                        <div className="rounded-md bg-red-50 p-4">
-                            <p className="text-sm text-red-800">{error}</p>
+                        <div className="rounded-md bg-red-50 dark:bg-red-900/30 p-4">
+                            <p className="text-sm text-red-800 dark:text-red-300">{error}</p>
                         </div>
                     )}
                     <div className="rounded-md shadow-sm space-y-4">
@@ -116,14 +116,14 @@ export default function RegisterPage() {
                         <div>
                             <label
                                 htmlFor="role"
-                                className="block text-sm font-medium text-gray-700 mb-2"
+                                className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
                             >
                                 Tipo de conta
                             </label>
                             <select
                                 id="role"
                                 name="role"
-                                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 text-gray-900 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm"
+                                className="appearance-none rounded relative block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm transition-colors"
                                 value={formData.role}
                                 onChange={(e) =>
                                     setFormData({

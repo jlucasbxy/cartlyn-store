@@ -18,7 +18,7 @@ export default function HomePage() {
 
     if (status === 'loading') {
         return (
-            <div className="min-h-screen flex items-center justify-center bg-white">
+            <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-900">
                 <Loading />
             </div>
         );
@@ -29,12 +29,12 @@ export default function HomePage() {
     }
 
     return (
-        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-primary/20 p-4">
+        <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-green-50 to-primary/20 dark:from-gray-900 dark:to-gray-800 p-4 transition-colors">
             <main className="text-center max-w-2xl">
-                <h1 className="text-5xl font-bold text-gray-900 mb-4">
+                <h1 className="text-5xl font-bold text-gray-900 dark:text-white mb-4">
                     Caplink Store
                 </h1>
-                <p className="text-xl text-gray-600 mb-8">
+                <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
                     Sua plataforma de e-commerce completa
                 </p>
                 <div className="flex gap-4 justify-center flex-wrap">

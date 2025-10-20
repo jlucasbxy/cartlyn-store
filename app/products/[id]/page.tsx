@@ -152,7 +152,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
 
                     {/* Product Info */}
                     <div className="flex flex-col">
-                        <h1 className="text-3xl font-bold text-gray-900 mb-4">
+                        <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                             {product.name}
                         </h1>
 
@@ -163,7 +163,7 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         </div>
 
                         <div className="mb-6">
-                            <h2 className="text-lg font-semibold text-gray-900 mb-2">
+                            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                                 Descrição
                             </h2>
                             <p className="text-gray-700 leading-relaxed">
@@ -172,11 +172,11 @@ export default function ProductDetailPage({ params }: { params: Promise<{ id: st
                         </div>
 
                         <div className="mb-6">
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
                                 <span className="font-semibold">Vendedor:</span>{' '}
                                 {product.seller.name}
                             </p>
-                            <p className="text-sm text-gray-600">
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
                                 <span className="font-semibold">Publicado em:</span>{' '}
                                 {new Date(product.publishedAt).toLocaleDateString('pt-BR')}
                             </p>

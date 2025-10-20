@@ -12,13 +12,13 @@ export function EmptyState({
     onAction,
 }: EmptyStateProps) {
     return (
-        <div className="bg-white rounded-lg shadow-md p-8 text-center">
-            <p className="text-gray-700 text-lg mb-4">{title}</p>
-            {description && <p className="text-gray-600 mb-6">{description}</p>}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-700/50 p-8 text-center transition-colors">
+            <p className="text-gray-700 dark:text-gray-300 text-lg mb-4">{title}</p>
+            {description && <p className="text-gray-600 dark:text-gray-400 mb-6">{description}</p>}
             {actionLabel && onAction && (
                 <button
                     onClick={onAction}
-                    className="bg-indigo-600 text-white px-6 py-2 rounded-md hover:bg-indigo-700 transition-colors"
+                    className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary/90 transition-colors"
                 >
                     {actionLabel}
                 </button>

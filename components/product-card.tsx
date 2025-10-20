@@ -84,7 +84,7 @@ export default function ProductCard({ product, onFavoriteToggle, isFavorite = fa
     };
 
     return (
-        <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-700/50 overflow-hidden hover:shadow-xl dark:hover:shadow-gray-600/50 transition-all">
             <Link href={`/products/${product.id}`}>
                 <div className="relative h-48 w-full">
                     <Image
@@ -98,14 +98,14 @@ export default function ProductCard({ product, onFavoriteToggle, isFavorite = fa
             </Link>
             <div className="p-4">
                 <Link href={`/products/${product.id}`}>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-2 hover:text-primary">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 hover:text-primary transition-colors">
                         {product.name}
                     </h3>
                 </Link>
-                <p className="text-sm text-gray-600 mb-2 line-clamp-2">
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
                     {product.description}
                 </p>
-                <p className="text-xs text-gray-600 mb-3">
+                <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
                     Vendedor: {product.seller.name}
                 </p>
                 <div className="flex items-center justify-between">

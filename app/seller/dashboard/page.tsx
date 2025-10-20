@@ -80,7 +80,7 @@ export default function SellerDashboardPage() {
 
     return (
         <PageLayout>
-            <h1 className="text-3xl font-bold text-gray-900 mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
                 Dashboard do Vendedor
             </h1>
 
@@ -155,7 +155,7 @@ export default function SellerDashboardPage() {
             {/* Best Selling Product */}
             {dashboardData.bestSellingProduct ? (
                 <Card>
-                    <h2 className="text-xl font-bold text-gray-900 mb-4">
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
                         Produto Mais Vendido
                     </h2>
                     <div className="flex gap-6 items-center">
@@ -213,7 +213,7 @@ export default function SellerDashboardPage() {
                         className="w-full text-left justify-start h-auto p-0 border-0 hover:bg-transparent"
                     >
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                                 Gerenciar Produtos
                             </h3>
                             <p className="text-gray-600 font-normal">
@@ -229,7 +229,7 @@ export default function SellerDashboardPage() {
                         className="w-full text-left justify-start h-auto p-0 border-0 hover:bg-transparent"
                     >
                         <div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
                                 Ver Loja
                             </h3>
                             <p className="text-gray-600 font-normal">
