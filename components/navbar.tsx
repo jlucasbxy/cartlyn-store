@@ -4,9 +4,43 @@ import { useSession, signOut } from 'next-auth/react';
 import { Button } from '@/components/button';
 import { useColorScheme } from '@/hooks/use-color-scheme';
 
+interface NavLinkProps {
+    href: string;
+    children: React.ReactNode;
+}
+
+function NavLink({ href, children }: NavLinkProps) {
+    return (
+        <Link
+            href={href}
+            className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-2 sm:px-3 lg:px-4 py-2 rounded-md text-xs sm:text-sm lg:text-base font-medium transition-colors whitespace-nowrap"
+        >
+            {children}
+        </Link>
+    );
+}
+
+interface NavItem {
+    href: string;
+    label: string;
+}
+
+const sellerLinks: NavItem[] = [
+    { href: '/seller/products', label: 'Produtos' },
+    { href: '/seller/dashboard', label: 'Dashboard' },
+];
+
+const clientLinks: NavItem[] = [
+    { href: '/favorites', label: 'Favoritos' },
+    { href: '/cart', label: 'Carrinho' },
+    { href: '/orders', label: 'Pedidos' },
+];
+
 export default function Navbar() {
     const { data: session } = useSession();
     const { isDark, toggle, mounted } = useColorScheme();
+
+    const roleLinks = session?.user.role === 'SELLER' ? sellerLinks : session?.user.role === 'CLIENT' ? clientLinks : [];
 
     return (
         <nav className="bg-white dark:bg-gray-800 shadow-md transition-colors">
@@ -17,50 +51,12 @@ export default function Navbar() {
                             Caplink Store
                         </Link>
                         <div className="flex items-baseline gap-1 sm:gap-2 lg:gap-4">
-                            <Link
-                                href="/store"
-                                className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-2 sm:px-3 lg:px-4 py-2 rounded-md text-xs sm:text-sm lg:text-base font-medium transition-colors whitespace-nowrap"
-                            >
-                                Loja
-                            </Link>
-                            {session?.user.role === 'SELLER' && (
-                                <>
-                                    <Link
-                                        href="/seller/products"
-                                        className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-2 sm:px-3 lg:px-4 py-2 rounded-md text-xs sm:text-sm lg:text-base font-medium transition-colors whitespace-nowrap"
-                                    >
-                                        Produtos
-                                    </Link>
-                                    <Link
-                                        href="/seller/dashboard"
-                                        className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-2 sm:px-3 lg:px-4 py-2 rounded-md text-xs sm:text-sm lg:text-base font-medium transition-colors whitespace-nowrap"
-                                    >
-                                        Dashboard
-                                    </Link>
-                                </>
-                            )}
-                            {session?.user.role === 'CLIENT' && (
-                                <>
-                                    <Link
-                                        href="/favorites"
-                                        className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-2 sm:px-3 lg:px-4 py-2 rounded-md text-xs sm:text-sm lg:text-base font-medium transition-colors whitespace-nowrap"
-                                    >
-                                        Favoritos
-                                    </Link>
-                                    <Link
-                                        href="/cart"
-                                        className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-2 sm:px-3 lg:px-4 py-2 rounded-md text-xs sm:text-sm lg:text-base font-medium transition-colors whitespace-nowrap"
-                                    >
-                                        Carrinho
-                                    </Link>
-                                    <Link
-                                        href="/orders"
-                                        className="text-gray-700 dark:text-gray-300 hover:text-primary dark:hover:text-primary px-2 sm:px-3 lg:px-4 py-2 rounded-md text-xs sm:text-sm lg:text-base font-medium transition-colors whitespace-nowrap"
-                                    >
-                                        Pedidos
-                                    </Link>
-                                </>
-                            )}
+                            <NavLink href="/store">Loja</NavLink>
+                            {roleLinks.map((link) => (
+                                <NavLink key={link.href} href={link.href}>
+                                    {link.label}
+                                </NavLink>
+                            ))}
                         </div>
                     </div>
                     <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
