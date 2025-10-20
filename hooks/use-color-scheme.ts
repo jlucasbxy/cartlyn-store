@@ -2,16 +2,24 @@
 import { useEffect, useState, useCallback } from "react"
 
 export function useColorScheme() {
-    const [isDark, setIsDark] = useState<boolean>(() => {
-        if (typeof window === "undefined") return false
-
-        const stored = localStorage.getItem("theme")
-        if (stored) return stored === "dark"
-
-        return window.matchMedia("(prefers-color-scheme: dark)").matches
-    })
+    const [isDark, setIsDark] = useState<boolean>(false)
+    const [mounted, setMounted] = useState(false)
 
     useEffect(() => {
+        setMounted(true)
+
+        // Check stored preference or system preference
+        const stored = localStorage.getItem("theme")
+        if (stored) {
+            setIsDark(stored === "dark")
+        } else {
+            setIsDark(window.matchMedia("(prefers-color-scheme: dark)").matches)
+        }
+    }, [])
+
+    useEffect(() => {
+        if (!mounted) return
+
         const root = document.documentElement
 
         if (isDark) {
@@ -21,9 +29,9 @@ export function useColorScheme() {
             root.classList.remove("dark")
             localStorage.setItem("theme", "light")
         }
-    }, [isDark])
+    }, [isDark, mounted])
 
     const toggle = useCallback(() => setIsDark((prev) => !prev), [])
 
-    return { isDark, toggle }
+    return { isDark, toggle, mounted }
 }
