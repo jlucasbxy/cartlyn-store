@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { Session } from 'next-auth';
 
 interface Product {
     id: string;
@@ -17,7 +18,7 @@ interface Product {
 
 interface UseProductDetailsProps {
     productId: string;
-    session: any;
+    session: Session | null;
 }
 
 export function useProductDetails({ productId, session }: UseProductDetailsProps) {
