@@ -17,6 +17,7 @@ export async function GET(request: NextRequest) {
         const maxPrice = searchParams.get('maxPrice')
             ? parseFloat(searchParams.get('maxPrice')!)
             : undefined;
+        const sellerId = searchParams.get('sellerId') || undefined;
 
         const validated = searchProductsSchema.safeParse({
             query,
@@ -38,6 +39,11 @@ export async function GET(request: NextRequest) {
         const where: Prisma.ProductWhereInput = {
             active: true,
         };
+
+        // Filter by seller if sellerId is provided
+        if (sellerId) {
+            where.sellerId = sellerId;
+        }
 
         if (validated.data.query) {
             where.OR = [

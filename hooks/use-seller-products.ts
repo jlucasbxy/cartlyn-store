@@ -42,26 +42,16 @@ export function useSellerProducts(itemsPerPage: number = 10) {
 
         setLoading(true);
         try {
-            // Fetch all products with pagination, then filter by seller on client
-            // This is a temporary solution - ideally the API should support sellerId filter
-            const response = await fetch(`/api/products?page=${page}&limit=100`);
+            // Fetch products filtered by seller on backend
+            const response = await fetch(
+                `/api/products?page=${page}&limit=${itemsPerPage}&sellerId=${session.user.id}`
+            );
+
             if (response.ok) {
                 const data = await response.json();
-                // Filter only seller's products
-                const sellerProducts = data.products.filter((p: ProductWithSeller) => p.seller.id === session?.user.id);
 
-                // Calculate pagination for filtered results
-                const startIndex = (page - 1) * itemsPerPage;
-                const endIndex = startIndex + itemsPerPage;
-                const paginatedProducts = sellerProducts.slice(startIndex, endIndex);
-
-                setProducts(paginatedProducts);
-                setPagination({
-                    page,
-                    limit: itemsPerPage,
-                    total: sellerProducts.length,
-                    totalPages: Math.ceil(sellerProducts.length / itemsPerPage),
-                });
+                setProducts(data.products);
+                setPagination(data.pagination);
                 setCurrentPage(page);
             }
         } catch (error) {
