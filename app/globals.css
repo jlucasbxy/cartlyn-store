@@ -13,22 +13,6 @@
   border: 1px solid #e5e7eb;
 }
 
-:root:not(.dark) .Toastify__toast--success {
-  border-left: 4px solid #10b981;
-}
-
-:root:not(.dark) .Toastify__toast--error {
-  border-left: 4px solid #ef4444;
-}
-
-:root:not(.dark) .Toastify__toast--warning {
-  border-left: 4px solid #f59e0b;
-}
-
-:root:not(.dark) .Toastify__toast--info {
-  border-left: 4px solid #3b82f6;
-}
-
 :root:not(.dark) .Toastify__progress-bar--success {
   background: #10b981;
 }
