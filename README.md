@@ -17,7 +17,6 @@ Utilize as [credenciais de teste](#credenciais-de-teste) para fazer login.
 - [Funcionalidades](#funcionalidades)
 - [Instalação](#instalação)
 - [Configuração](#configuração)
-- [Scripts Disponíveis](#scripts-disponíveis)
 - [Estrutura de Pastas](#estrutura-de-pastas)
 - [Decisões de Arquitetura](#decisões-de-arquitetura)
 
@@ -77,7 +76,7 @@ Este projeto utiliza **API Routes do Next.js** para criar uma clara separação 
 
 ### Por que Client Fetch ao invés de Server Actions?
 
-**Decisão Arquitetural:** Optei por utilizar `fetch` client-side ao invés de Server Actions para:
+**Decisão Arquitetural:** Optei por utilizar `fetch` client-side ao invés de Server Actions para atender os requisitos da aplicação:
 
 1. **Separação Clara de Responsabilidades**
    - Backend: API Routes funcionam como um backend REST tradicional
@@ -166,7 +165,7 @@ npx prisma migrate dev
 
 6. Popule o banco de dados (opcional)
 ```bash
-npm run db:seed
+npx prisma db seed
 ```
 
 7. Inicie o servidor de desenvolvimento
@@ -183,8 +182,14 @@ npm run dev
 Crie um arquivo `.env` na raiz do projeto:
 
 ```env
-# Database
-DATABASE_URL="postgresql://usuario:senha@localhost:5432/caplink_store"
+# Database para o docker-compose
+
+POSTGRES_USER=caplink
+POSTGRES_PASSWORD=caplink123
+POSTGRES_DB=caplink_store
+POSTGRES_PORT=5432
+
+DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}" # reutiliza as variaveis do docker-compose para criar a url que vai ser usada pelo prisma se não for usar o docker-compose apenas essa variável é suficiente para subir a aplicação.
 
 # NextAuth
 NEXTAUTH_SECRET="chave-secreta-para-jwt"
@@ -193,30 +198,10 @@ NEXTAUTH_URL="http://localhost:3000"
 
 ### Banco de Dados
 
-O projeto utiliza PostgreSQL. Você pode usar Docker para facilitar:
+O projeto utiliza PostgreSQL. Você pode usar o docker-compose.yml disponível na raiz do projeto:
 
 ```bash
-docker run --name caplink-postgres -e POSTGRES_PASSWORD=senha -e POSTGRES_DB=caplink_store -p 5432:5432 -d postgres
-```
-
-## 📜 Scripts Disponíveis
-
-```bash
-# Desenvolvimento
-npm run dev          # Inicia servidor de desenvolvimento
-
-# Build
-npm run build        # Cria build de produção
-npm run start        # Inicia servidor de produção
-
-# Banco de Dados
-npm run db:push      # Sincroniza schema com o banco
-npm run db:seed      # Popula banco com dados de teste
-npm run db:studio    # Abre Prisma Studio (GUI)
-
-# Prisma
-npx prisma migrate dev    # Cria e aplica migration
-npx prisma generate       # Gera Prisma Client
+    docker compose up -d
 ```
 
 ## 📁 Estrutura de Pastas
@@ -302,7 +287,7 @@ Next-Auth com JWT para autenticação stateless e escalável.
 
 ## 👥 Credenciais de Teste
 
-Após executar `npm run db:seed`, você pode usar:
+Após executar o seed, você pode usar:
 
 ### Vendedores
 - Email: `joao@vendedor.com` / Senha: `12345678`
