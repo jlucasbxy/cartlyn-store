@@ -9,6 +9,8 @@ import { PageLayout } from '@/components/page-layout';
 import { EmptyState } from '@/components/empty-state';
 import { Card } from '@/components/card';
 import { Button } from '@/components/button';
+import { ConfirmModal } from '@/components/confirm-modal';
+import { useConfirm } from '@/hooks/use-confirm';
 import { toast } from 'react-toastify';
 
 interface CartItem {
@@ -32,6 +34,7 @@ export default function CartPage() {
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(true);
     const [checkoutLoading, setCheckoutLoading] = useState(false);
+    const { confirm, confirmState, handleClose } = useConfirm();
 
     useEffect(() => {
         if (status === 'unauthenticated') {
@@ -78,7 +81,14 @@ export default function CartPage() {
     };
 
     const removeItem = async (productId: string) => {
-        if (!confirm('Deseja remover este item do carrinho?')) return;
+        const confirmed = await confirm({
+            title: 'Remover Item',
+            message: 'Deseja remover este item do carrinho?',
+            confirmText: 'Remover',
+            variant: 'danger',
+        });
+
+        if (!confirmed) return;
 
         try {
             const response = await fetch(`/api/cart?productId=${productId}`, {
@@ -100,9 +110,14 @@ export default function CartPage() {
             return;
         }
 
-        if (!confirm(`Confirmar compra no valor de R$ ${total.toFixed(2)}?`)) {
-            return;
-        }
+        const confirmed = await confirm({
+            title: 'Finalizar Compra',
+            message: `Confirmar compra no valor de R$ ${total.toFixed(2)}?`,
+            confirmText: 'Confirmar',
+            variant: 'primary',
+        });
+
+        if (!confirmed) return;
 
         setCheckoutLoading(true);
         try {
@@ -250,6 +265,18 @@ export default function CartPage() {
                     </div>
                 </div>
             )}
+
+            {/* Confirmation Modal */}
+            <ConfirmModal
+                isOpen={confirmState.isOpen}
+                onClose={handleClose}
+                onConfirm={confirmState.onConfirm}
+                title={confirmState.title}
+                message={confirmState.message}
+                confirmText={confirmState.confirmText}
+                cancelText={confirmState.cancelText}
+                variant={confirmState.variant}
+            />
         </PageLayout>
     );
 }
