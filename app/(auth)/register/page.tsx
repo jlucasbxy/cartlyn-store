@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { registerSchema } from '@/lib/validations';
+import { registerWithConfirmSchema } from '@/lib/validations';
 import { formatZodError } from '@/lib/format-zod-error';
 import { FormInput } from '@/components/form-input';
 import { Button } from '@/components/button';
@@ -17,9 +17,10 @@ export default function RegisterPage() {
         name: '',
         email: '',
         password: '',
+        confirmPassword: '',
         role: 'CLIENT' as 'CLIENT' | 'SELLER',
     });
-    const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string }>({});
+    const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string; confirmPassword?: string }>({});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -48,7 +49,7 @@ export default function RegisterPage() {
         setErrors({});
 
         // Validate with Zod
-        const validation = registerSchema.safeParse(formData);
+        const validation = registerWithConfirmSchema.safeParse(formData);
 
         if (!validation.success) {
             setErrors(formatZodError(validation.error));
@@ -57,10 +58,13 @@ export default function RegisterPage() {
         }
 
         try {
+            // Remove confirmPassword before sending to API
+            const { confirmPassword, ...registerData } = formData;
+
             const response = await fetch('/api/auth/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(registerData),
             });
 
             const data = await response.json();
@@ -118,12 +122,23 @@ export default function RegisterPage() {
                             id="password"
                             name="password"
                             type="password"
-                            placeholder="Senha (mínimo 6 caracteres)"
+                            placeholder="Senha (mínimo 8 caracteres)"
                             value={formData.password}
                             onChange={(e) =>
                                 setFormData({ ...formData, password: e.target.value })
                             }
                             errorMsg={errors.password}
+                        />
+                        <FormInput
+                            id="confirmPassword"
+                            name="confirmPassword"
+                            type="password"
+                            placeholder="Confirmar senha"
+                            value={formData.confirmPassword}
+                            onChange={(e) =>
+                                setFormData({ ...formData, confirmPassword: e.target.value })
+                            }
+                            errorMsg={errors.confirmPassword}
                         />
                         <div>
                             <label
