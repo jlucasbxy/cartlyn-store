@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 import { signIn, useSession } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { loginSchema } from '@/lib/validations';
+import { formatZodError } from '@/lib/format-zod-error';
 import { FormInput } from '@/components/form-input';
 import { Button } from '@/components/button';
 import Loading from '@/components/loading';
@@ -14,6 +16,7 @@ export default function LoginPage() {
         email: '',
         password: '',
     });
+    const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -39,6 +42,16 @@ export default function LoginPage() {
         e.preventDefault();
         setLoading(true);
         setError('');
+        setErrors({});
+
+        // Validate with Zod
+        const validation = loginSchema.safeParse(formData);
+
+        if (!validation.success) {
+            setErrors(formatZodError(validation.error));
+            setLoading(false);
+            return;
+        }
 
         try {
             const result = await signIn('credentials', {
@@ -79,23 +92,23 @@ export default function LoginPage() {
                             id="email"
                             name="email"
                             type="email"
-                            required
                             placeholder="Email"
                             value={formData.email}
                             onChange={(e) =>
                                 setFormData({ ...formData, email: e.target.value })
                             }
+                            errorMsg={errors.email}
                         />
                         <FormInput
                             id="password"
                             name="password"
                             type="password"
-                            required
                             placeholder="Senha"
                             value={formData.password}
                             onChange={(e) =>
                                 setFormData({ ...formData, password: e.target.value })
                             }
+                            errorMsg={errors.password}
                         />
                     </div>
 
