@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { registerSchema } from '@/lib/validations';
+import { formatZodError } from '@/lib/format-zod-error';
 import { FormInput } from '@/components/form-input';
 import { Button } from '@/components/button';
 import Loading from '@/components/loading';
@@ -17,6 +19,7 @@ export default function RegisterPage() {
         password: '',
         role: 'CLIENT' as 'CLIENT' | 'SELLER',
     });
+    const [errors, setErrors] = useState<{ name?: string; email?: string; password?: string }>({});
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -42,6 +45,16 @@ export default function RegisterPage() {
         e.preventDefault();
         setLoading(true);
         setError('');
+        setErrors({});
+
+        // Validate with Zod
+        const validation = registerSchema.safeParse(formData);
+
+        if (!validation.success) {
+            setErrors(formatZodError(validation.error));
+            setLoading(false);
+            return;
+        }
 
         try {
             const response = await fetch('/api/auth/register', {
@@ -83,35 +96,34 @@ export default function RegisterPage() {
                             id="name"
                             name="name"
                             type="text"
-                            required
                             placeholder="Nome completo"
                             value={formData.name}
                             onChange={(e) =>
                                 setFormData({ ...formData, name: e.target.value })
                             }
+                            errorMsg={errors.name}
                         />
                         <FormInput
                             id="email"
                             name="email"
-                            type="email"
-                            required
+                            type="text"
                             placeholder="Email"
                             value={formData.email}
                             onChange={(e) =>
                                 setFormData({ ...formData, email: e.target.value })
                             }
+                            errorMsg={errors.email}
                         />
                         <FormInput
                             id="password"
                             name="password"
                             type="password"
-                            required
-                            minLength={6}
                             placeholder="Senha (mínimo 6 caracteres)"
                             value={formData.password}
                             onChange={(e) =>
                                 setFormData({ ...formData, password: e.target.value })
                             }
+                            errorMsg={errors.password}
                         />
                         <div>
                             <label
