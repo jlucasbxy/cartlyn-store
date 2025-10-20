@@ -1,6 +1,5 @@
 'use client';
 
-import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
@@ -11,133 +10,21 @@ import { Card } from '@/components/card';
 import { Button } from '@/components/button';
 import { ConfirmModal } from '@/components/confirm-modal';
 import { useConfirm } from '@/hooks/use-confirm';
-import { toast } from 'react-toastify';
-
-interface CartItem {
-    id: string;
-    quantity: number;
-    product: {
-        id: string;
-        name: string;
-        price: number;
-        imageUrl: string;
-        seller: {
-            name: string;
-        };
-    };
-}
+import { useCart } from '@/hooks/use-cart';
 
 export default function CartPage() {
     const router = useRouter();
     const { status } = useSession();
-    const [cartItems, setCartItems] = useState<CartItem[]>([]);
-    const [total, setTotal] = useState(0);
-    const [loading, setLoading] = useState(true);
-    const [checkoutLoading, setCheckoutLoading] = useState(false);
     const { confirm, confirmState, handleClose } = useConfirm();
-
-    useEffect(() => {
-        if (status === 'unauthenticated') {
-            router.push('/login');
-            return;
-        }
-        if (status === 'authenticated') {
-            fetchCart();
-        }
-    }, [status, router]);
-
-    const fetchCart = async () => {
-        try {
-            const response = await fetch('/api/cart');
-            if (response.ok) {
-                const data = await response.json();
-                setCartItems(data.items);
-                setTotal(data.total);
-            }
-        } catch (error) {
-            console.error('Error fetching cart:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const updateQuantity = async (productId: string, newQuantity: number) => {
-        if (newQuantity < 1) return;
-
-        try {
-            const response = await fetch(`/api/cart?productId=${productId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ quantity: newQuantity }),
-            });
-
-            if (response.ok) {
-                fetchCart();
-                toast.success('Quantidade atualizada');
-            }
-        } catch {
-            toast.error('Erro ao atualizar quantidade');
-        }
-    };
-
-    const removeItem = async (productId: string) => {
-        const confirmed = await confirm({
-            title: 'Remover Item',
-            message: 'Deseja remover este item do carrinho?',
-            confirmText: 'Remover',
-            variant: 'danger',
-        });
-
-        if (!confirmed) return;
-
-        try {
-            const response = await fetch(`/api/cart?productId=${productId}`, {
-                method: 'DELETE',
-            });
-
-            if (response.ok) {
-                fetchCart();
-                toast.success('Item removido do carrinho');
-            }
-        } catch {
-            toast.error('Erro ao remover item');
-        }
-    };
-
-    const handleCheckout = async () => {
-        if (cartItems.length === 0) {
-            toast.warning('Seu carrinho está vazio');
-            return;
-        }
-
-        const confirmed = await confirm({
-            title: 'Finalizar Compra',
-            message: `Confirmar compra no valor de R$ ${total.toFixed(2)}?`,
-            confirmText: 'Confirmar',
-            variant: 'primary',
-        });
-
-        if (!confirmed) return;
-
-        setCheckoutLoading(true);
-        try {
-            const response = await fetch('/api/orders', {
-                method: 'POST',
-            });
-
-            if (response.ok) {
-                toast.success('Pedido realizado com sucesso!');
-                router.push('/orders');
-            } else {
-                const data = await response.json();
-                toast.error(data.error || 'Erro ao finalizar pedido');
-            }
-        } catch {
-            toast.error('Erro ao finalizar pedido');
-        } finally {
-            setCheckoutLoading(false);
-        }
-    };
+    const {
+        cartItems,
+        total,
+        loading,
+        checkoutLoading,
+        updateQuantity,
+        removeItem,
+        handleCheckout,
+    } = useCart(status);
 
     if (status === 'loading' || loading) {
         return (
@@ -187,7 +74,7 @@ export default function CartPage() {
                                 </div>
                                 <div className="flex flex-col items-end gap-3">
                                     <Button
-                                        onClick={() => removeItem(item.product.id)}
+                                        onClick={() => removeItem(item.product.id, confirm)}
                                         variant="danger"
                                         size="sm"
                                     >
@@ -246,7 +133,7 @@ export default function CartPage() {
                                 </div>
                             </div>
                             <Button
-                                onClick={handleCheckout}
+                                onClick={() => handleCheckout(confirm)}
                                 disabled={checkoutLoading}
                                 fullWidth
                                 size="lg"
