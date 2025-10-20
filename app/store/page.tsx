@@ -21,7 +21,6 @@ export default function StorePage() {
         setMaxPrice,
         handleSearch,
         handleClearFilters,
-        goToPage,
         nextPage,
         previousPage,
     } = useStoreProducts();
