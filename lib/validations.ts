@@ -12,6 +12,14 @@ export const registerSchema = z.object({
     }),
 });
 
+// Client-side registration schema with password confirmation
+export const registerWithConfirmSchema = registerSchema.extend({
+    confirmPassword: z.string(),
+}).refine((data) => data.password === data.confirmPassword, {
+    message: 'As senhas não correspondem',
+    path: ['confirmPassword'],
+});
+
 export const loginSchema = z.object({
     email: z.email(),
     password: z.string().min(1),
