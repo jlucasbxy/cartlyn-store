@@ -86,7 +86,7 @@ export default function Navbar() {
                                 </span>
                                 <Button
                                     onClick={() => signOut()}
-                                    variant="danger"
+                                    variant="outline"
                                     size="sm"
                                 >
                                     Sair
