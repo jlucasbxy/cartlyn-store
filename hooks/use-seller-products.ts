@@ -18,35 +18,89 @@ interface ProductWithSeller extends Product {
     };
 }
 
-export function useSellerProducts() {
+interface Pagination {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+}
+
+export function useSellerProducts(itemsPerPage: number = 10) {
     const { data: session } = useSession();
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [pagination, setPagination] = useState<Pagination>({
+        page: 1,
+        limit: itemsPerPage,
+        total: 0,
+        totalPages: 0,
+    });
 
-    const fetchProducts = useCallback(async () => {
+    const fetchProducts = useCallback(async (page: number = currentPage) => {
         if (!session?.user.id) return;
 
+        setLoading(true);
         try {
-            const response = await fetch('/api/products');
+            // Fetch all products with pagination, then filter by seller on client
+            // This is a temporary solution - ideally the API should support sellerId filter
+            const response = await fetch(`/api/products?page=${page}&limit=100`);
             if (response.ok) {
                 const data = await response.json();
                 // Filter only seller's products
-                setProducts(data.products.filter((p: ProductWithSeller) => p.seller.id === session?.user.id));
+                const sellerProducts = data.products.filter((p: ProductWithSeller) => p.seller.id === session?.user.id);
+
+                // Calculate pagination for filtered results
+                const startIndex = (page - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                const paginatedProducts = sellerProducts.slice(startIndex, endIndex);
+
+                setProducts(paginatedProducts);
+                setPagination({
+                    page,
+                    limit: itemsPerPage,
+                    total: sellerProducts.length,
+                    totalPages: Math.ceil(sellerProducts.length / itemsPerPage),
+                });
+                setCurrentPage(page);
             }
         } catch (error) {
             console.error('Error fetching products:', error);
         } finally {
             setLoading(false);
         }
-    }, [session?.user.id]);
+    }, [session?.user.id, currentPage, itemsPerPage]);
 
     useEffect(() => {
-        fetchProducts();
-    }, [fetchProducts]);
+        fetchProducts(1);
+    }, [session?.user.id, itemsPerPage]);
+
+    const goToPage = (page: number) => {
+        if (page >= 1 && page <= pagination.totalPages) {
+            fetchProducts(page);
+        }
+    };
+
+    const nextPage = () => {
+        if (currentPage < pagination.totalPages) {
+            goToPage(currentPage + 1);
+        }
+    };
+
+    const previousPage = () => {
+        if (currentPage > 1) {
+            goToPage(currentPage - 1);
+        }
+    };
 
     return {
         products,
         loading,
-        refetch: fetchProducts,
+        pagination,
+        currentPage,
+        goToPage,
+        nextPage,
+        previousPage,
+        refetch: () => fetchProducts(currentPage),
     };
 }
