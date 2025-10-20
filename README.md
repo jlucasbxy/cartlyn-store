@@ -155,7 +155,8 @@ cp .env.example .env
 4. Configure o banco de dados no arquivo `.env`
 ```env
 DATABASE_URL="postgresql://usuario:senha@localhost:5432/caplink_store"
-AUTH_SECRET="sua-chave-secreta-aqui"
+NEXTAUTH_SECRET="sua-chave-secreta-aqui"
+NEXTAUTH_URL="http://localhost:3000"
 ```
 
 5. Execute as migrations do Prisma
@@ -186,8 +187,8 @@ Crie um arquivo `.env` na raiz do projeto:
 DATABASE_URL="postgresql://usuario:senha@localhost:5432/caplink_store"
 
 # NextAuth
-AUTH_SECRET="chave-secreta-para-jwt"
-AUTH_URL="http://localhost:3000"
+NEXTAUTH_SECRET="chave-secreta-para-jwt"
+NEXTAUTH_URL="http://localhost:3000"
 ```
 
 ### Banco de Dados
