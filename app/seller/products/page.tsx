@@ -282,16 +282,16 @@ export default function SellerProductsPage() {
             >
                 <form onSubmit={handleCSVUpload} className="space-y-4">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                             Arquivo CSV
                         </label>
                         <input
                             type="file"
                             accept=".csv"
                             onChange={(e) => setCsvFile(e.target.files?.[0] || null)}
-                            className="w-full"
+                            className="w-full text-gray-900 dark:text-white"
                         />
-                        <p className="text-xs text-gray-600 mt-1">
+                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
                             Formato: name,price,description,imageUrl
                         </p>
                     </div>
