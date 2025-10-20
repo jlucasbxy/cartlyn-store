@@ -10,6 +10,7 @@ import { Card } from '@/components/card';
 import { EmptyState } from '@/components/empty-state';
 import { ConfirmModal } from '@/components/confirm-modal';
 import { Pagination } from '@/components/pagination';
+import { FileInput } from '@/components/file-input';
 import { useSellerProductsPage } from '@/hooks/use-seller-products-page';
 
 export default function SellerProductsPage() {
@@ -139,23 +140,40 @@ export default function SellerProductsPage() {
             <Modal
                 isOpen={showCSVUpload}
                 onClose={handleCloseCSVUpload}
-                title="Upload CSV"
+                title="Upload de Produtos via CSV"
             >
-                <form onSubmit={csvUpload.handleUpload} className="space-y-4">
+                <form onSubmit={csvUpload.handleUpload} className="space-y-6">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                            Arquivo CSV
-                        </label>
-                        <input
-                            type="file"
+                        <FileInput
                             accept=".csv"
-                            onChange={(e) => csvUpload.setCsvFile(e.target.files?.[0] || null)}
-                            className="w-full text-gray-900 dark:text-white"
+                            onChange={csvUpload.setCsvFile}
+                            selectedFile={csvUpload.csvFile}
+                            label="Selecionar arquivo CSV"
+                            description="Formato: name,price,description,imageUrl"
                         />
-                        <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
-                            Formato: name,price,description,imageUrl
-                        </p>
                     </div>
+
+                    <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                        <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Formato do arquivo CSV
+                        </h4>
+                        <p className="text-xs text-blue-800 dark:text-blue-200 mb-2">
+                            O arquivo deve conter as seguintes colunas na primeira linha:
+                        </p>
+                        <code className="block bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-gray-100 p-2 rounded border border-blue-200 dark:border-blue-700 font-mono">
+                            name,price,description,imageUrl
+                        </code>
+                        <p className="text-xs text-blue-800 dark:text-blue-200 mt-2">
+                            <strong>Exemplo:</strong>
+                        </p>
+                        <code className="block bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-gray-100 p-2 rounded border border-blue-200 dark:border-blue-700 font-mono mt-1">
+                            Produto 1,99.90,Descrição do produto,https://exemplo.com/imagem.jpg
+                        </code>
+                    </div>
+
                     <div className="flex gap-2 justify-end">
                         <Button
                             type="button"
@@ -169,7 +187,7 @@ export default function SellerProductsPage() {
                             disabled={csvUpload.uploading || !csvUpload.csvFile}
                             variant="success"
                         >
-                            {csvUpload.uploading ? 'Enviando...' : 'Enviar'}
+                            {csvUpload.uploading ? 'Enviando...' : 'Enviar CSV'}
                         </Button>
                     </div>
                 </form>
