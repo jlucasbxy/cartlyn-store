@@ -7,7 +7,7 @@ export async function DELETE() {
     try {
         const session = await auth();
 
-        if (!session) {
+        if (!session?.user) {
             return NextResponse.json({ error: 'Não autenticado' }, { status: 401 });
         }
 
@@ -17,13 +17,11 @@ export async function DELETE() {
         if (userRole === 'CLIENT') {
             // For clients: soft delete by deactivating the account
             // Keep all order history intact
-            await prisma.user.update({
-                where: { id: userId },
-                data: { active: false },
-            });
-
-            // Clear cart and favorites for the deactivated user
             await prisma.$transaction([
+                prisma.user.update({
+                    where: { id: userId },
+                    data: { active: false },
+                }),
                 prisma.cartItem.deleteMany({
                     where: { userId },
                 }),
