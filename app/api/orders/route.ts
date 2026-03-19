@@ -1,6 +1,32 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { toNumber } from '@/lib/price';
+
+function serializeOrder(order: {
+    total: unknown;
+    items: Array<{
+        price: unknown;
+        product: {
+            price?: unknown;
+        };
+    }>;
+}) {
+    return {
+        ...order,
+        total: toNumber(order.total),
+        items: order.items.map((item) => ({
+            ...item,
+            price: toNumber(item.price),
+            product: item.product.price !== undefined
+                ? {
+                    ...item.product,
+                    price: toNumber(item.product.price),
+                }
+                : item.product,
+        })),
+    };
+}
 
 // Get user order history
 export async function GET() {
@@ -32,7 +58,7 @@ export async function GET() {
             orderBy: { createdAt: 'desc' },
         });
 
-        return NextResponse.json(orders);
+        return NextResponse.json(orders.map(serializeOrder));
     } catch (error) {
         console.error('Orders fetch error:', error);
         return NextResponse.json(
@@ -81,7 +107,7 @@ export async function POST() {
 
         // Calculate total
         const total = cartItems.reduce(
-            (sum, item) => sum + item.product.price * item.quantity,
+            (sum, item) => sum + toNumber(item.product.price) * item.quantity,
             0
         );
 
@@ -95,7 +121,7 @@ export async function POST() {
                         create: cartItems.map((item) => ({
                             productId: item.productId,
                             quantity: item.quantity,
-                            price: item.product.price,
+                            price: toNumber(item.product.price),
                             productName: item.product.name,
                         })),
                     },
@@ -120,7 +146,7 @@ export async function POST() {
         return NextResponse.json(
             {
                 message: 'Pedido realizado com sucesso',
-                order,
+                order: serializeOrder(order),
             },
             { status: 201 }
         );

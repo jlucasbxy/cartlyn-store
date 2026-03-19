@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { addToCartSchema, updateCartItemSchema } from '@/lib/validations';
+import { toNumber } from '@/lib/price';
 
 // Get user cart
 export async function GET() {
@@ -33,12 +34,18 @@ export async function GET() {
         });
 
         const total = cartItems.reduce(
-            (sum, item) => sum + item.product.price * item.quantity,
+            (sum, item) => sum + toNumber(item.product.price) * item.quantity,
             0
         );
 
         return NextResponse.json({
-            items: cartItems,
+            items: cartItems.map((item) => ({
+                ...item,
+                product: {
+                    ...item.product,
+                    price: toNumber(item.product.price),
+                },
+            })),
             total,
         });
     } catch (error) {
@@ -86,44 +93,39 @@ export async function POST(request: Request) {
             );
         }
 
-        // Check if item already in cart
-        const existingItem = await prisma.cartItem.findUnique({
+        const cartItem = await prisma.cartItem.upsert({
             where: {
                 userId_productId: {
                     userId: session.user.id,
                     productId,
                 },
             },
+            update: {
+                quantity: {
+                    increment: quantity,
+                },
+            },
+            create: {
+                userId: session.user.id,
+                productId,
+                quantity,
+            },
+            include: { product: true },
         });
 
-        if (existingItem) {
-            // Update quantity
-            const cartItem = await prisma.cartItem.update({
-                where: { id: existingItem.id },
-                data: { quantity: existingItem.quantity + quantity },
-                include: { product: true },
-            });
-
-            return NextResponse.json({
-                message: 'Quantidade atualizada no carrinho',
-                cartItem,
-            });
-        } else {
-            // Create new cart item
-            const cartItem = await prisma.cartItem.create({
-                data: {
-                    userId: session.user.id,
-                    productId,
-                    quantity,
+        return NextResponse.json(
+            {
+                message: 'Produto adicionado ao carrinho',
+                cartItem: {
+                    ...cartItem,
+                    product: {
+                        ...cartItem.product,
+                        price: toNumber(cartItem.product.price),
+                    },
                 },
-                include: { product: true },
-            });
-
-            return NextResponse.json(
-                { message: 'Produto adicionado ao carrinho', cartItem },
-                { status: 201 }
-            );
-        }
+            },
+            { status: 201 }
+        );
     } catch (error) {
         console.error('Add to cart error:', error);
         return NextResponse.json(
@@ -178,7 +180,13 @@ export async function PATCH(request: Request) {
 
         return NextResponse.json({
             message: 'Quantidade atualizada',
-            cartItem,
+            cartItem: {
+                ...cartItem,
+                product: {
+                    ...cartItem.product,
+                    price: toNumber(cartItem.product.price),
+                },
+            },
         });
     } catch (error) {
         console.error('Update cart error:', error);
