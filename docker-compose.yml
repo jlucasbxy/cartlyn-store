@@ -11,5 +11,14 @@ services:
     volumes:
       - store_data:/var/lib/postgresql/data
 
+  redis:
+    image: redis:8.6.1-alpine
+    restart: no
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+
 volumes:
   store_data:
+  redis_data:
