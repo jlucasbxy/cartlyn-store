@@ -2,16 +2,17 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { toNumber } from '@/lib/price';
+import type { Prisma } from '@prisma/client';
+
+type NumericLike = Prisma.Decimal | number | string | null | undefined;
 
 function serializeOrder(order: {
-    total: unknown;
+    total: NumericLike;
     items: Array<{
-        price: unknown;
-        product: {
-            price?: unknown;
-        };
+        price: NumericLike;
+        product: { price?: NumericLike } & Record<string, unknown>;
     }>;
-}) {
+} & Record<string, unknown>) {
     return {
         ...order,
         total: toNumber(order.total),
@@ -112,7 +113,7 @@ export async function POST() {
         );
 
         // Create order with items in a transaction
-        const order = await prisma.$transaction(async (tx) => {
+        const order = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
             const newOrder = await tx.order.create({
                 data: {
                     userId: session.user.id,
