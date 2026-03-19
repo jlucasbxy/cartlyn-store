@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import type { Prisma } from "@prisma/client"
 import { productSchema, searchProductsSchema } from '@/lib/validations';
+import { toNumber } from '@/lib/price';
 
 // Get products (with search and pagination)
 export async function GET(request: NextRequest) {
@@ -84,7 +85,10 @@ export async function GET(request: NextRequest) {
         ]);
 
         return NextResponse.json({
-            products,
+            products: products.map((product) => ({
+                ...product,
+                price: toNumber(product.price),
+            })),
             pagination: {
                 page: validated.data.page,
                 limit: validated.data.limit,
@@ -131,7 +135,13 @@ export async function POST(request: Request) {
         });
 
         return NextResponse.json(
-            { message: 'Produto criado com sucesso', product },
+            {
+                message: 'Produto criado com sucesso',
+                product: {
+                    ...product,
+                    price: toNumber(product.price),
+                },
+            },
             { status: 201 }
         );
     } catch (error) {

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { productUpdateSchema } from '@/lib/validations';
+import { toNumber } from '@/lib/price';
 
 // Get single product
 export async function GET(
@@ -36,7 +37,10 @@ export async function GET(
             );
         }
 
-        return NextResponse.json(product);
+        return NextResponse.json({
+            ...product,
+            price: toNumber(product.price),
+        });
     } catch (error) {
         console.error('Product fetch error:', error);
         return NextResponse.json(
@@ -98,7 +102,10 @@ export async function PATCH(
 
         return NextResponse.json({
             message: 'Produto atualizado com sucesso',
-            product,
+            product: {
+                ...product,
+                price: toNumber(product.price),
+            },
         });
     } catch (error) {
         console.error('Product update error:', error);

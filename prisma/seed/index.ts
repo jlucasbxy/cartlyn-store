@@ -183,6 +183,7 @@ async function main() {
 
     // Get all products to create orders
     const allProducts = await prisma.product.findMany();
+    const price = (index: number) => Number(allProducts[index].price);
 
     // Create some orders (simulating past purchases)
     console.log('🛒 Creating sample orders...');
@@ -191,7 +192,7 @@ async function main() {
     await prisma.order.create({
         data: {
             userId: client1.id,
-            total: allProducts[0].price * 1 + allProducts[1].price * 2,
+            total: price(0) * 1 + price(1) * 2,
             items: {
                 create: [
                     {
@@ -215,7 +216,7 @@ async function main() {
     await prisma.order.create({
         data: {
             userId: client2.id,
-            total: allProducts[7].price * 1 + allProducts[9].price * 1,
+            total: price(7) * 1 + price(9) * 1,
             items: {
                 create: [
                     {
@@ -239,7 +240,7 @@ async function main() {
     await prisma.order.create({
         data: {
             userId: client1.id,
-            total: allProducts[2].price * 1 + allProducts[10].price * 3,
+            total: price(2) * 1 + price(10) * 3,
             items: {
                 create: [
                     {
