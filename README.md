@@ -1,10 +1,10 @@
-# Caplink Store - Plataforma de E-commerce
+# Cartlyn Store - Plataforma de E-commerce
 
 Uma plataforma completa de e-commerce desenvolvida com Next.js 15, TypeScript e Prisma, permitindo que vendedores gerenciem produtos e clientes realizem compras.
 
 ## 🌐 Ambiente de Demonstração
 
-**Acesse a aplicação em produção:** [https://desafio-fullstack-caplink.vercel.app](https://desafio-fullstack-caplink.vercel.app)
+**Acesse a aplicação em produção:** [https://desafio-fullstack-cartlyn.vercel.app](https://desafio-fullstack-cartlyn.vercel.app)
 
 Utilize as [credenciais de teste](#credenciais-de-teste) para fazer login.
 
@@ -22,7 +22,7 @@ Utilize as [credenciais de teste](#credenciais-de-teste) para fazer login.
 
 ## 🎯 Sobre o Projeto
 
-Caplink Store é uma aplicação full-stack de e-commerce que permite:
+Cartlyn Store é uma aplicação full-stack de e-commerce que permite:
 - Vendedores cadastrarem e gerenciarem seus produtos
 - Clientes navegarem, favoritarem e comprarem produtos
 - Sistema completo de autenticação e autorização
@@ -138,7 +138,7 @@ Este projeto utiliza **API Routes do Next.js** para criar uma clara separação 
 1. Clone o repositório
 ```bash
 git clone <url-do-repositorio>
-cd desafio-fullstack-caplink
+cd desafio-fullstack-cartlyn
 ```
 
 2. Instale as dependências
@@ -153,7 +153,7 @@ cp .env.example .env
 
 4. Configure o banco de dados no arquivo `.env`
 ```env
-DATABASE_URL="postgresql://usuario:senha@localhost:5432/caplink_store"
+DATABASE_URL="postgresql://usuario:senha@localhost:5432/cartlyn_store"
 NEXTAUTH_SECRET="sua-chave-secreta-aqui"
 NEXTAUTH_URL="http://localhost:3000"
 ```
@@ -184,9 +184,9 @@ Crie um arquivo `.env` na raiz do projeto:
 ```env
 # Database para o docker-compose
 
-POSTGRES_USER=caplink
-POSTGRES_PASSWORD=caplink123
-POSTGRES_DB=caplink_store
+POSTGRES_USER=cartlyn
+POSTGRES_PASSWORD=cartlyn123
+POSTGRES_DB=cartlyn_store
 POSTGRES_PORT=5432
 
 DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}" # reutiliza as variaveis do docker-compose para criar a url que vai ser usada pelo prisma se não for usar o docker-compose apenas essa variável é suficiente para subir a aplicação.
@@ -207,7 +207,7 @@ O projeto utiliza PostgreSQL. Você pode usar o docker-compose.yml disponível n
 ## 📁 Estrutura de Pastas
 
 ```
-desafio-fullstack-caplink/
+desafio-fullstack-cartlyn/
 ├── app/                          # Next.js App Router
 │   ├── api/                      # Backend - API Routes
 │   │   ├── auth/                 # Autenticação

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Caplink Store - Loja Online",
+    title: "Cartlyn Store - Loja Online",
     description: "Plataforma de e-commerce completa",
 };
 

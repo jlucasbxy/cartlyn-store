@@ -50,7 +50,7 @@ export default function Navbar() {
                 <div className="flex justify-between h-16 sm:h-20 overflow-x-auto">
                     <div className="flex items-center min-w-0 gap-2 sm:gap-4 lg:gap-6">
                         <Link href="/" className="text-lg sm:text-2xl lg:text-3xl font-bold text-primary dark:text-primary whitespace-nowrap flex-shrink-0">
-                            Caplink Store
+                            Cartlyn Store
                         </Link>
                         <div className="flex items-baseline gap-1 sm:gap-2 lg:gap-4">
                             <NavLink href="/store">Loja</NavLink>
