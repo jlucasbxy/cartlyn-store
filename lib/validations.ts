@@ -38,7 +38,7 @@ export const productUpdateSchema = productSchema.partial();
 // CSV Product validation
 export const csvProductSchema = z.object({
     name: z.string().min(1),
-    price: z.string().transform((val) => parseFloat(val)),
+    price: z.coerce.number().finite().positive(),
     description: z.string().min(10),
     imageUrl: z.url(),
 });

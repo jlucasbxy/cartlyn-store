@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
+import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { registerSchema } from '@/lib/validations';
 
@@ -53,6 +54,13 @@ export async function POST(request: Request) {
             { status: 201 }
         );
     } catch (error) {
+        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+            return NextResponse.json(
+                { error: 'Email já cadastrado' },
+                { status: 400 }
+            );
+        }
+
         console.error('Registration error:', error);
         return NextResponse.json(
             { error: 'Erro ao criar usuário' },

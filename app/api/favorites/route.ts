@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 import { z } from 'zod';
+import { Prisma } from '@prisma/client';
+import { toNumber } from '@/lib/price';
 
 // Get user favorites
 export async function GET() {
@@ -32,7 +34,15 @@ export async function GET() {
             orderBy: { createdAt: 'desc' },
         });
 
-        return NextResponse.json(favorites);
+        return NextResponse.json(
+            favorites.map((favorite) => ({
+                ...favorite,
+                product: {
+                    ...favorite.product,
+                    price: toNumber(favorite.product.price),
+                },
+            }))
+        );
     } catch (error) {
         console.error('Favorites fetch error:', error);
         return NextResponse.json(
@@ -55,7 +65,16 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const { productId } = z.object({ productId: z.string() }).parse(body);
+        const validated = z.object({ productId: z.cuid() }).safeParse(body);
+
+        if (!validated.success) {
+            return NextResponse.json(
+                { error: 'Dados inválidos', details: validated.error.issues },
+                { status: 400 }
+            );
+        }
+
+        const { productId } = validated.data;
 
         // Check if product exists
         const product = await prisma.product.findUnique({
@@ -82,14 +101,13 @@ export async function POST(request: Request) {
             { status: 201 }
         );
     } catch (e) {
-        const error = e as { code: string }
-        if (error.code === 'P2002') {
+        if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
             return NextResponse.json(
                 { error: 'Produto já está nos favoritos' },
                 { status: 400 }
             );
         }
-        console.error('Add favorite error:', error);
+        console.error('Add favorite error:', e);
         return NextResponse.json(
             { error: 'Erro ao adicionar favorito' },
             { status: 500 }
