@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { toNumber } from '@/lib/price';
+import { Prisma } from '@prisma/client';
 
 export async function GET() {
     try {
@@ -20,42 +22,48 @@ export async function GET() {
             where: { sellerId },
         });
 
-        // Get total products sold and total revenue
-        const orderItems = await prisma.orderItem.findMany({
+        // Get total products sold
+        const productsSoldAggregate = await prisma.orderItem.aggregate({
             where: {
                 product: {
                     sellerId,
                 },
             },
-            select: {
+            _sum: {
                 quantity: true,
-                price: true,
-                productId: true,
             },
         });
 
-        const totalProductsSold = orderItems.reduce(
-            (sum, item) => sum + item.quantity,
-            0
-        );
+        const totalProductsSold = productsSoldAggregate._sum.quantity ?? 0;
 
-        const totalRevenue = orderItems.reduce(
-            (sum, item) => sum + item.price * item.quantity,
-            0
-        );
+        const totalRevenueRows = await prisma.$queryRaw<Array<{ total: Prisma.Decimal | null }>>`
+            SELECT COALESCE(SUM(oi."price" * oi."quantity"), 0) AS total
+            FROM "OrderItem" oi
+            INNER JOIN "Product" p ON p."id" = oi."productId"
+            WHERE p."sellerId" = ${sellerId}
+        `;
+        const totalRevenue = toNumber(totalRevenueRows[0]?.total ?? 0);
 
         // Get best selling product
-        const productSales = orderItems.reduce((acc, item) => {
-            if (!acc[item.productId]) {
-                acc[item.productId] = 0;
-            }
-            acc[item.productId] += item.quantity;
-            return acc;
-        }, {} as Record<string, number>);
+        const topProducts = await prisma.orderItem.groupBy({
+            by: ['productId'],
+            where: {
+                product: {
+                    sellerId,
+                },
+            },
+            _sum: {
+                quantity: true,
+            },
+            orderBy: {
+                _sum: {
+                    quantity: 'desc',
+                },
+            },
+            take: 1,
+        });
 
-        const bestSellingProductId = Object.entries(productSales).sort(
-            ([, a], [, b]) => b - a
-        )[0]?.[0];
+        const bestSellingProductId = topProducts[0]?.productId;
 
         let bestSellingProduct = null;
         if (bestSellingProductId) {
@@ -77,7 +85,8 @@ export async function GET() {
             bestSellingProduct: bestSellingProduct
                 ? {
                     ...bestSellingProduct,
-                    quantitySold: productSales[bestSellingProductId],
+                    price: toNumber(bestSellingProduct.price),
+                    quantitySold: topProducts[0]?._sum.quantity ?? 0,
                 }
                 : null,
         });
