@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { useSession, signOut } from 'next-auth/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Loading from '@/components/loading';
 import { PageLayout } from '@/components/page-layout';
 import { Card } from '@/components/card';
@@ -17,6 +17,12 @@ export default function SettingsPage() {
     const [loading, setLoading] = useState(false);
     const { confirm, confirmState, handleClose } = useConfirm();
 
+    useEffect(() => {
+        if (status === 'unauthenticated') {
+            router.push('/login');
+        }
+    }, [status, router]);
+
     if (status === 'loading') {
         return (
             <PageLayout>
@@ -26,7 +32,6 @@ export default function SettingsPage() {
     }
 
     if (status === 'unauthenticated') {
-        router.push('/login');
         return null;
     }
 

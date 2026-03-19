@@ -62,16 +62,29 @@ export default function ProductCard({ product, onFavoriteToggle, isFavorite = fa
         setLoading(true);
         try {
             if (favorite) {
-                await fetch(`/api/favorites?productId=${product.id}`, { method: 'DELETE' });
+                const response = await fetch(`/api/favorites?productId=${product.id}`, { method: 'DELETE' });
+                if (!response.ok) {
+                    const data = await response.json();
+                    toast.error(data.error || 'Erro ao remover dos favoritos');
+                    return;
+                }
+
                 setFavorite(false);
                 onFavoriteToggle?.(product.id, false);
                 toast.success('Produto removido dos favoritos');
             } else {
-                await fetch('/api/favorites', {
+                const response = await fetch('/api/favorites', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ productId: product.id }),
                 });
+
+                if (!response.ok) {
+                    const data = await response.json();
+                    toast.error(data.error || 'Erro ao adicionar aos favoritos');
+                    return;
+                }
+
                 setFavorite(true);
                 onFavoriteToggle?.(product.id, true);
                 toast.success('Produto adicionado aos favoritos!');
