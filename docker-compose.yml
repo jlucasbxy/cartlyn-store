@@ -1,6 +1,6 @@
 services:
   caplink-store-db:
-    image: postgres:16
+    image: postgres:18.3
     restart: no
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -9,7 +9,7 @@ services:
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:
-      - store_data:/var/lib/postgresql/data
+      - store_data:/var/lib/postgresql
 
   redis:
     image: redis:8.6.1-alpine
