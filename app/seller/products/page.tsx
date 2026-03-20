@@ -21,7 +21,7 @@ export default function SellerProductsPage() {
     products,
     loading,
     pagination,
-    currentPage,
+    hasPreviousPage,
     status,
     productForm,
     csvUpload,
@@ -32,7 +32,6 @@ export default function SellerProductsPage() {
     handleOpenCSVUpload,
     handleCloseCSVUpload,
     deleteProduct,
-    goToPage,
     nextPage,
     previousPage,
     handleClose
@@ -288,16 +287,11 @@ export default function SellerProductsPage() {
           </div>
 
           <Pagination
-            currentPage={currentPage}
-            totalPages={pagination.totalPages}
-            onPageChange={goToPage}
+            hasNextPage={pagination.hasNextPage}
+            hasPreviousPage={hasPreviousPage}
             onNext={nextPage}
             onPrevious={previousPage}
           />
-
-          <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
-            Total de produtos: {pagination.total}
-          </div>
         </>
       )}
 

@@ -4,37 +4,59 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Pagination } from "@/components/pagination";
 
 interface StorePaginationProps {
-  currentPage: number;
-  totalPages: number;
-  total: number;
+  hasNextPage: boolean;
+  nextCursor: string | null;
 }
 
 export function StorePagination({
-  currentPage,
-  totalPages,
-  total
+  hasNextPage,
+  nextCursor
 }: StorePaginationProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const navigate = (page: number) => {
+  const prevCursorsParam = searchParams.get("prevCursors") || "";
+  const prevCursors = prevCursorsParam ? prevCursorsParam.split(",") : [];
+  const hasPreviousPage = prevCursors.length > 0;
+
+  const onNext = () => {
+    if (!hasNextPage || !nextCursor) return;
     const params = new URLSearchParams(searchParams.toString());
-    params.set("page", page.toString());
+    const currentCursor = searchParams.get("cursor") || "";
+    const newPrevCursors = currentCursor
+      ? [...prevCursors, currentCursor]
+      : prevCursors;
+    if (newPrevCursors.length > 0) {
+      params.set("prevCursors", newPrevCursors.join(","));
+    }
+    params.set("cursor", nextCursor);
+    router.push(`/store?${params}`);
+  };
+
+  const onPrevious = () => {
+    if (!hasPreviousPage) return;
+    const params = new URLSearchParams(searchParams.toString());
+    const prev = prevCursors[prevCursors.length - 1];
+    const newPrevCursors = prevCursors.slice(0, -1);
+    if (newPrevCursors.length > 0) {
+      params.set("prevCursors", newPrevCursors.join(","));
+    } else {
+      params.delete("prevCursors");
+    }
+    if (prev) {
+      params.set("cursor", prev);
+    } else {
+      params.delete("cursor");
+    }
     router.push(`/store?${params}`);
   };
 
   return (
-    <>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={navigate}
-        onNext={() => navigate(currentPage + 1)}
-        onPrevious={() => navigate(currentPage - 1)}
-      />
-      <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
-        Total de produtos: {total}
-      </div>
-    </>
+    <Pagination
+      hasNextPage={hasNextPage}
+      hasPreviousPage={hasPreviousPage}
+      onNext={onNext}
+      onPrevious={onPrevious}
+    />
   );
 }

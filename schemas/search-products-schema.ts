@@ -2,7 +2,7 @@ import { z } from "@/schemas/zod-config";
 
 export const searchProductsSchema = z.object({
   query: z.string().optional(),
-  page: z.number().int().positive().default(1),
+  cursor: z.string().optional(),
   limit: z.number().int().positive().max(100).default(20),
   minPrice: z.number().positive().optional(),
   maxPrice: z.number().positive().optional()

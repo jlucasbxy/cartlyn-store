@@ -15,7 +15,8 @@ type SearchProductsFilters = SearchProductsInput & {
 async function getProducts(
   filters: SearchProductsFilters
 ): Promise<ProductListDTO> {
-  const { products, total } = await productsRepository.findProducts(filters);
+  const { products, nextCursor, hasNextPage } =
+    await productsRepository.findProducts(filters);
 
   return {
     products: products.map((product) => ({
@@ -23,10 +24,9 @@ async function getProducts(
       price: toNumber(product.price)
     })),
     pagination: {
-      page: filters.page,
       limit: filters.limit,
-      total,
-      totalPages: Math.ceil(total / filters.limit)
+      nextCursor,
+      hasNextPage
     }
   };
 }

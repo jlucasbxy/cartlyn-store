@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams;
     const query = searchParams.get("query") || undefined;
-    const page = parseInt(searchParams.get("page") || "1", 10);
+    const cursor = searchParams.get("cursor") || undefined;
     const limit = parseInt(searchParams.get("limit") || "12", 10);
     const minPriceParam = searchParams.get("minPrice");
     const maxPriceParam = searchParams.get("maxPrice");
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
     const validated = searchProductsSchema.safeParse({
       query,
-      page,
+      cursor,
       limit,
       minPrice,
       maxPrice

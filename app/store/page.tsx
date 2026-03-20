@@ -7,7 +7,8 @@ import { StorePagination } from "./store-pagination";
 interface StorePageProps {
   searchParams: Promise<{
     query?: string;
-    page?: string;
+    cursor?: string;
+    prevCursors?: string;
     minPrice?: string;
     maxPrice?: string;
   }>;
@@ -16,13 +17,12 @@ interface StorePageProps {
 export default async function StorePage({ searchParams }: StorePageProps) {
   const params = await searchParams;
 
-  const page = parseInt(params.page ?? "1", 10) || 1;
   const minPrice = params.minPrice ? parseFloat(params.minPrice) : undefined;
   const maxPrice = params.maxPrice ? parseFloat(params.maxPrice) : undefined;
 
   const { products, pagination } = await productsService.getProducts({
     query: params.query,
-    page,
+    cursor: params.cursor,
     limit: 12,
     minPrice,
     maxPrice
@@ -49,9 +49,8 @@ export default async function StorePage({ searchParams }: StorePageProps) {
           </div>
 
           <StorePagination
-            currentPage={pagination.page}
-            totalPages={pagination.totalPages}
-            total={pagination.total}
+            hasNextPage={pagination.hasNextPage}
+            nextCursor={pagination.nextCursor}
           />
         </>
       )}

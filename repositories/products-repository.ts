@@ -59,20 +59,22 @@ function buildProductsWhere(
 
 async function findProducts(filters: ProductSearchFilters) {
   const where = buildProductsWhere(filters);
-  const skip = (filters.page - 1) * filters.limit;
+  const take = filters.limit + 1;
 
-  const [products, total] = await prisma.$transaction([
-    prisma.product.findMany({
-      where,
-      skip,
-      take: filters.limit,
-      orderBy: { publishedAt: "desc" },
-      include: productWithSellerInclude
-    }),
-    prisma.product.count({ where })
-  ]);
+  const products = await prisma.product.findMany({
+    where,
+    take,
+    skip: filters.cursor ? 1 : 0,
+    cursor: filters.cursor ? { id: filters.cursor } : undefined,
+    orderBy: [{ publishedAt: "desc" }, { id: "desc" }],
+    include: productWithSellerInclude
+  });
 
-  return { products, total };
+  const hasNextPage = products.length > filters.limit;
+  if (hasNextPage) products.pop();
+  const nextCursor = hasNextPage ? products[products.length - 1].id : null;
+
+  return { products, nextCursor, hasNextPage };
 }
 
 function createProduct(sellerId: string, data: ProductInput) {

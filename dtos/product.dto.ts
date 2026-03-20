@@ -20,14 +20,13 @@ export type ProductDTO = ProductBaseDTO & {
   seller: SellerDTO;
 };
 
-export type PaginationDTO = {
-  page: number;
+export type CursorPaginationDTO = {
   limit: number;
-  total: number;
-  totalPages: number;
+  nextCursor: string | null;
+  hasNextPage: boolean;
 };
 
 export type ProductListDTO = {
   products: ProductDTO[];
-  pagination: PaginationDTO;
+  pagination: CursorPaginationDTO;
 };

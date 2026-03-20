@@ -16,7 +16,7 @@ export type {
   OrderItemProductDTO
 } from "@/dtos/order.dto";
 export type {
-  PaginationDTO,
+  CursorPaginationDTO,
   ProductBaseDTO,
   ProductDTO,
   ProductListDTO,

@@ -30,8 +30,7 @@ export function useSellerProductsPage() {
     products,
     loading,
     pagination,
-    currentPage,
-    goToPage,
+    hasPreviousPage,
     nextPage,
     previousPage,
     refetch
@@ -108,7 +107,7 @@ export function useSellerProductsPage() {
     products,
     loading,
     pagination,
-    currentPage,
+    hasPreviousPage,
     status,
 
     // Hooks
@@ -123,7 +122,6 @@ export function useSellerProductsPage() {
     handleOpenCSVUpload,
     handleCloseCSVUpload,
     deleteProduct,
-    goToPage,
     nextPage,
     previousPage,
     handleClose

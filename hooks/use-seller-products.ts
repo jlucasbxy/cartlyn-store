@@ -12,41 +12,43 @@ interface Product {
 }
 
 interface Pagination {
-  page: number;
   limit: number;
-  total: number;
-  totalPages: number;
+  nextCursor: string | null;
+  hasNextPage: boolean;
 }
 
 export function useSellerProducts(itemsPerPage: number = 10) {
   const { data: session } = useSession();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [cursor, setCursor] = useState<string | undefined>(undefined);
+  const [cursorHistory, setCursorHistory] = useState<(string | undefined)[]>(
+    []
+  );
   const [pagination, setPagination] = useState<Pagination>({
-    page: 1,
     limit: itemsPerPage,
-    total: 0,
-    totalPages: 0
+    nextCursor: null,
+    hasNextPage: false
   });
 
   const fetchProducts = useCallback(
-    async (page: number) => {
+    async (currentCursor: string | undefined) => {
       if (!session?.user.id) return;
 
       setLoading(true);
       try {
-        // Fetch products filtered by seller on backend
-        const response = await fetch(
-          `/api/products?page=${page}&limit=${itemsPerPage}&sellerId=${session.user.id}`
-        );
+        const params = new URLSearchParams({
+          limit: itemsPerPage.toString(),
+          sellerId: session.user.id
+        });
+        if (currentCursor) params.set("cursor", currentCursor);
+
+        const response = await fetch(`/api/products?${params}`);
 
         if (response.ok) {
           const data = await response.json();
-
           setProducts(data.products);
           setPagination(data.pagination);
-          setCurrentPage(page);
         }
       } catch (_error) {
       } finally {
@@ -57,35 +59,37 @@ export function useSellerProducts(itemsPerPage: number = 10) {
   );
 
   useEffect(() => {
-    fetchProducts(1);
+    fetchProducts(undefined);
+    setCursor(undefined);
+    setCursorHistory([]);
   }, [fetchProducts]);
 
-  const goToPage = (page: number) => {
-    if (page >= 1 && page <= pagination.totalPages) {
-      fetchProducts(page);
-    }
-  };
-
   const nextPage = () => {
-    if (currentPage < pagination.totalPages) {
-      goToPage(currentPage + 1);
-    }
+    if (!pagination.hasNextPage || !pagination.nextCursor) return;
+    setCursorHistory((h) => [...h, cursor]);
+    setCursor(pagination.nextCursor);
+    fetchProducts(pagination.nextCursor);
   };
 
   const previousPage = () => {
-    if (currentPage > 1) {
-      goToPage(currentPage - 1);
-    }
+    if (cursorHistory.length === 0) return;
+    const prev = cursorHistory[cursorHistory.length - 1];
+    setCursorHistory((h) => h.slice(0, -1));
+    setCursor(prev);
+    fetchProducts(prev);
   };
 
   return {
     products,
     loading,
     pagination,
-    currentPage,
-    goToPage,
+    hasPreviousPage: cursorHistory.length > 0,
     nextPage,
     previousPage,
-    refetch: () => fetchProducts(currentPage)
+    refetch: () => {
+      setCursor(undefined);
+      setCursorHistory([]);
+      fetchProducts(undefined);
+    }
   };
 }
