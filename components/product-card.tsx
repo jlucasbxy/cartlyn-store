@@ -5,6 +5,8 @@ import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import { addToCart } from '@/app/actions/cart';
+import { addFavorite, removeFavorite } from '@/app/actions/favorites';
 
 interface ProductCardProps {
     product: {
@@ -34,18 +36,8 @@ export default function ProductCard({ product, onFavoriteToggle, isFavorite = fa
 
         setLoading(true);
         try {
-            const response = await fetch('/api/cart', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId: product.id, quantity: 1 }),
-            });
-
-            if (response.ok) {
-                toast.success('Produto adicionado ao carrinho!');
-            } else {
-                const data = await response.json();
-                toast.error(data.error || 'Erro ao adicionar ao carrinho');
-            }
+            await addToCart(product.id, 1);
+            toast.success('Produto adicionado ao carrinho!');
         } catch {
             toast.error('Erro ao adicionar ao carrinho');
         } finally {
@@ -62,29 +54,12 @@ export default function ProductCard({ product, onFavoriteToggle, isFavorite = fa
         setLoading(true);
         try {
             if (favorite) {
-                const response = await fetch(`/api/favorites?productId=${product.id}`, { method: 'DELETE' });
-                if (!response.ok) {
-                    const data = await response.json();
-                    toast.error(data.error || 'Erro ao remover dos favoritos');
-                    return;
-                }
-
+                await removeFavorite(product.id);
                 setFavorite(false);
                 onFavoriteToggle?.(product.id, false);
                 toast.success('Produto removido dos favoritos');
             } else {
-                const response = await fetch('/api/favorites', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ productId: product.id }),
-                });
-
-                if (!response.ok) {
-                    const data = await response.json();
-                    toast.error(data.error || 'Erro ao adicionar aos favoritos');
-                    return;
-                }
-
+                await addFavorite(product.id);
                 setFavorite(true);
                 onFavoriteToggle?.(product.id, true);
                 toast.success('Produto adicionado aos favoritos!');

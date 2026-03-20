@@ -1,82 +1,40 @@
-'use client';
-
-import ProductCard from '@/components/product-card';
-import Loading from '@/components/loading';
 import { PageLayout } from '@/components/page-layout';
-import { Card } from '@/components/card';
-import { FormInput } from '@/components/form-input';
-import { Button } from '@/components/button';
-import { Pagination } from '@/components/pagination';
-import { useStoreProducts } from '@/hooks/use-store-products';
+import ProductCard from '@/components/product-card';
+import { productsService } from '@/services/products-service';
+import { StoreFilters } from './store-filters';
+import { StorePagination } from './store-pagination';
 
-export default function StorePage() {
-    const {
-        formRef,
-        products,
-        loading,
-        pagination,
-        handleSearch,
-        handleClearFilters,
-        goToPage,
-        nextPage,
-        previousPage,
-    } = useStoreProducts();
+interface StorePageProps {
+    searchParams: Promise<{
+        query?: string;
+        page?: string;
+        minPrice?: string;
+        maxPrice?: string;
+    }>;
+}
+
+export default async function StorePage({ searchParams }: StorePageProps) {
+    const params = await searchParams;
+
+    const page = parseInt(params.page ?? '1') || 1;
+    const minPrice = params.minPrice ? parseFloat(params.minPrice) : undefined;
+    const maxPrice = params.maxPrice ? parseFloat(params.maxPrice) : undefined;
+
+    const { products, pagination } = await productsService.getProducts({
+        query: params.query,
+        page,
+        limit: 12,
+        minPrice,
+        maxPrice,
+    });
 
     return (
         <PageLayout>
             <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">Loja</h1>
 
-            {/* Search and Filters */}
-            <Card className="mb-8">
-                <form ref={formRef} onSubmit={handleSearch} className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                        <div className="md:col-span-2">
-                            <FormInput
-                                type="text"
-                                id="search"
-                                name="search"
-                                label="Buscar produtos"
-                                placeholder="Nome ou descrição..."
-                            />
-                        </div>
-                        <div>
-                            <FormInput
-                                type="number"
-                                id="minPrice"
-                                name="minPrice"
-                                label="Preço mínimo"
-                                placeholder="R$ 0"
-                                min="0"
-                                step="0.01"
-                            />
-                        </div>
-                        <div>
-                            <FormInput
-                                type="number"
-                                id="maxPrice"
-                                name="maxPrice"
-                                label="Preço máximo"
-                                placeholder="R$ 10000"
-                                min="0"
-                                step="0.01"
-                            />
-                        </div>
-                    </div>
-                    <div className="flex gap-2">
-                        <Button type="submit">
-                            Buscar
-                        </Button>
-                        <Button type="button" variant="secondary" onClick={handleClearFilters}>
-                            Limpar Filtros
-                        </Button>
-                    </div>
-                </form>
-            </Card>
+            <StoreFilters />
 
-            {/* Products Grid */}
-            {loading ? (
-                <Loading />
-            ) : products.length === 0 ? (
+            {products.length === 0 ? (
                 <div className="text-center py-12">
                     <p className="text-gray-700 text-lg">Nenhum produto encontrado</p>
                 </div>
@@ -88,17 +46,11 @@ export default function StorePage() {
                         ))}
                     </div>
 
-                    <Pagination
+                    <StorePagination
                         currentPage={pagination.page}
                         totalPages={pagination.totalPages}
-                        onPageChange={goToPage}
-                        onNext={nextPage}
-                        onPrevious={previousPage}
+                        total={pagination.total}
                     />
-
-                    <div className="text-center mt-4 text-sm text-gray-600 dark:text-gray-400">
-                        Total de produtos: {pagination.total}
-                    </div>
                 </>
             )}
         </PageLayout>

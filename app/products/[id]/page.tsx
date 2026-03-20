@@ -1,152 +1,28 @@
-'use client';
+import { redirect } from 'next/navigation';
+import { auth } from '@/lib/auth';
+import { productsService } from '@/services/products-service';
+import { ServiceError } from '@/services/service-error';
+import { ProductDetailsClient } from './product-details-client';
 
-import { use } from 'react';
-import Image from 'next/image';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import Loading from '@/components/loading';
-import { PageLayout } from '@/components/page-layout';
-import { Button } from '@/components/button';
-import { FormInput } from '@/components/form-input';
-import { Card } from '@/components/card';
-import { ArrowLeftIcon } from '@/components/icons';
-import { useProductDetails } from '@/hooks/use-product-details';
+export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
 
-export default function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
-    const resolvedParams = use(params);
-    const router = useRouter();
-    const { data: session } = useSession();
-    const {
-        product,
-        loading,
-        quantityRef,
-        actionLoading,
-        handleAddToCart,
-        handleAddToFavorites,
-    } = useProductDetails({ productId: resolvedParams.id, session });
-
-    if (loading) {
-        return (
-            <PageLayout>
-                <Loading />
-            </PageLayout>
-        );
+    let product;
+    try {
+        product = await productsService.getProductById(id);
+    } catch (error) {
+        if (error instanceof ServiceError && error.status === 404) {
+            redirect('/store');
+        }
+        throw error;
     }
 
-    if (!product) {
-        return null;
-    }
+    const session = await auth();
 
     return (
-        <PageLayout>
-            <Button
-                onClick={() => router.back()}
-                variant="outline"
-                className="mb-6 flex items-center gap-2"
-            >
-                <ArrowLeftIcon />
-                <span>Voltar</span>
-            </Button>
-
-            <Card padding="none" className="overflow-hidden">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-                    {/* Product Image */}
-                    <div className="relative h-96 w-full rounded-lg overflow-hidden">
-                        <Image
-                            src={product.imageUrl}
-                            alt={product.name}
-                            fill
-                            className="object-cover"
-                            unoptimized
-                        />
-                    </div>
-
-                    {/* Product Info */}
-                    <div className="flex flex-col">
-                        <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-                            {product.name}
-                        </h1>
-
-                        <div className="mb-4">
-                            <span className="text-4xl font-bold text-primary">
-                                R$ {product.price.toFixed(2)}
-                            </span>
-                        </div>
-
-                        <div className="mb-6">
-                            <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                                Descrição
-                            </h2>
-                            <p className="text-gray-900 dark:text-gray-100 leading-relaxed">
-                                {product.description}
-                            </p>
-                        </div>
-
-                        <div className="mb-6">
-                            <p className="text-base text-gray-900 dark:text-gray-100">
-                                <span className="font-semibold">Vendedor:</span>{' '}
-                                {product.seller.name}
-                            </p>
-                            <p className="text-base text-gray-900 dark:text-gray-100">
-                                <span className="font-semibold">Publicado em:</span>{' '}
-                                {new Date(product.publishedAt).toLocaleDateString('pt-BR')}
-                            </p>
-                        </div>
-
-                        {session?.user.role === 'CLIENT' && (
-                            <div className="mt-auto">
-                                <div className="mb-4">
-                                    <FormInput
-                                        ref={quantityRef}
-                                        label="Quantidade"
-                                        type="number"
-                                        id="quantity"
-                                        name="quantity"
-                                        min="1"
-                                        defaultValue="1"
-                                        className="w-24"
-                                    />
-                                </div>
-
-                                <div className="flex gap-4">
-                                    <Button
-                                        onClick={handleAddToCart}
-                                        disabled={actionLoading}
-                                        size="lg"
-                                        fullWidth
-                                    >
-                                        {actionLoading ? 'Adicionando...' : 'Adicionar ao Carrinho'}
-                                    </Button>
-                                    <Button
-                                        onClick={handleAddToFavorites}
-                                        disabled={actionLoading}
-                                        variant="outline"
-                                        size="lg"
-                                        title="Adicionar aos favoritos"
-                                    >
-                                        ❤️
-                                    </Button>
-                                </div>
-                            </div>
-                        )}
-
-                        {!session && (
-                            <div className="mt-auto">
-                                <p className="text-gray-900 dark:text-gray-100 text-base mb-4">
-                                    Faça login para comprar este produto
-                                </p>
-                                <Button
-                                    onClick={() => router.push('/login')}
-                                    size="lg"
-                                    fullWidth
-                                >
-                                    Fazer Login
-                                </Button>
-                            </div>
-                        )}
-                    </div>
-                </div>
-            </Card>
-        </PageLayout>
+        <ProductDetailsClient
+            product={{ ...product, publishedAt: product.publishedAt.toISOString() }}
+            role={session?.user.role}
+        />
     );
 }
