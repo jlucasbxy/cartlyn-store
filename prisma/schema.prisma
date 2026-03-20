@@ -33,7 +33,6 @@ model User {
   cart      CartItem[]
   orders    Order[]
 
-  @@index([email])
 }
 
 model Product {
@@ -54,9 +53,8 @@ model Product {
   cartItems  CartItem[]
   orderItems OrderItem[]
 
-  @@index([sellerId])
-  @@index([active])
-  @@index([publishedAt])
+  @@index([active, publishedAt(sort: Desc), id(sort: Desc)])
+  @@index([sellerId, active, publishedAt(sort: Desc), id(sort: Desc)])
 }
 
 model Favorite {
@@ -69,7 +67,6 @@ model Favorite {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
-  @@index([userId])
 }
 
 model CartItem {
@@ -84,7 +81,6 @@ model CartItem {
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([userId, productId])
-  @@index([userId])
 }
 
 model Order {
@@ -96,8 +92,7 @@ model Order {
   user  User        @relation(fields: [userId], references: [id])
   items OrderItem[]
 
-  @@index([userId])
-  @@index([createdAt])
+  @@index([userId, createdAt(sort: Desc)])
 }
 
 model OrderItem {
@@ -112,5 +107,5 @@ model OrderItem {
   product Product @relation(fields: [productId], references: [id])
 
   @@index([orderId])
-  @@index([productId])
+  @@index([productId, quantity, price])
 }
