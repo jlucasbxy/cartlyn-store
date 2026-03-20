@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useState } from "react";
 
@@ -17,19 +18,26 @@ interface Pagination {
   hasNextPage: boolean;
 }
 
-export function useSellerProducts(itemsPerPage: number = 10) {
+export function useSellerProducts(
+  itemsPerPage: number = 10,
+  initialProducts?: Product[],
+  initialPagination?: Pagination
+) {
   const { data: session } = useSession();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState<Product[]>(initialProducts ?? []);
+  const [loading, setLoading] = useState(initialProducts === undefined);
   const [cursor, setCursor] = useState<string | undefined>(undefined);
   const [cursorHistory, setCursorHistory] = useState<(string | undefined)[]>(
     []
   );
-  const [pagination, setPagination] = useState<Pagination>({
-    limit: itemsPerPage,
-    nextCursor: null,
-    hasNextPage: false
-  });
+  const [pagination, setPagination] = useState<Pagination>(
+    initialPagination ?? {
+      limit: itemsPerPage,
+      nextCursor: null,
+      hasNextPage: false
+    }
+  );
+  const skipInitialFetch = useRef(initialProducts !== undefined);
 
   const fetchProducts = useCallback(
     async (currentCursor: string | undefined) => {
@@ -59,6 +67,10 @@ export function useSellerProducts(itemsPerPage: number = 10) {
   );
 
   useEffect(() => {
+    if (skipInitialFetch.current) {
+      skipInitialFetch.current = false;
+      return;
+    }
     fetchProducts(undefined);
     setCursor(undefined);
     setCursorHistory([]);

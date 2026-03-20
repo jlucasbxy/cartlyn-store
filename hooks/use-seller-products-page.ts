@@ -18,7 +18,17 @@ interface Product {
   publishedAt: string;
 }
 
-export function useSellerProductsPage() {
+interface Pagination {
+  limit: number;
+  nextCursor: string | null;
+  hasNextPage: boolean;
+}
+
+export function useSellerProductsPage(
+  itemsPerPage: number = 10,
+  initialProducts?: Product[],
+  initialPagination?: Pagination
+) {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [showForm, setShowForm] = useState(false);
@@ -34,7 +44,7 @@ export function useSellerProductsPage() {
     nextPage,
     previousPage,
     refetch
-  } = useSellerProducts(10);
+  } = useSellerProducts(itemsPerPage, initialProducts, initialPagination);
   const { confirm, confirmState, handleClose } = useConfirm();
 
   const productForm = useProductForm({

@@ -1,23 +1,18 @@
-"use client";
-
 import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { Card, EmptyState, Loading, PageLayout } from "@/components";
-import { useOrders } from "@/hooks";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib";
+import { ordersService } from "@/services";
+import { Card, PageLayout } from "@/components";
 
-export default function OrdersPage() {
-  const router = useRouter();
-  const { status } = useSession();
-  const { orders, loading } = useOrders(status);
+export default async function OrdersPage() {
+  const session = await auth();
 
-  if (status === "loading" || loading) {
-    return (
-      <PageLayout>
-        <Loading />
-      </PageLayout>
-    );
+  if (!session) {
+    redirect("/login");
   }
+
+  const orders = await ordersService.getOrders(session.user.id);
 
   return (
     <PageLayout>
@@ -26,11 +21,17 @@ export default function OrdersPage() {
       </h1>
 
       {orders.length === 0 ? (
-        <EmptyState
-          title="Você ainda não realizou nenhum pedido"
-          actionLabel="Começar a Comprar"
-          onAction={() => router.push("/store")}
-        />
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-700/50 p-8 text-center transition-colors">
+          <p className="text-gray-700 dark:text-gray-300 text-lg mb-4">
+            Você ainda não realizou nenhum pedido
+          </p>
+          <Link
+            href="/store"
+            className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary/90 transition-colors inline-block"
+          >
+            Começar a Comprar
+          </Link>
+        </div>
       ) : (
         <div className="space-y-6">
           {orders.map((order) => (

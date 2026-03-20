@@ -1,31 +1,24 @@
-"use client";
-
 import Image from "next/image";
-import { Button, Card, EmptyState, Loading, PageLayout, StatsCard } from "@/components";
-import { useSellerDashboard } from "@/hooks";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib";
+import { sellerDashboardService } from "@/services";
+import { Card, PageLayout, StatsCard } from "@/components";
 
-export default function SellerDashboardPage() {
-  const { dashboardData, loading, status, router } = useSellerDashboard();
+export default async function SellerDashboardPage() {
+  const session = await auth();
 
-  if (status === "loading" || loading) {
-    return (
-      <PageLayout>
-        <Loading />
-      </PageLayout>
-    );
+  if (!session) {
+    redirect("/login");
   }
 
-  if (!dashboardData) {
-    return (
-      <PageLayout>
-        <div className="flex items-center justify-center">
-          <p className="text-gray-700 dark:text-gray-300">
-            Erro ao carregar dashboard
-          </p>
-        </div>
-      </PageLayout>
-    );
+  if (session.user.role !== "SELLER") {
+    redirect("/");
   }
+
+  const dashboardData = await sellerDashboardService.getDashboard(
+    session.user.id
+  );
 
   return (
     <PageLayout>
@@ -153,46 +146,40 @@ export default function SellerDashboardPage() {
           </div>
         </Card>
       ) : (
-        <EmptyState
-          title="Nenhuma venda realizada ainda"
-          actionLabel="Cadastrar Produtos"
-          onAction={() => router.push("/seller/products")}
-        />
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-700/50 p-8 text-center transition-colors">
+          <p className="text-gray-700 dark:text-gray-300 text-lg mb-4">
+            Nenhuma venda realizada ainda
+          </p>
+          <Link
+            href="/seller/products"
+            className="bg-primary text-white px-6 py-2 rounded-md hover:bg-primary/90 transition-colors inline-block"
+          >
+            Cadastrar Produtos
+          </Link>
+        </div>
       )}
 
       {/* Quick Actions */}
       <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
         <Card className="cursor-pointer hover:shadow-lg transition-shadow">
-          <Button
-            onClick={() => router.push("/seller/products")}
-            variant="outline"
-            className="w-full text-left justify-start h-auto p-0 border-0 hover:bg-transparent"
-          >
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                Gerenciar Produtos
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400 font-normal">
-                Adicione, edite ou remova seus produtos
-              </p>
-            </div>
-          </Button>
+          <Link href="/seller/products" className="block">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Gerenciar Produtos
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400">
+              Adicione, edite ou remova seus produtos
+            </p>
+          </Link>
         </Card>
         <Card className="cursor-pointer hover:shadow-lg transition-shadow">
-          <Button
-            onClick={() => router.push("/store")}
-            variant="outline"
-            className="w-full text-left justify-start h-auto p-0 border-0 hover:bg-transparent"
-          >
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
-                Ver Loja
-              </h3>
-              <p className="text-gray-600 dark:text-gray-400 font-normal">
-                Veja como seus produtos aparecem para os clientes
-              </p>
-            </div>
-          </Button>
+          <Link href="/store" className="block">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              Ver Loja
+            </h3>
+            <p className="text-gray-600 dark:text-gray-400">
+              Veja como seus produtos aparecem para os clientes
+            </p>
+          </Link>
         </Card>
       </div>
     </PageLayout>
