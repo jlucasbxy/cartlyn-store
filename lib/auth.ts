@@ -1,8 +1,7 @@
 import { getServerSession, type NextAuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import bcrypt from 'bcryptjs';
-import { prisma } from './prisma';
 import { loginSchema } from './validations';
+import { authService } from '@/services/auth-service';
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -19,27 +18,7 @@ export const authOptions: NextAuthOptions = {
                 }
 
                 const { email, password } = validated.data;
-
-                const user = await prisma.user.findUnique({
-                    where: { email },
-                });
-
-                if (!user || !user.active) {
-                    return null;
-                }
-
-                const isPasswordValid = await bcrypt.compare(password, user.password);
-
-                if (!isPasswordValid) {
-                    return null;
-                }
-
-                return {
-                    id: user.id,
-                    email: user.email,
-                    name: user.name,
-                    role: user.role,
-                };
+                return authService.validateCredentials(email, password);
             },
         }),
     ],
