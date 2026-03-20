@@ -1,6 +1,5 @@
-
 export type ProductWithSeller = Prisma.ProductGetPayload<{
-    include: {
-        seller: true
-    }
-}>
+  include: {
+    seller: true;
+  };
+}>;

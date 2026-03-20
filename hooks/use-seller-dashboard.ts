@@ -1,60 +1,64 @@
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import { toast } from 'react-toastify';
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 interface DashboardData {
-    totalProducts: number;
-    totalProductsSold: number;
-    totalRevenue: number;
-    bestSellingProduct: {
-        id: string;
-        name: string;
-        price: number;
-        imageUrl: string;
-        quantitySold: number;
-    } | null;
+  totalProducts: number;
+  totalProductsSold: number;
+  totalRevenue: number;
+  bestSellingProduct: {
+    id: string;
+    name: string;
+    price: number;
+    imageUrl: string;
+    quantitySold: number;
+  } | null;
 }
 
 export function useSellerDashboard() {
-    const router = useRouter();
-    const { data: session, status } = useSession();
-    const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
-    const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null
+  );
+  const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        if (status === 'unauthenticated') {
-            router.push('/login');
-            return;
-        }
-        if (status === 'authenticated') {
-            if (session?.user.role !== 'SELLER') {
-                toast.error('Acesso negado. Apenas vendedores podem acessar esta página.');
-                router.push('/');
-                return;
-            }
-            fetchDashboard();
-        }
-    }, [status, session, router]);
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+      return;
+    }
+    if (status === "authenticated") {
+      if (session?.user.role !== "SELLER") {
+        toast.error(
+          "Acesso negado. Apenas vendedores podem acessar esta página."
+        );
+        router.push("/");
+        return;
+      }
+      fetchDashboard();
+    }
+  }, [status, session, router]);
 
-    const fetchDashboard = async () => {
-        try {
-            const response = await fetch('/api/seller/dashboard');
-            if (response.ok) {
-                const data = await response.json();
-                setDashboardData(data);
-            }
-        } catch (error) {
-            console.error('Error fetching dashboard:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
+  const fetchDashboard = async () => {
+    try {
+      const response = await fetch("/api/seller/dashboard");
+      if (response.ok) {
+        const data = await response.json();
+        setDashboardData(data);
+      }
+    } catch (error) {
+      console.error("Error fetching dashboard:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return {
-        dashboardData,
-        loading,
-        status,
-        router,
-    };
+  return {
+    dashboardData,
+    loading,
+    status,
+    router
+  };
 }

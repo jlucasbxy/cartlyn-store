@@ -1,1 +1,1 @@
-export { DELETE } from '../account/route';
+export { DELETE } from "../account/route";

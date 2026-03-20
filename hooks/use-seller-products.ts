@@ -1,89 +1,92 @@
-import { useState, useEffect, useCallback } from 'react';
-import { useSession } from 'next-auth/react';
+import { useSession } from "next-auth/react";
+import { useCallback, useEffect, useState } from "react";
 
 interface Product {
-    id: string;
-    name: string;
-    price: number;
-    description: string;
-    imageUrl: string;
-    active: boolean;
-    publishedAt: string;
+  id: string;
+  name: string;
+  price: number;
+  description: string;
+  imageUrl: string;
+  active: boolean;
+  publishedAt: string;
 }
 
 interface Pagination {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
 }
 
 export function useSellerProducts(itemsPerPage: number = 10) {
-    const { data: session } = useSession();
-    const [products, setProducts] = useState<Product[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [pagination, setPagination] = useState<Pagination>({
-        page: 1,
-        limit: itemsPerPage,
-        total: 0,
-        totalPages: 0,
-    });
+  const { data: session } = useSession();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pagination, setPagination] = useState<Pagination>({
+    page: 1,
+    limit: itemsPerPage,
+    total: 0,
+    totalPages: 0
+  });
 
-    const fetchProducts = useCallback(async (page: number) => {
-        if (!session?.user.id) return;
+  const fetchProducts = useCallback(
+    async (page: number) => {
+      if (!session?.user.id) return;
 
-        setLoading(true);
-        try {
-            // Fetch products filtered by seller on backend
-            const response = await fetch(
-                `/api/products?page=${page}&limit=${itemsPerPage}&sellerId=${session.user.id}`
-            );
+      setLoading(true);
+      try {
+        // Fetch products filtered by seller on backend
+        const response = await fetch(
+          `/api/products?page=${page}&limit=${itemsPerPage}&sellerId=${session.user.id}`
+        );
 
-            if (response.ok) {
-                const data = await response.json();
+        if (response.ok) {
+          const data = await response.json();
 
-                setProducts(data.products);
-                setPagination(data.pagination);
-                setCurrentPage(page);
-            }
-        } catch (error) {
-            console.error('Error fetching products:', error);
-        } finally {
-            setLoading(false);
+          setProducts(data.products);
+          setPagination(data.pagination);
+          setCurrentPage(page);
         }
-    }, [session?.user.id, itemsPerPage]);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [session?.user.id, itemsPerPage]
+  );
 
-    useEffect(() => {
-        fetchProducts(1);
-    }, [session?.user.id, itemsPerPage, fetchProducts]);
+  useEffect(() => {
+    fetchProducts(1);
+  }, [session?.user.id, itemsPerPage, fetchProducts]);
 
-    const goToPage = (page: number) => {
-        if (page >= 1 && page <= pagination.totalPages) {
-            fetchProducts(page);
-        }
-    };
+  const goToPage = (page: number) => {
+    if (page >= 1 && page <= pagination.totalPages) {
+      fetchProducts(page);
+    }
+  };
 
-    const nextPage = () => {
-        if (currentPage < pagination.totalPages) {
-            goToPage(currentPage + 1);
-        }
-    };
+  const nextPage = () => {
+    if (currentPage < pagination.totalPages) {
+      goToPage(currentPage + 1);
+    }
+  };
 
-    const previousPage = () => {
-        if (currentPage > 1) {
-            goToPage(currentPage - 1);
-        }
-    };
+  const previousPage = () => {
+    if (currentPage > 1) {
+      goToPage(currentPage - 1);
+    }
+  };
 
-    return {
-        products,
-        loading,
-        pagination,
-        currentPage,
-        goToPage,
-        nextPage,
-        previousPage,
-        refetch: () => fetchProducts(currentPage),
-    };
+  return {
+    products,
+    loading,
+    pagination,
+    currentPage,
+    goToPage,
+    nextPage,
+    previousPage,
+    refetch: () => fetchProducts(currentPage)
+  };
 }

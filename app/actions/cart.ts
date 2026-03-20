@@ -1,36 +1,36 @@
-'use server';
+"use server";
 
-import { revalidatePath } from 'next/cache';
-import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
-import { cartService } from '@/services/cart-service';
-import { ordersService } from '@/services/orders-service';
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { cartService } from "@/services/cart-service";
+import { ordersService } from "@/services/orders-service";
 
 export async function addToCart(productId: string, quantity: number) {
-    const session = await auth();
-    if (!session) throw new Error('Não autenticado');
-    await cartService.addToCart(session.user.id, productId, quantity);
-    revalidatePath('/cart');
+  const session = await auth();
+  if (!session) throw new Error("Não autenticado");
+  await cartService.addToCart(session.user.id, productId, quantity);
+  revalidatePath("/cart");
 }
 
 export async function updateCartItem(productId: string, quantity: number) {
-    const session = await auth();
-    if (!session) throw new Error('Não autenticado');
-    await cartService.updateCartItem(session.user.id, productId, quantity);
-    revalidatePath('/cart');
+  const session = await auth();
+  if (!session) throw new Error("Não autenticado");
+  await cartService.updateCartItem(session.user.id, productId, quantity);
+  revalidatePath("/cart");
 }
 
 export async function removeFromCart(productId: string) {
-    const session = await auth();
-    if (!session) throw new Error('Não autenticado');
-    await cartService.removeFromCart(session.user.id, productId);
-    revalidatePath('/cart');
+  const session = await auth();
+  if (!session) throw new Error("Não autenticado");
+  await cartService.removeFromCart(session.user.id, productId);
+  revalidatePath("/cart");
 }
 
 export async function checkout() {
-    const session = await auth();
-    if (!session) throw new Error('Não autenticado');
-    await ordersService.checkout(session.user.id);
-    revalidatePath('/cart');
-    redirect('/orders');
+  const session = await auth();
+  if (!session) throw new Error("Não autenticado");
+  await ordersService.checkout(session.user.id);
+  revalidatePath("/cart");
+  redirect("/orders");
 }

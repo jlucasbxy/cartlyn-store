@@ -1,28 +1,32 @@
-import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
-import { productsService } from '@/services/products-service';
-import { ServiceError } from '@/services/service-error';
-import { ProductDetailsClient } from './product-details-client';
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { productsService } from "@/services/products-service";
+import { ServiceError } from "@/services/service-error";
+import { ProductDetailsClient } from "./product-details-client";
 
-export default async function ProductDetailPage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
+export default async function ProductDetailPage({
+  params
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
-    let product;
-    try {
-        product = await productsService.getProductById(id);
-    } catch (error) {
-        if (error instanceof ServiceError && error.status === 404) {
-            redirect('/store');
-        }
-        throw error;
+  let product;
+  try {
+    product = await productsService.getProductById(id);
+  } catch (error) {
+    if (error instanceof ServiceError && error.status === 404) {
+      redirect("/store");
     }
+    throw error;
+  }
 
-    const session = await auth();
+  const session = await auth();
 
-    return (
-        <ProductDetailsClient
-            product={{ ...product, publishedAt: product.publishedAt.toISOString() }}
-            role={session?.user.role}
-        />
-    );
+  return (
+    <ProductDetailsClient
+      product={{ ...product, publishedAt: product.publishedAt.toISOString() }}
+      role={session?.user.role}
+    />
+  );
 }

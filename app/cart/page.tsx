@@ -1,16 +1,16 @@
-import { redirect } from 'next/navigation';
-import { auth } from '@/lib/auth';
-import { cartService } from '@/services/cart-service';
-import { CartClient } from './cart-client';
+import { redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import { cartService } from "@/services/cart-service";
+import { CartClient } from "./cart-client";
 
 export default async function CartPage() {
-    const session = await auth();
+  const session = await auth();
 
-    if (!session) {
-        redirect('/login');
-    }
+  if (!session) {
+    redirect("/login");
+  }
 
-    const { items, total } = await cartService.getCart(session.user.id);
+  const { items, total } = await cartService.getCart(session.user.id);
 
-    return <CartClient initialItems={items} total={total} />;
+  return <CartClient initialItems={items} total={total} />;
 }

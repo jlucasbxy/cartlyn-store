@@ -1,5 +1,5 @@
-import Loading from '@/components/loading';
+import Loading from "@/components/loading";
 
 export default function StoreLoading() {
-    return <Loading />;
+  return <Loading />;
 }

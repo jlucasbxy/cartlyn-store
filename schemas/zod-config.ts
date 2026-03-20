@@ -1,4 +1,4 @@
-import { z, locales } from 'zod';
+import { locales, z } from "zod";
 
 z.config(locales.pt());
 

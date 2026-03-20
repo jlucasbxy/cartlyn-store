@@ -1,37 +1,37 @@
-"use client"
-import { useEffect, useState, useCallback } from "react"
+"use client";
+import { useCallback, useEffect, useState } from "react";
 
 export function useColorScheme() {
-    const [isDark, setIsDark] = useState<boolean>(false)
-    const [mounted, setMounted] = useState(false)
+  const [isDark, setIsDark] = useState<boolean>(false);
+  const [mounted, setMounted] = useState(false);
 
-    useEffect(() => {
-        setMounted(true)
+  useEffect(() => {
+    setMounted(true);
 
-        // Check stored preference or system preference
-        const stored = localStorage.getItem("theme")
-        if (stored) {
-            setIsDark(stored === "dark")
-        } else {
-            setIsDark(window.matchMedia("(prefers-color-scheme: dark)").matches)
-        }
-    }, [])
+    // Check stored preference or system preference
+    const stored = localStorage.getItem("theme");
+    if (stored) {
+      setIsDark(stored === "dark");
+    } else {
+      setIsDark(window.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }, []);
 
-    useEffect(() => {
-        if (!mounted) return
+  useEffect(() => {
+    if (!mounted) return;
 
-        const root = document.documentElement
+    const root = document.documentElement;
 
-        if (isDark) {
-            root.classList.add("dark")
-            localStorage.setItem("theme", "dark")
-        } else {
-            root.classList.remove("dark")
-            localStorage.setItem("theme", "light")
-        }
-    }, [isDark, mounted])
+    if (isDark) {
+      root.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      root.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDark, mounted]);
 
-    const toggle = useCallback(() => setIsDark((prev) => !prev), [])
+  const toggle = useCallback(() => setIsDark((prev) => !prev), []);
 
-    return { isDark, toggle, mounted }
+  return { isDark, toggle, mounted };
 }

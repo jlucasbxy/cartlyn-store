@@ -1,5 +1,5 @@
-import { z } from '@/schemas/zod-config';
-import { productSchema } from '@/schemas/product-schema';
+import { productSchema } from "@/schemas/product-schema";
+import type { z } from "@/schemas/zod-config";
 
 export const productUpdateSchema = productSchema.partial();
 
