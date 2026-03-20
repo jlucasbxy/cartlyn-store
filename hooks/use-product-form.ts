@@ -102,8 +102,7 @@ export function useProductForm({
           }
         }
       }
-    } catch (error) {
-      console.error("Error submitting product:", error);
+    } catch (_error) {
     } finally {
       setLoading(false);
     }

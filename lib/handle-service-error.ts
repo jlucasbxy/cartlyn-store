@@ -11,7 +11,5 @@ export function handleServiceError(error: unknown, fallbackMessage: string) {
       { status: error.status }
     );
   }
-
-  console.error(fallbackMessage, error);
   return NextResponse.json({ error: fallbackMessage }, { status: 500 });
 }

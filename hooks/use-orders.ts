@@ -33,7 +33,7 @@ export function useOrders(status: string) {
     if (status === "authenticated") {
       fetchOrders();
     }
-  }, [status, router]);
+  }, [status, router, fetchOrders]);
 
   const fetchOrders = async () => {
     try {
@@ -42,8 +42,7 @@ export function useOrders(status: string) {
         const data = await response.json();
         setOrders(data);
       }
-    } catch (error) {
-      console.error("Error fetching orders:", error);
+    } catch (_error) {
     } finally {
       setLoading(false);
     }

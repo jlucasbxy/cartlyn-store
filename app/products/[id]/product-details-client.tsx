@@ -39,7 +39,7 @@ export function ProductDetailsClient({
   const [actionLoading, setActionLoading] = useState(false);
 
   const handleAddToCart = async () => {
-    const quantity = parseInt(quantityRef.current?.value || "1");
+    const quantity = parseInt(quantityRef.current?.value || "1", 10);
     setActionLoading(true);
     try {
       await addToCart(product.id, quantity);

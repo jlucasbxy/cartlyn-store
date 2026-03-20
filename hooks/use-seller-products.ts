@@ -48,8 +48,7 @@ export function useSellerProducts(itemsPerPage: number = 10) {
           setPagination(data.pagination);
           setCurrentPage(page);
         }
-      } catch (error) {
-        console.error("Error fetching products:", error);
+      } catch (_error) {
       } finally {
         setLoading(false);
       }
@@ -59,7 +58,7 @@ export function useSellerProducts(itemsPerPage: number = 10) {
 
   useEffect(() => {
     fetchProducts(1);
-  }, [session?.user.id, itemsPerPage, fetchProducts]);
+  }, [fetchProducts]);
 
   const goToPage = (page: number) => {
     if (page >= 1 && page <= pagination.totalPages) {

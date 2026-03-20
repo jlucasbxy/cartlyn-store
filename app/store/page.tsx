@@ -16,7 +16,7 @@ interface StorePageProps {
 export default async function StorePage({ searchParams }: StorePageProps) {
   const params = await searchParams;
 
-  const page = parseInt(params.page ?? "1") || 1;
+  const page = parseInt(params.page ?? "1", 10) || 1;
   const minPrice = params.minPrice ? parseFloat(params.minPrice) : undefined;
   const maxPrice = params.maxPrice ? parseFloat(params.maxPrice) : undefined;
 

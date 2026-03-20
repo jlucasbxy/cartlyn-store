@@ -13,20 +13,12 @@ const prisma = new PrismaClient({
 });
 
 async function main() {
-  console.log("🌱 Starting database seed...\n");
-
-  // Clear existing data
-  console.log("🗑️  Cleaning database...");
   await prisma.orderItem.deleteMany();
   await prisma.order.deleteMany();
   await prisma.cartItem.deleteMany();
   await prisma.favorite.deleteMany();
   await prisma.product.deleteMany();
   await prisma.user.deleteMany();
-  console.log("✅ Database cleaned\n");
-
-  // Create users
-  console.log("👥 Creating users...");
 
   // Hash password for all users
   const password = "12345678";
@@ -70,12 +62,7 @@ async function main() {
     }
   });
 
-  console.log(`✅ Created 4 users (2 sellers, 2 clients)\n`);
-
-  // Create products for seller 1
-  console.log("📦 Creating products...");
-
-  const products = await prisma.product.createMany({
+  const _products = await prisma.product.createMany({
     data: [
       // Seller 1 products - Electronics
       {
@@ -218,14 +205,9 @@ async function main() {
     ]
   });
 
-  console.log(`✅ Created ${products.count} products\n`);
-
   // Get all products to create orders
   const allProducts = await prisma.product.findMany();
   const price = (index: number) => Number(allProducts[index].price);
-
-  // Create some orders (simulating past purchases)
-  console.log("🛒 Creating sample orders...");
 
   // Order 1 - Client 1 buys from Seller 1
   await prisma.order.create({
@@ -299,11 +281,6 @@ async function main() {
     }
   });
 
-  console.log(`✅ Created 3 orders\n`);
-
-  // Create some favorites
-  console.log("❤️  Creating favorites...");
-
   await prisma.favorite.createMany({
     data: [
       { userId: client1.id, productId: allProducts[3].id },
@@ -313,11 +290,6 @@ async function main() {
     ]
   });
 
-  console.log(`✅ Created 4 favorites\n`);
-
-  // Create some cart items
-  console.log("🛒 Creating cart items...");
-
   await prisma.cartItem.createMany({
     data: [
       { userId: client1.id, productId: allProducts[5].id, quantity: 1 },
@@ -325,35 +297,13 @@ async function main() {
       { userId: client2.id, productId: allProducts[12].id, quantity: 1 }
     ]
   });
-
-  console.log(`✅ Created 3 cart items\n`);
-
-  // Summary
-  console.log("📊 Seed Summary:");
-  console.log("================");
-  console.log(`👥 Users: 4 (2 sellers, 2 clients)`);
-  console.log(`📦 Products: ${products.count}`);
-  console.log(`🛒 Orders: 3`);
-  console.log(`❤️  Favorites: 4`);
-  console.log(`🛒 Cart Items: 3`);
-  console.log("\n✅ Database seeded successfully!\n");
-
-  console.log("🔐 Login Credentials:");
-  console.log("==================");
-  console.log("Sellers:");
-  console.log(`  - joao@vendedor.com / ${password}`);
-  console.log(`  - maria@vendedor.com / ${password}`);
-  console.log("\nClients:");
-  console.log(`  - carlos@cliente.com / ${password}`);
-  console.log(`  - ana@cliente.com / ${password}`);
 }
 
 main()
   .then(async () => {
     await prisma.$disconnect();
   })
-  .catch(async (e) => {
-    console.error("❌ Error seeding database:", e);
+  .catch(async (_e) => {
     await prisma.$disconnect();
     process.exit(1);
   });

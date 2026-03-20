@@ -51,7 +51,7 @@ export function FileInput({
       // Check if file matches accept attribute
       if (accept) {
         const acceptedTypes = accept.split(",").map((type) => type.trim());
-        const fileExtension = "." + file.name.split(".").pop()?.toLowerCase();
+        const fileExtension = `.${file.name.split(".").pop()?.toLowerCase()}`;
         const mimeType = file.type;
 
         const isAccepted = acceptedTypes.some((type) => {

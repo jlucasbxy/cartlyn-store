@@ -29,7 +29,7 @@ export function useFavorites(status: string) {
     if (status === "authenticated") {
       fetchFavorites();
     }
-  }, [status, router]);
+  }, [status, router, fetchFavorites]);
 
   const fetchFavorites = async () => {
     try {
@@ -38,8 +38,7 @@ export function useFavorites(status: string) {
         const data = await response.json();
         setFavorites(data);
       }
-    } catch (error) {
-      console.error("Error fetching favorites:", error);
+    } catch (_error) {
     } finally {
       setLoading(false);
     }

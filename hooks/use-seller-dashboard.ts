@@ -39,7 +39,7 @@ export function useSellerDashboard() {
       }
       fetchDashboard();
     }
-  }, [status, session, router]);
+  }, [status, session, router, fetchDashboard]);
 
   const fetchDashboard = async () => {
     try {
@@ -48,8 +48,7 @@ export function useSellerDashboard() {
         const data = await response.json();
         setDashboardData(data);
       }
-    } catch (error) {
-      console.error("Error fetching dashboard:", error);
+    } catch (_error) {
     } finally {
       setLoading(false);
     }
