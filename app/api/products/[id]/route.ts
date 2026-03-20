@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { handleServiceError } from '@/lib/handle-service-error';
 import { productUpdateSchema } from '@/lib/validations';
-import { toNumber } from '@/lib/price';
+import { productsService } from '@/services/products-service';
 
 // Get single product
 export async function GET(
@@ -11,42 +11,10 @@ export async function GET(
 ) {
     try {
         const { id } = await params;
-
-        const product = await prisma.product.findFirst({
-            where: {
-                id,
-                active: true,
-                seller: {
-                    active: true, // Only show products from active sellers
-                },
-            },
-            include: {
-                seller: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-        });
-
-        if (!product) {
-            return NextResponse.json(
-                { error: 'Produto não encontrado' },
-                { status: 404 }
-            );
-        }
-
-        return NextResponse.json({
-            ...product,
-            price: toNumber(product.price),
-        });
+        const product = await productsService.getProductById(id);
+        return NextResponse.json(product);
     } catch (error) {
-        console.error('Product fetch error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao buscar produto' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao buscar produto');
     }
 }
 
@@ -76,43 +44,14 @@ export async function PATCH(
             );
         }
 
-        // Check if product exists and belongs to seller
-        const existingProduct = await prisma.product.findUnique({
-            where: { id },
-        });
-
-        if (!existingProduct) {
-            return NextResponse.json(
-                { error: 'Produto não encontrado' },
-                { status: 404 }
-            );
-        }
-
-        if (existingProduct.sellerId !== session.user.id) {
-            return NextResponse.json(
-                { error: 'Não autorizado' },
-                { status: 403 }
-            );
-        }
-
-        const product = await prisma.product.update({
-            where: { id },
-            data: validated.data,
-        });
+        const product = await productsService.updateProduct(session.user.id, id, validated.data);
 
         return NextResponse.json({
             message: 'Produto atualizado com sucesso',
-            product: {
-                ...product,
-                price: toNumber(product.price),
-            },
+            product,
         });
     } catch (error) {
-        console.error('Product update error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao atualizar produto' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao atualizar produto');
     }
 }
 
@@ -132,41 +71,12 @@ export async function DELETE(
         }
 
         const { id } = await params;
-
-        // Check if product exists and belongs to seller
-        const existingProduct = await prisma.product.findUnique({
-            where: { id },
-        });
-
-        if (!existingProduct) {
-            return NextResponse.json(
-                { error: 'Produto não encontrado' },
-                { status: 404 }
-            );
-        }
-
-        if (existingProduct.sellerId !== session.user.id) {
-            return NextResponse.json(
-                { error: 'Não autorizado' },
-                { status: 403 }
-            );
-        }
-
-        // Soft delete: set active to false instead of hard delete
-        // This preserves order history and prevents foreign key constraint errors
-        await prisma.product.update({
-            where: { id },
-            data: { active: false },
-        });
+        await productsService.deleteProduct(session.user.id, id);
 
         return NextResponse.json({
             message: 'Produto excluído com sucesso',
         });
     } catch (error) {
-        console.error('Product deletion error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao excluir produto' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao excluir produto');
     }
 }
