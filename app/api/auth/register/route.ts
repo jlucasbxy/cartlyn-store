@@ -1,8 +1,7 @@
 import { NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
-import { Prisma } from '@prisma/client';
-import { prisma } from '@/lib/prisma';
+import { handleServiceError } from '@/lib/handle-service-error';
 import { registerSchema } from '@/lib/validations';
+import { registerService } from '@/services/register-service';
 
 export async function POST(request: Request) {
     try {
@@ -16,55 +15,13 @@ export async function POST(request: Request) {
             );
         }
 
-        const { email, password, name, role } = validated.data;
-
-        // Check if user already exists
-        const existingUser = await prisma.user.findUnique({
-            where: { email },
-        });
-
-        if (existingUser) {
-            return NextResponse.json(
-                { error: 'Email já cadastrado' },
-                { status: 400 }
-            );
-        }
-
-        // Hash password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Create user
-        const user = await prisma.user.create({
-            data: {
-                email,
-                password: hashedPassword,
-                name,
-                role,
-            },
-            select: {
-                id: true,
-                email: true,
-                name: true,
-                role: true,
-            },
-        });
+        const user = await registerService.registerUser(validated.data);
 
         return NextResponse.json(
             { message: 'Usuário criado com sucesso', user },
             { status: 201 }
         );
     } catch (error) {
-        if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-            return NextResponse.json(
-                { error: 'Email já cadastrado' },
-                { status: 400 }
-            );
-        }
-
-        console.error('Registration error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao criar usuário' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao criar usuário');
     }
 }
