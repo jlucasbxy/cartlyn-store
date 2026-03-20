@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { handleServiceError } from '@/lib/handle-service-error';
-import { z } from 'zod';
+import { favoriteSchema } from '@/schemas';
 import { favoritesService } from '@/services/favorites-service';
 
 // Get user favorites
@@ -36,7 +36,7 @@ export async function POST(request: Request) {
         }
 
         const body = await request.json();
-        const validated = z.object({ productId: z.cuid() }).safeParse(body);
+        const validated = favoriteSchema.safeParse(body);
 
         if (!validated.success) {
             return NextResponse.json(

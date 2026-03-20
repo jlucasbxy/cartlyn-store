@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { handleServiceError } from '@/lib/handle-service-error';
-import { productUpdateSchema } from '@/lib/validations';
+import { productUpdateSchema } from '@/schemas';
 import { productsService } from '@/services/products-service';
 
 // Get single product

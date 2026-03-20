@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { handleServiceError } from '@/lib/handle-service-error';
-import { registerSchema } from '@/lib/validations';
+import { registerSchema } from '@/schemas';
 import { registerService } from '@/services/register-service';
 
 export async function POST(request: Request) {

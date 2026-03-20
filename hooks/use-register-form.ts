@@ -1,6 +1,6 @@
 import { useState, useRef, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
-import { registerWithConfirmSchema } from '@/lib/validations';
+import { registerWithConfirmSchema } from '@/schemas';
 import { formatZodError } from '@/lib/format-zod-error';
 
 export function useRegisterForm() {

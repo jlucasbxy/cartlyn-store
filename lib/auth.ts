@@ -1,6 +1,6 @@
 import { getServerSession, type NextAuthOptions } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { loginSchema } from './validations';
+import { loginSchema } from '@/schemas';
 import { authService } from '@/services/auth-service';
 
 export const authOptions: NextAuthOptions = {

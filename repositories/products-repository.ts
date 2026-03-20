@@ -1,6 +1,6 @@
 import { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
-import type { ProductInput, ProductUpdateInput, SearchProductsInput } from '@/lib/validations';
+import type { ProductInput, ProductUpdateInput, SearchProductsInput } from '@/schemas';
 
 export type ProductSearchFilters = SearchProductsInput & {
     sellerId?: string;

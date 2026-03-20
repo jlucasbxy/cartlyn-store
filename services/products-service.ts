@@ -1,5 +1,5 @@
 import { toNumber } from '@/lib/price';
-import type { ProductInput, ProductUpdateInput, SearchProductsInput } from '@/lib/validations';
+import type { ProductInput, ProductUpdateInput, SearchProductsInput } from '@/schemas';
 import { productsRepository } from '@/repositories/products-repository';
 import { ServiceError } from '@/services/service-error';
 

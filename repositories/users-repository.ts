@@ -1,5 +1,5 @@
 import { prisma } from '@/lib/prisma';
-import type { RegisterInput } from '@/lib/validations';
+import type { RegisterInput } from '@/schemas';
 
 function findByEmail(email: string) {
     return prisma.user.findUnique({

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
 import { handleServiceError } from '@/lib/handle-service-error';
-import { productSchema, searchProductsSchema } from '@/lib/validations';
+import { productSchema, searchProductsSchema } from '@/schemas';
 import { productsService } from '@/services/products-service';
 
 // Get products (with search and pagination)
