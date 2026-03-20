@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { handleServiceError } from '@/lib/handle-service-error';
 import Papa from 'papaparse';
 import { csvProductSchema } from '@/lib/validations';
+import { productsService } from '@/services/products-service';
 
 export async function POST(request: Request): Promise<Response> {
     try {
@@ -41,10 +42,7 @@ export async function POST(request: Request): Promise<Response> {
                             const validated = csvProductSchema.safeParse(row);
 
                             if (validated.success) {
-                                validProducts.push({
-                                    ...validated.data,
-                                    sellerId: session.user.id,
-                                });
+                                validProducts.push(validated.data);
                             } else {
                                 errors.push({
                                     row: i + 1,
@@ -63,31 +61,23 @@ export async function POST(request: Request): Promise<Response> {
                             return;
                         }
 
-                        // Use createMany for better performance with large datasets
-                        const result = await prisma.product.createMany({
-                            data: validProducts,
-                            skipDuplicates: true,
-                        });
+                        const created = await productsService.createBulkProducts(
+                            session.user.id,
+                            validProducts
+                        );
 
                         resolve(
                             NextResponse.json({
-                                message: `${result.count} produtos criados com sucesso`,
-                                created: result.count,
+                                message: `${created} produtos criados com sucesso`,
+                                created,
                                 errors: errors.length > 0 ? errors : undefined,
                             })
                         );
                     } catch (error) {
-                        console.error('Bulk product creation error:', error);
-                        resolve(
-                            NextResponse.json(
-                                { error: 'Erro ao criar produtos em massa' },
-                                { status: 500 }
-                            )
-                        );
+                        resolve(handleServiceError(error, 'Erro ao criar produtos em massa'));
                     }
                 },
-                error: (error: Error) => {
-                    console.error('CSV parsing error:', error);
+                error: () => {
                     resolve(
                         NextResponse.json(
                             { error: 'Erro ao processar arquivo CSV' },
@@ -98,10 +88,6 @@ export async function POST(request: Request): Promise<Response> {
             });
         });
     } catch (error) {
-        console.error('Bulk upload error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao processar requisição' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao processar requisição');
     }
 }
