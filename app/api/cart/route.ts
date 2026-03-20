@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { handleServiceError } from '@/lib/handle-service-error';
 import { addToCartSchema, updateCartItemSchema } from '@/lib/validations';
-import { toNumber } from '@/lib/price';
+import { cartService } from '@/services/cart-service';
 
 // Get user cart
 export async function GET() {
@@ -16,44 +16,10 @@ export async function GET() {
             );
         }
 
-        const cartItems = await prisma.cartItem.findMany({
-            where: { userId: session.user.id },
-            include: {
-                product: {
-                    include: {
-                        seller: {
-                            select: {
-                                id: true,
-                                name: true,
-                            },
-                        },
-                    },
-                },
-            },
-            orderBy: { createdAt: 'desc' },
-        });
-
-        const total = cartItems.reduce(
-            (sum, item) => sum + toNumber(item.product.price) * item.quantity,
-            0
-        );
-
-        return NextResponse.json({
-            items: cartItems.map((item) => ({
-                ...item,
-                product: {
-                    ...item.product,
-                    price: toNumber(item.product.price),
-                },
-            })),
-            total,
-        });
+        const cart = await cartService.getCart(session.user.id);
+        return NextResponse.json(cart);
     } catch (error) {
-        console.error('Cart fetch error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao buscar carrinho' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao buscar carrinho');
     }
 }
 
@@ -80,58 +46,17 @@ export async function POST(request: Request) {
         }
 
         const { productId, quantity } = validated.data;
-
-        // Check if product exists and is active
-        const product = await prisma.product.findUnique({
-            where: { id: productId },
-        });
-
-        if (!product || !product.active) {
-            return NextResponse.json(
-                { error: 'Produto não encontrado ou indisponível' },
-                { status: 404 }
-            );
-        }
-
-        const cartItem = await prisma.cartItem.upsert({
-            where: {
-                userId_productId: {
-                    userId: session.user.id,
-                    productId,
-                },
-            },
-            update: {
-                quantity: {
-                    increment: quantity,
-                },
-            },
-            create: {
-                userId: session.user.id,
-                productId,
-                quantity,
-            },
-            include: { product: true },
-        });
+        const cartItem = await cartService.addToCart(session.user.id, productId, quantity);
 
         return NextResponse.json(
             {
                 message: 'Produto adicionado ao carrinho',
-                cartItem: {
-                    ...cartItem,
-                    product: {
-                        ...cartItem.product,
-                        price: toNumber(cartItem.product.price),
-                    },
-                },
+                cartItem,
             },
             { status: 201 }
         );
     } catch (error) {
-        console.error('Add to cart error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao adicionar ao carrinho' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao adicionar ao carrinho');
     }
 }
 
@@ -167,33 +92,18 @@ export async function PATCH(request: Request) {
             );
         }
 
-        const cartItem = await prisma.cartItem.update({
-            where: {
-                userId_productId: {
-                    userId: session.user.id,
-                    productId,
-                },
-            },
-            data: { quantity: validated.data.quantity },
-            include: { product: true },
-        });
+        const cartItem = await cartService.updateCartItem(
+            session.user.id,
+            productId,
+            validated.data.quantity
+        );
 
         return NextResponse.json({
             message: 'Quantidade atualizada',
-            cartItem: {
-                ...cartItem,
-                product: {
-                    ...cartItem.product,
-                    price: toNumber(cartItem.product.price),
-                },
-            },
+            cartItem,
         });
     } catch (error) {
-        console.error('Update cart error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao atualizar carrinho' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao atualizar carrinho');
     }
 }
 
@@ -219,23 +129,12 @@ export async function DELETE(request: Request) {
             );
         }
 
-        await prisma.cartItem.delete({
-            where: {
-                userId_productId: {
-                    userId: session.user.id,
-                    productId,
-                },
-            },
-        });
+        await cartService.removeFromCart(session.user.id, productId);
 
         return NextResponse.json({
             message: 'Produto removido do carrinho',
         });
     } catch (error) {
-        console.error('Remove from cart error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao remover do carrinho' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao remover do carrinho');
     }
 }
