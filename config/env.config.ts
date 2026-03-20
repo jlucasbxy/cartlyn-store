@@ -6,15 +6,10 @@ const envSchema = z.object({
 	NEXTAUTH_URL: z.string().min(1),
 });
 
-const parsed = envSchema.safeParse(process.env);
-
-if (!parsed.success) {
-	console.error("Invalid environment variables:", parsed.error.flatten().fieldErrors);
-	process.exit(1);
-}
+const parsed = envSchema.parse(process.env);
 
 export const env = {
-	databaseUrl: parsed.data.DATABASE_URL,
-	nextAuthSecret: parsed.data.NEXTAUTH_SECRET,
-	nextAuthUrl: parsed.data.NEXTAUTH_URL,
+	databaseUrl: parsed.DATABASE_URL,
+	nextAuthSecret: parsed.NEXTAUTH_SECRET,
+	nextAuthUrl: parsed.NEXTAUTH_URL,
 };
