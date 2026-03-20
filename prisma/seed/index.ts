@@ -1,15 +1,11 @@
+import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
-
-const databaseUrl = process.env.DATABASE_URL;
-
-if (!databaseUrl) {
-  throw new Error("DATABASE_URL is required to run Prisma seed.");
-}
+import { env } from "../../config/env.config";
 
 const prisma = new PrismaClient({
-  adapter: new PrismaPg({ connectionString: databaseUrl })
+  adapter: new PrismaPg({ connectionString: env.databaseUrl })
 });
 
 async function main() {
