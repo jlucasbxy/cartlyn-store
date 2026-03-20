@@ -71,6 +71,7 @@ export default function Navbar() {
           </div>
           <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
             <button
+              type="button"
               onClick={toggle}
               className="p-2 sm:p-3 rounded-md text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
               aria-label="Toggle theme"
@@ -78,6 +79,7 @@ export default function Navbar() {
               {mounted ? (
                 isDark ? (
                   <svg
+                    aria-hidden="true"
                     className="w-5 h-5 sm:w-6 sm:h-6"
                     fill="none"
                     stroke="currentColor"
@@ -92,6 +94,7 @@ export default function Navbar() {
                   </svg>
                 ) : (
                   <svg
+                    aria-hidden="true"
                     className="w-5 h-5 sm:w-6 sm:h-6"
                     fill="none"
                     stroke="currentColor"

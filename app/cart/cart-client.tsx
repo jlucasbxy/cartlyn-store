@@ -140,6 +140,7 @@ export function CartClient({ initialItems, total }: CartClientProps) {
                   </Button>
                   <div className="flex items-center gap-2">
                     <button
+                      type="button"
                       onClick={() =>
                         handleUpdateQuantity(item.product.id, item.quantity - 1)
                       }
@@ -151,6 +152,7 @@ export function CartClient({ initialItems, total }: CartClientProps) {
                       {item.quantity}
                     </span>
                     <button
+                      type="button"
                       onClick={() =>
                         handleUpdateQuantity(item.product.id, item.quantity + 1)
                       }

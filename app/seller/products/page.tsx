@@ -98,10 +98,14 @@ export default function SellerProductsPage() {
             errorMsg={productForm.errors.price}
           />
           <div>
-            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+            <label
+              htmlFor="description"
+              className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            >
               Descrição *
             </label>
             <textarea
+              id="description"
               name="description"
               rows={4}
               className={`appearance-none rounded relative block w-full px-3 py-2 border placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm transition-colors ${
@@ -153,6 +157,7 @@ export default function SellerProductsPage() {
           <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
             <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
               <svg
+                aria-hidden="true"
                 className="w-5 h-5"
                 fill="none"
                 stroke="currentColor"
@@ -234,11 +239,13 @@ export default function SellerProductsPage() {
                 </div>
                 <div className="flex sm:flex-col gap-2 justify-end sm:justify-center">
                   <button
+                    type="button"
                     onClick={() => handleEdit(product)}
                     className="flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-md transition-colors flex-1 sm:flex-initial whitespace-nowrap"
                     title="Editar produto"
                   >
                     <svg
+                      aria-hidden="true"
                       className="w-4 h-4"
                       fill="none"
                       stroke="currentColor"
@@ -254,11 +261,13 @@ export default function SellerProductsPage() {
                     <span className="hidden sm:inline">Editar</span>
                   </button>
                   <button
+                    type="button"
                     onClick={() => deleteProduct(product.id)}
                     className="flex items-center justify-center gap-1 sm:gap-2 px-2 sm:px-3 py-2 text-xs sm:text-sm font-medium text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-md transition-colors flex-1 sm:flex-initial whitespace-nowrap"
                     title="Excluir produto"
                   >
                     <svg
+                      aria-hidden="true"
                       className="w-4 h-4"
                       fill="none"
                       stroke="currentColor"

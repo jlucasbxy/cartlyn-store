@@ -1,4 +1,5 @@
 import { redirect } from "next/navigation";
+import type { ProductDTO } from "@/dtos";
 import { auth } from "@/lib/auth";
 import { productsService } from "@/services/products-service";
 import { ServiceError } from "@/services/service-error";
@@ -11,7 +12,7 @@ export default async function ProductDetailPage({
 }) {
   const { id } = await params;
 
-  let product;
+  let product: ProductDTO;
   try {
     product = await productsService.getProductById(id);
   } catch (error) {

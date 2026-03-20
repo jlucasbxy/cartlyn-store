@@ -80,12 +80,13 @@ export function FileInput({
         className="hidden"
       />
 
-      <div
+      <button
+        type="button"
         onClick={handleClick}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`relative cursor-pointer rounded-lg border-2 border-dashed transition-all duration-200 p-8 text-center ${
+        className={`relative w-full cursor-pointer rounded-lg border-2 border-dashed transition-all duration-200 p-8 text-center ${
           isDragging
             ? "border-primary bg-primary/10 dark:bg-primary/20 scale-105"
             : "border-gray-300 dark:border-gray-600 hover:border-primary dark:hover:border-primary"
@@ -95,6 +96,7 @@ export function FileInput({
           <div className="space-y-2">
             <div className="flex items-center justify-center">
               <svg
+                aria-hidden="true"
                 className="w-12 h-12 text-green-500"
                 fill="none"
                 stroke="currentColor"
@@ -127,6 +129,7 @@ export function FileInput({
           <div className="space-y-3">
             <div className="flex items-center justify-center">
               <svg
+                aria-hidden="true"
                 className="w-12 h-12 text-gray-400 dark:text-gray-500"
                 fill="none"
                 stroke="currentColor"
@@ -155,7 +158,7 @@ export function FileInput({
             </div>
           </div>
         )}
-      </div>
+      </button>
     </div>
   );
 }

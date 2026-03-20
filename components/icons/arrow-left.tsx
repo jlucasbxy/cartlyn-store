@@ -5,6 +5,7 @@ interface ArrowLeftIconProps {
 export function ArrowLeftIcon({ className = "w-5 h-5" }: ArrowLeftIconProps) {
   return (
     <svg
+      aria-hidden="true"
       className={className}
       fill="none"
       strokeLinecap="round"

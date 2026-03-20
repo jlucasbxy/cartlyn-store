@@ -1,6 +1,6 @@
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 
 interface DashboardData {
@@ -24,6 +24,19 @@ export function useSellerDashboard() {
   );
   const [loading, setLoading] = useState(true);
 
+  const fetchDashboard = useCallback(async () => {
+    try {
+      const response = await fetch("/api/seller/dashboard");
+      if (response.ok) {
+        const data = await response.json();
+        setDashboardData(data);
+      }
+    } catch (_error) {
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
@@ -40,19 +53,6 @@ export function useSellerDashboard() {
       fetchDashboard();
     }
   }, [status, session, router, fetchDashboard]);
-
-  const fetchDashboard = async () => {
-    try {
-      const response = await fetch("/api/seller/dashboard");
-      if (response.ok) {
-        const data = await response.json();
-        setDashboardData(data);
-      }
-    } catch (_error) {
-    } finally {
-      setLoading(false);
-    }
-  };
 
   return {
     dashboardData,

@@ -114,6 +114,7 @@ export default function SettingsPage() {
         <Card className="border-2 border-red-200 dark:border-red-800">
           <div className="flex items-start gap-3 mb-4">
             <svg
+              aria-hidden="true"
               className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0"
               fill="none"
               stroke="currentColor"

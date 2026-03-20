@@ -46,6 +46,7 @@ export default function SellerDashboardPage() {
           bgColor="bg-blue-100"
           icon={
             <svg
+              aria-hidden="true"
               className="w-8 h-8 text-blue-600"
               fill="none"
               stroke="currentColor"
@@ -67,6 +68,7 @@ export default function SellerDashboardPage() {
           bgColor="bg-green-100"
           icon={
             <svg
+              aria-hidden="true"
               className="w-8 h-8 text-green-600"
               fill="none"
               stroke="currentColor"
@@ -89,6 +91,7 @@ export default function SellerDashboardPage() {
             bgColor="bg-primary/10"
             icon={
               <svg
+                aria-hidden="true"
                 className="w-8 h-8 text-primary"
                 fill="none"
                 stroke="currentColor"

@@ -108,6 +108,7 @@ export default function ProductCard({
         {session?.user.role === "CLIENT" && (
           <div className="mt-4 flex gap-2">
             <button
+              type="button"
               onClick={handleAddToCart}
               disabled={loading}
               className="flex-1 bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 disabled:opacity-50 text-sm font-medium"
@@ -115,6 +116,7 @@ export default function ProductCard({
               {loading ? "Adicionando..." : "Adicionar ao Carrinho"}
             </button>
             <button
+              type="button"
               onClick={handleToggleFavorite}
               disabled={loading}
               className={`px-4 py-2 rounded-md border-2 ${

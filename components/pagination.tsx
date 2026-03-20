@@ -16,23 +16,20 @@ export function Pagination({
   if (totalPages <= 1) return null;
 
   const getPageNumbers = () => {
-    const pages: (number | string)[] = [];
+    const pages: (number | "ellipsis-left" | "ellipsis-right")[] = [];
     const maxVisible = 5;
 
     if (totalPages <= maxVisible) {
-      // Show all pages if total is small
       for (let i = 1; i <= totalPages; i++) {
         pages.push(i);
       }
     } else {
-      // Always show first page
       pages.push(1);
 
       if (currentPage > 3) {
-        pages.push("...");
+        pages.push("ellipsis-left");
       }
 
-      // Show current page and neighbors
       const start = Math.max(2, currentPage - 1);
       const end = Math.min(totalPages - 1, currentPage + 1);
 
@@ -41,10 +38,9 @@ export function Pagination({
       }
 
       if (currentPage < totalPages - 2) {
-        pages.push("...");
+        pages.push("ellipsis-right");
       }
 
-      // Always show last page
       pages.push(totalPages);
     }
 
@@ -54,12 +50,14 @@ export function Pagination({
   return (
     <div className="flex items-center justify-center gap-2 mt-8">
       <button
+        type="button"
         onClick={onPrevious}
         disabled={currentPage === 1}
         className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         aria-label="Página anterior"
       >
         <svg
+          aria-hidden="true"
           className="w-5 h-5"
           fill="none"
           stroke="currentColor"
@@ -75,11 +73,11 @@ export function Pagination({
       </button>
 
       <div className="flex gap-1">
-        {getPageNumbers().map((page, index) => {
-          if (page === "...") {
+        {getPageNumbers().map((page) => {
+          if (page === "ellipsis-left" || page === "ellipsis-right") {
             return (
               <span
-                key={`ellipsis-${index}`}
+                key={page}
                 className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300"
               >
                 ...
@@ -92,6 +90,7 @@ export function Pagination({
 
           return (
             <button
+              type="button"
               key={pageNum}
               onClick={() => onPageChange(pageNum)}
               className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
@@ -109,12 +108,14 @@ export function Pagination({
       </div>
 
       <button
+        type="button"
         onClick={onNext}
         disabled={currentPage === totalPages}
         className="px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
         aria-label="Próxima página"
       >
         <svg
+          aria-hidden="true"
           className="w-5 h-5"
           fill="none"
           stroke="currentColor"

@@ -1,5 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface Favorite {
   id: string;
@@ -21,17 +21,7 @@ export function useFavorites(status: string) {
   const [favorites, setFavorites] = useState<Favorite[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-      return;
-    }
-    if (status === "authenticated") {
-      fetchFavorites();
-    }
-  }, [status, router, fetchFavorites]);
-
-  const fetchFavorites = async () => {
+  const fetchFavorites = useCallback(async () => {
     try {
       const response = await fetch("/api/favorites");
       if (response.ok) {
@@ -42,7 +32,17 @@ export function useFavorites(status: string) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/login");
+      return;
+    }
+    if (status === "authenticated") {
+      fetchFavorites();
+    }
+  }, [status, router, fetchFavorites]);
 
   const handleFavoriteToggle = (productId: string, isFavorite: boolean) => {
     if (!isFavorite) {
