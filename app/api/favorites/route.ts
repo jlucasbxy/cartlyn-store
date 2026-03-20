@@ -1,9 +1,8 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
+import { handleServiceError } from '@/lib/handle-service-error';
 import { z } from 'zod';
-import { Prisma } from '@prisma/client';
-import { toNumber } from '@/lib/price';
+import { favoritesService } from '@/services/favorites-service';
 
 // Get user favorites
 export async function GET() {
@@ -17,38 +16,10 @@ export async function GET() {
             );
         }
 
-        const favorites = await prisma.favorite.findMany({
-            where: { userId: session.user.id },
-            include: {
-                product: {
-                    include: {
-                        seller: {
-                            select: {
-                                id: true,
-                                name: true,
-                            },
-                        },
-                    },
-                },
-            },
-            orderBy: { createdAt: 'desc' },
-        });
-
-        return NextResponse.json(
-            favorites.map((favorite) => ({
-                ...favorite,
-                product: {
-                    ...favorite.product,
-                    price: toNumber(favorite.product.price),
-                },
-            }))
-        );
+        const favorites = await favoritesService.getFavorites(session.user.id);
+        return NextResponse.json(favorites);
     } catch (error) {
-        console.error('Favorites fetch error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao buscar favoritos' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao buscar favoritos');
     }
 }
 
@@ -74,44 +45,14 @@ export async function POST(request: Request) {
             );
         }
 
-        const { productId } = validated.data;
-
-        // Check if product exists
-        const product = await prisma.product.findUnique({
-            where: { id: productId },
-        });
-
-        if (!product) {
-            return NextResponse.json(
-                { error: 'Produto não encontrado' },
-                { status: 404 }
-            );
-        }
-
-        // Create favorite (will fail if already exists due to unique constraint)
-        const favorite = await prisma.favorite.create({
-            data: {
-                userId: session.user.id,
-                productId,
-            },
-        });
+        const favorite = await favoritesService.addFavorite(session.user.id, validated.data.productId);
 
         return NextResponse.json(
             { message: 'Produto adicionado aos favoritos', favorite },
             { status: 201 }
         );
-    } catch (e) {
-        if (e instanceof Prisma.PrismaClientKnownRequestError && e.code === 'P2002') {
-            return NextResponse.json(
-                { error: 'Produto já está nos favoritos' },
-                { status: 400 }
-            );
-        }
-        console.error('Add favorite error:', e);
-        return NextResponse.json(
-            { error: 'Erro ao adicionar favorito' },
-            { status: 500 }
-        );
+    } catch (error) {
+        return handleServiceError(error, 'Erro ao adicionar favorito');
     }
 }
 
@@ -137,21 +78,12 @@ export async function DELETE(request: Request) {
             );
         }
 
-        await prisma.favorite.deleteMany({
-            where: {
-                userId: session.user.id,
-                productId,
-            },
-        });
+        await favoritesService.removeFavorite(session.user.id, productId);
 
         return NextResponse.json({
             message: 'Produto removido dos favoritos',
         });
     } catch (error) {
-        console.error('Remove favorite error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao remover favorito' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao remover favorito');
     }
 }
