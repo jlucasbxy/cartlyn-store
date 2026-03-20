@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/lib/auth';
-import { prisma } from '@/lib/prisma';
-import type { Prisma } from "@prisma/client"
+import { handleServiceError } from '@/lib/handle-service-error';
 import { productSchema, searchProductsSchema } from '@/lib/validations';
-import { toNumber } from '@/lib/price';
+import { productsService } from '@/services/products-service';
 
 // Get products (with search and pagination)
 export async function GET(request: NextRequest) {
@@ -35,73 +34,14 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        const skip = (validated.data.page - 1) * validated.data.limit;
-
-        const where: Prisma.ProductWhereInput = {
-            active: true,
-            seller: {
-                active: true, // Only show products from active sellers
-            },
-        };
-
-        // Filter by seller if sellerId is provided
-        if (sellerId) {
-            where.sellerId = sellerId;
-        }
-
-        if (validated.data.query) {
-            where.OR = [
-                { name: { contains: validated.data.query, mode: 'insensitive' } },
-                { description: { contains: validated.data.query, mode: 'insensitive' } },
-            ];
-        }
-
-        if (validated.data.minPrice !== undefined || validated.data.maxPrice !== undefined) {
-            where.price = {};
-            if (validated.data.minPrice !== undefined) {
-                where.price.gte = validated.data.minPrice;
-            }
-            if (validated.data.maxPrice !== undefined) {
-                where.price.lte = validated.data.maxPrice;
-            }
-        }
-
-        const [products, total] = await prisma.$transaction([
-            prisma.product.findMany({
-                where,
-                skip,
-                take: validated.data.limit,
-                orderBy: { publishedAt: 'desc' },
-                include: {
-                    seller: {
-                        select: {
-                            id: true,
-                            name: true,
-                        },
-                    },
-                },
-            }),
-            prisma.product.count({ where }),
-        ]);
-
-        return NextResponse.json({
-            products: products.map((product) => ({
-                ...product,
-                price: toNumber(product.price),
-            })),
-            pagination: {
-                page: validated.data.page,
-                limit: validated.data.limit,
-                total,
-                totalPages: Math.ceil(total / validated.data.limit),
-            },
+        const result = await productsService.getProducts({
+            ...validated.data,
+            sellerId,
         });
+
+        return NextResponse.json(result);
     } catch (error) {
-        console.error('Products fetch error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao buscar produtos' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao buscar produtos');
     }
 }
 
@@ -127,28 +67,16 @@ export async function POST(request: Request) {
             );
         }
 
-        const product = await prisma.product.create({
-            data: {
-                ...validated.data,
-                sellerId: session.user.id,
-            },
-        });
+        const product = await productsService.createProduct(session.user.id, validated.data);
 
         return NextResponse.json(
             {
                 message: 'Produto criado com sucesso',
-                product: {
-                    ...product,
-                    price: toNumber(product.price),
-                },
+                product,
             },
             { status: 201 }
         );
     } catch (error) {
-        console.error('Product creation error:', error);
-        return NextResponse.json(
-            { error: 'Erro ao criar produto' },
-            { status: 500 }
-        );
+        return handleServiceError(error, 'Erro ao criar produto');
     }
 }
