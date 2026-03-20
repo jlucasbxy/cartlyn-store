@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { ServiceError } from "@/services/service-error";
+import { ServiceError } from "@/services";
 
 export function handleServiceError(error: unknown, fallbackMessage: string) {
   if (error instanceof ServiceError) {

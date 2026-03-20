@@ -1,5 +1,5 @@
 import bcrypt from "bcryptjs";
-import { usersRepository } from "@/repositories/users-repository";
+import { usersRepository } from "@/repositories";
 
 async function validateCredentials(email: string, password: string) {
   const user = await usersRepository.findActiveByEmail(email);

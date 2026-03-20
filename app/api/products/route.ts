@@ -1,8 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { handleServiceError } from "@/lib/handle-service-error";
+import { auth, handleServiceError } from "@/lib";
 import { productSchema, searchProductsSchema } from "@/schemas";
-import { productsService } from "@/services/products-service";
+import { productsService } from "@/services";
 
 // Get products (with search and pagination)
 export async function GET(request: NextRequest) {

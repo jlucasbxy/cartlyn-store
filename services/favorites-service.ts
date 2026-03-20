@@ -1,8 +1,7 @@
 import { Prisma } from "@prisma/client";
 import type { FavoriteDTO } from "@/dtos";
-import { toNumber } from "@/lib/price";
-import { favoritesRepository } from "@/repositories/favorites-repository";
-import { productsRepository } from "@/repositories/products-repository";
+import { toNumber } from "@/lib";
+import { favoritesRepository, productsRepository } from "@/repositories";
 import { ServiceError } from "@/services/service-error";
 
 async function getFavorites(userId: string): Promise<FavoriteDTO[]> {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Pagination } from "@/components/pagination";
+import { Pagination } from "@/components";
 
 interface StorePaginationProps {
   hasNextPage: boolean;

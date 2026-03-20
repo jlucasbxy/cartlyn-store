@@ -4,13 +4,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { addToCart } from "@/app/actions/cart";
-import { addFavorite } from "@/app/actions/favorites";
-import { Button } from "@/components/button";
-import { Card } from "@/components/card";
-import { FormInput } from "@/components/form-input";
+import { addToCart, addFavorite } from "@/app/actions";
+import { Button, Card, FormInput, PageLayout } from "@/components";
 import { ArrowLeftIcon } from "@/components/icons";
-import { PageLayout } from "@/components/page-layout";
 
 interface Product {
   id: string;

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { handleServiceError } from "@/lib/handle-service-error";
-import { sellerDashboardService } from "@/services/seller-dashboard-service";
+import { auth, handleServiceError } from "@/lib";
+import { sellerDashboardService } from "@/services";
 
 export async function GET() {
   try {

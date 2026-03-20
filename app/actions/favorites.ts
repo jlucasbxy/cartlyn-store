@@ -1,7 +1,7 @@
 "use server";
 
-import { auth } from "@/lib/auth";
-import { favoritesService } from "@/services/favorites-service";
+import { auth } from "@/lib";
+import { favoritesService } from "@/services";
 
 export async function addFavorite(productId: string) {
   const session = await auth();

@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib";
 import type { RegisterInput } from "@/schemas";
 
 function findByEmail(email: string) {

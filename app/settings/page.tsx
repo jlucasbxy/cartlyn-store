@@ -4,12 +4,8 @@ import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Button } from "@/components/button";
-import { Card } from "@/components/card";
-import { ConfirmModal } from "@/components/confirm-modal";
-import Loading from "@/components/loading";
-import { PageLayout } from "@/components/page-layout";
-import { useConfirm } from "@/hooks/use-confirm";
+import { Button, Card, ConfirmModal, Loading, PageLayout } from "@/components";
+import { useConfirm } from "@/hooks";
 
 export default function SettingsPage() {
   const router = useRouter();

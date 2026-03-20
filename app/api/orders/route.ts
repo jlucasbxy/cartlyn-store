@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { handleServiceError } from "@/lib/handle-service-error";
-import { ordersService } from "@/services/orders-service";
+import { auth, handleServiceError } from "@/lib";
+import { ordersService } from "@/services";
 
 // Get user order history
 export async function GET() {

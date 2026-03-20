@@ -1,9 +1,7 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { Button } from "@/components/button";
-import { Card } from "@/components/card";
-import { FormInput } from "@/components/form-input";
+import { Button, Card, FormInput } from "@/components";
 
 export function StoreFilters() {
   const router = useRouter();

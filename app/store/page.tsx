@@ -1,6 +1,5 @@
-import { PageLayout } from "@/components/page-layout";
-import ProductCard from "@/components/product-card";
-import { productsService } from "@/services/products-service";
+import { PageLayout, ProductCard } from "@/components";
+import { productsService } from "@/services";
 import { StoreFilters } from "./store-filters";
 import { StorePagination } from "./store-pagination";
 

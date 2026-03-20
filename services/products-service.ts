@@ -1,6 +1,6 @@
 import type { ProductBaseDTO, ProductDTO, ProductListDTO } from "@/dtos";
-import { toNumber } from "@/lib/price";
-import { productsRepository } from "@/repositories/products-repository";
+import { toNumber } from "@/lib";
+import { productsRepository } from "@/repositories";
 import type {
   ProductInput,
   ProductUpdateInput,

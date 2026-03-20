@@ -4,10 +4,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { Button } from "@/components/button";
-import { FormInput } from "@/components/form-input";
-import Loading from "@/components/loading";
-import { useRegisterForm } from "@/hooks/use-register-form";
+import { Button, FormInput, Loading } from "@/components";
+import { useRegisterForm } from "@/hooks";
 
 export default function RegisterPage() {
   const router = useRouter();

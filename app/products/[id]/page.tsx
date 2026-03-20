@@ -1,8 +1,7 @@
 import { redirect } from "next/navigation";
 import type { ProductDTO } from "@/dtos";
-import { auth } from "@/lib/auth";
-import { productsService } from "@/services/products-service";
-import { ServiceError } from "@/services/service-error";
+import { auth } from "@/lib";
+import { productsService, ServiceError } from "@/services";
 import { ProductDetailsClient } from "./product-details-client";
 
 export default async function ProductDetailPage({

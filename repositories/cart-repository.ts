@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib";
 
 function findUserCart(userId: string) {
   return prisma.cartItem.findMany({

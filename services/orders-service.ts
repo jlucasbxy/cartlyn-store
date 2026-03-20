@@ -1,8 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import type { OrderDTO } from "@/dtos";
-import { toNumber } from "@/lib/price";
-import { cartRepository } from "@/repositories/cart-repository";
-import { ordersRepository } from "@/repositories/orders-repository";
+import { toNumber } from "@/lib";
+import { cartRepository, ordersRepository } from "@/repositories";
 import { ServiceError } from "@/services/service-error";
 
 type SerializableOrderItem = {

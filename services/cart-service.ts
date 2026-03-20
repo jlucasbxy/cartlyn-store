@@ -1,8 +1,7 @@
 import { Prisma } from "@prisma/client";
 import type { CartDTO, CartItemBaseDTO } from "@/dtos";
-import { toNumber } from "@/lib/price";
-import { cartRepository } from "@/repositories/cart-repository";
-import { productsRepository } from "@/repositories/products-repository";
+import { toNumber } from "@/lib";
+import { cartRepository, productsRepository } from "@/repositories";
 import { ServiceError } from "@/services/service-error";
 
 async function getCart(userId: string): Promise<CartDTO> {

@@ -1,13 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Button } from "@/components/button";
-import { Card } from "@/components/card";
-import { EmptyState } from "@/components/empty-state";
-import Loading from "@/components/loading";
-import { PageLayout } from "@/components/page-layout";
-import { StatsCard } from "@/components/stats-card";
-import { useSellerDashboard } from "@/hooks/use-seller-dashboard";
+import { Button, Card, EmptyState, Loading, PageLayout, StatsCard } from "@/components";
+import { useSellerDashboard } from "@/hooks";
 
 export default function SellerDashboardPage() {
   const { dashboardData, loading, status, router } = useSellerDashboard();

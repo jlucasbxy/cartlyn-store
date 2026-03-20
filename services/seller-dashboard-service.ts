@@ -1,7 +1,6 @@
 import type { DashboardDTO } from "@/dtos";
-import { toNumber } from "@/lib/price";
-import { productsRepository } from "@/repositories/products-repository";
-import { sellerDashboardRepository } from "@/repositories/seller-dashboard-repository";
+import { toNumber } from "@/lib";
+import { productsRepository, sellerDashboardRepository } from "@/repositories";
 
 async function getDashboard(sellerId: string): Promise<DashboardDTO> {
   const stats = await sellerDashboardRepository.getDashboardStats(sellerId);

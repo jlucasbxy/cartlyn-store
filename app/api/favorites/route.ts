@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { handleServiceError } from "@/lib/handle-service-error";
+import { auth, handleServiceError } from "@/lib";
 import { favoriteSchema } from "@/schemas";
-import { favoritesService } from "@/services/favorites-service";
+import { favoritesService } from "@/services";
 
 // Get user favorites
 export async function GET() {

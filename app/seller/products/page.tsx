@@ -1,17 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import { Button } from "@/components/button";
-import { Card } from "@/components/card";
-import { ConfirmModal } from "@/components/confirm-modal";
-import { EmptyState } from "@/components/empty-state";
-import { FileInput } from "@/components/file-input";
-import { FormInput } from "@/components/form-input";
-import Loading from "@/components/loading";
-import { Modal } from "@/components/modal";
-import { PageLayout } from "@/components/page-layout";
-import { Pagination } from "@/components/pagination";
-import { useSellerProductsPage } from "@/hooks/use-seller-products-page";
+import { Button, Card, ConfirmModal, EmptyState, FileInput, FormInput, Loading, Modal, PageLayout, Pagination } from "@/components";
+import { useSellerProductsPage } from "@/hooks";
 
 export default function SellerProductsPage() {
   const {

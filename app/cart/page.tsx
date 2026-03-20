@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
-import { cartService } from "@/services/cart-service";
+import { auth } from "@/lib";
+import { cartService } from "@/services";
 import { CartClient } from "./cart-client";
 
 export default async function CartPage() {

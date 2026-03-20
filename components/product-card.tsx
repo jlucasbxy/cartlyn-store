@@ -5,8 +5,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { toast } from "react-toastify";
-import { addToCart } from "@/app/actions/cart";
-import { addFavorite, removeFavorite } from "@/app/actions/favorites";
+import { addToCart, addFavorite, removeFavorite } from "@/app/actions";
 
 interface ProductCardProps {
   product: {

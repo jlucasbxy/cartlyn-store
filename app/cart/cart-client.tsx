@@ -4,13 +4,9 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { startTransition, useState } from "react";
 import { toast } from "react-toastify";
-import { checkout, removeFromCart, updateCartItem } from "@/app/actions/cart";
-import { Button } from "@/components/button";
-import { Card } from "@/components/card";
-import { ConfirmModal } from "@/components/confirm-modal";
-import { EmptyState } from "@/components/empty-state";
-import { PageLayout } from "@/components/page-layout";
-import { useConfirm } from "@/hooks/use-confirm";
+import { checkout, removeFromCart, updateCartItem } from "@/app/actions";
+import { Button, Card, ConfirmModal, EmptyState, PageLayout } from "@/components";
+import { useConfirm } from "@/hooks";
 
 interface CartItem {
   id: string;

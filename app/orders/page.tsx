@@ -3,11 +3,8 @@
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { Card } from "@/components/card";
-import { EmptyState } from "@/components/empty-state";
-import Loading from "@/components/loading";
-import { PageLayout } from "@/components/page-layout";
-import { useOrders } from "@/hooks/use-orders";
+import { Card, EmptyState, Loading, PageLayout } from "@/components";
+import { useOrders } from "@/hooks";
 
 export default function OrdersPage() {
   const router = useRouter();

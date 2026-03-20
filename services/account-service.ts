@@ -1,4 +1,4 @@
-import { usersRepository } from "@/repositories/users-repository";
+import { usersRepository } from "@/repositories";
 import { ServiceError } from "@/services/service-error";
 
 async function deactivateOrDeleteAccount(userId: string, role: string) {

@@ -1,11 +1,8 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { EmptyState } from "@/components/empty-state";
-import Loading from "@/components/loading";
-import { PageLayout } from "@/components/page-layout";
-import ProductCard from "@/components/product-card";
-import { useFavorites } from "@/hooks/use-favorites";
+import { EmptyState, Loading, PageLayout, ProductCard } from "@/components";
+import { useFavorites } from "@/hooks";
 
 export default function FavoritesPage() {
   const router = useRouter();

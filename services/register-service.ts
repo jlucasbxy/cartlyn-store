@@ -1,6 +1,6 @@
 import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
-import { usersRepository } from "@/repositories/users-repository";
+import { usersRepository } from "@/repositories";
 import type { RegisterInput } from "@/schemas";
 import { ServiceError } from "@/services/service-error";
 

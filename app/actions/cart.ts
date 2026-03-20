@@ -2,9 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib/auth";
-import { cartService } from "@/services/cart-service";
-import { ordersService } from "@/services/orders-service";
+import { auth } from "@/lib";
+import { cartService, ordersService } from "@/services";
 
 export async function addToCart(productId: string, quantity: number) {
   const session = await auth();

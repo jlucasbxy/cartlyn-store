@@ -3,10 +3,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
-import { Button } from "@/components/button";
-import { FormInput } from "@/components/form-input";
-import Loading from "@/components/loading";
-import { useLoginForm } from "@/hooks/use-login-form";
+import { Button, FormInput, Loading } from "@/components";
+import { useLoginForm } from "@/hooks";
 
 export default function LoginPage() {
   const router = useRouter();

@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
-import { handleServiceError } from "@/lib/handle-service-error";
-import { accountService } from "@/services/account-service";
+import { auth, handleServiceError } from "@/lib";
+import { accountService } from "@/services";
 
 // DELETE - Delete client account or deactivate seller account
 export async function DELETE() {

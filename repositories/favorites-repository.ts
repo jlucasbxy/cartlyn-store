@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib";
 
 function findUserFavorites(userId: string) {
   return prisma.favorite.findMany({

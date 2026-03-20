@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
 import Papa from "papaparse";
-import { auth } from "@/lib/auth";
-import { handleServiceError } from "@/lib/handle-service-error";
+import { auth, handleServiceError } from "@/lib";
 import { csvProductSchema } from "@/schemas";
-import { productsService } from "@/services/products-service";
+import { productsService } from "@/services";
 
 export async function POST(request: Request): Promise<Response> {
   try {
