@@ -3,8 +3,9 @@ import { toNumber } from '@/lib/price';
 import { cartRepository } from '@/repositories/cart-repository';
 import { productsRepository } from '@/repositories/products-repository';
 import { ServiceError } from '@/services/service-error';
+import type { CartDTO, CartItemBaseDTO } from '@/dtos';
 
-async function getCart(userId: string) {
+async function getCart(userId: string): Promise<CartDTO> {
     const cartItems = await cartRepository.findUserCart(userId);
 
     const total = cartItems.reduce(
@@ -24,7 +25,7 @@ async function getCart(userId: string) {
     };
 }
 
-async function addToCart(userId: string, productId: string, quantity: number) {
+async function addToCart(userId: string, productId: string, quantity: number): Promise<CartItemBaseDTO> {
     const product = await productsRepository.findById(productId);
 
     if (!product || !product.active) {
@@ -42,7 +43,7 @@ async function addToCart(userId: string, productId: string, quantity: number) {
     };
 }
 
-async function updateCartItem(userId: string, productId: string, quantity: number) {
+async function updateCartItem(userId: string, productId: string, quantity: number): Promise<CartItemBaseDTO> {
     try {
         const cartItem = await cartRepository.updateQuantity(userId, productId, quantity);
 

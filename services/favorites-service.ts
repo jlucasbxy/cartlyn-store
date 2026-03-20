@@ -3,8 +3,9 @@ import { toNumber } from '@/lib/price';
 import { favoritesRepository } from '@/repositories/favorites-repository';
 import { productsRepository } from '@/repositories/products-repository';
 import { ServiceError } from '@/services/service-error';
+import type { FavoriteDTO } from '@/dtos';
 
-async function getFavorites(userId: string) {
+async function getFavorites(userId: string): Promise<FavoriteDTO[]> {
     const favorites = await favoritesRepository.findUserFavorites(userId);
 
     return favorites.map((favorite) => ({

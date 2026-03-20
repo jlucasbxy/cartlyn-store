@@ -3,38 +3,54 @@ import { cartRepository } from '@/repositories/cart-repository';
 import { ordersRepository } from '@/repositories/orders-repository';
 import { ServiceError } from '@/services/service-error';
 import type { Prisma } from '@prisma/client';
+import type { OrderDTO } from '@/dtos';
 
-type NumericLike = Prisma.Decimal | number | string | null | undefined;
+type SerializableOrderItem = {
+    id: string;
+    orderId: string;
+    productId: string;
+    quantity: number;
+    price: Prisma.Decimal | number;
+    productName: string;
+    product: { id: string; name: string; imageUrl: string };
+};
 
-function serializeOrder(order: {
-    total: NumericLike;
-    items: Array<{
-        price: NumericLike;
-        product: { price?: NumericLike } & Record<string, unknown>;
-    }>;
-} & Record<string, unknown>) {
+type SerializableOrder = {
+    id: string;
+    userId: string;
+    total: Prisma.Decimal | number;
+    createdAt: Date;
+    items: SerializableOrderItem[];
+};
+
+function serializeOrder(order: SerializableOrder): OrderDTO {
     return {
-        ...order,
+        id: order.id,
+        userId: order.userId,
         total: toNumber(order.total),
+        createdAt: order.createdAt,
         items: order.items.map((item) => ({
-            ...item,
+            id: item.id,
+            orderId: item.orderId,
+            productId: item.productId,
+            quantity: item.quantity,
             price: toNumber(item.price),
-            product: item.product.price !== undefined
-                ? {
-                    ...item.product,
-                    price: toNumber(item.product.price),
-                }
-                : item.product,
+            productName: item.productName,
+            product: {
+                id: item.product.id,
+                name: item.product.name,
+                imageUrl: item.product.imageUrl,
+            },
         })),
     };
 }
 
-async function getOrders(userId: string) {
+async function getOrders(userId: string): Promise<OrderDTO[]> {
     const orders = await ordersRepository.findUserOrders(userId);
     return orders.map(serializeOrder);
 }
 
-async function checkout(userId: string) {
+async function checkout(userId: string): Promise<OrderDTO> {
     const cartItems = await cartRepository.findUserCartWithProducts(userId);
 
     if (cartItems.length === 0) {

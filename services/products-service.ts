@@ -2,12 +2,13 @@ import { toNumber } from '@/lib/price';
 import type { ProductInput, ProductUpdateInput, SearchProductsInput } from '@/schemas';
 import { productsRepository } from '@/repositories/products-repository';
 import { ServiceError } from '@/services/service-error';
+import type { ProductBaseDTO, ProductDTO, ProductListDTO } from '@/dtos';
 
 type SearchProductsFilters = SearchProductsInput & {
     sellerId?: string;
 };
 
-async function getProducts(filters: SearchProductsFilters) {
+async function getProducts(filters: SearchProductsFilters): Promise<ProductListDTO> {
     const { products, total } = await productsRepository.findProducts(filters);
 
     return {
@@ -24,7 +25,7 @@ async function getProducts(filters: SearchProductsFilters) {
     };
 }
 
-async function getProductById(id: string) {
+async function getProductById(id: string): Promise<ProductDTO> {
     const product = await productsRepository.findVisibleById(id);
 
     if (!product) {
@@ -37,7 +38,7 @@ async function getProductById(id: string) {
     };
 }
 
-async function createProduct(sellerId: string, data: ProductInput) {
+async function createProduct(sellerId: string, data: ProductInput): Promise<ProductBaseDTO> {
     const product = await productsRepository.createProduct(sellerId, data);
 
     return {
@@ -46,7 +47,7 @@ async function createProduct(sellerId: string, data: ProductInput) {
     };
 }
 
-async function updateProduct(sellerId: string, productId: string, data: ProductUpdateInput) {
+async function updateProduct(sellerId: string, productId: string, data: ProductUpdateInput): Promise<ProductBaseDTO> {
     const existingProduct = await productsRepository.findById(productId);
 
     if (!existingProduct) {
