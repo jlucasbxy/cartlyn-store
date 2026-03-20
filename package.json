@@ -20,6 +20,7 @@
     "papaparse": "^5.5.3",
     "pg": "^8.20.0",
     "prisma": "^7.5.0",
+    "rate-limiter-flexible": "^10.0.1",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-toastify": "^11.0.5",
