@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
 import { useColorScheme } from "@/hooks";
 
 interface NavLinkProps {
