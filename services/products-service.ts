@@ -1,6 +1,5 @@
-import { ErrorCode } from "@/dtos";
 import type { ProductBaseDTO, ProductDTO, ProductListDTO } from "@/dtos";
-import { NotFoundError, UnauthorizedError } from "@/errors";
+import { ProductNotFoundError, UnauthorizedError } from "@/errors";
 import { toNumber } from "@/lib";
 import { productsRepository } from "@/repositories";
 import type {
@@ -36,7 +35,7 @@ async function getProductById(id: string): Promise<ProductDTO> {
   const product = await productsRepository.findVisibleById(id);
 
   if (!product) {
-    throw new NotFoundError(ErrorCode.PRODUCT_NOT_FOUND, "Produto não encontrado");
+    throw new ProductNotFoundError();
   }
 
   return {
@@ -65,7 +64,7 @@ async function updateProduct(
   const existingProduct = await productsRepository.findById(productId);
 
   if (!existingProduct) {
-    throw new NotFoundError(ErrorCode.PRODUCT_NOT_FOUND, "Produto não encontrado");
+    throw new ProductNotFoundError();
   }
 
   if (existingProduct.sellerId !== sellerId) {
@@ -84,7 +83,7 @@ async function deleteProduct(sellerId: string, productId: string) {
   const existingProduct = await productsRepository.findById(productId);
 
   if (!existingProduct) {
-    throw new NotFoundError(ErrorCode.PRODUCT_NOT_FOUND, "Produto não encontrado");
+    throw new ProductNotFoundError();
   }
 
   if (existingProduct.sellerId !== sellerId) {

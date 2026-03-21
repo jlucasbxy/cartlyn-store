@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { ErrorCode } from "@/dtos";
 import type { FavoriteDTO } from "@/dtos";
-import { ConflictError, NotFoundError } from "@/errors";
+import { ConflictError, ProductNotFoundError } from "@/errors";
 import { toNumber } from "@/lib";
 import { favoritesRepository, productsRepository } from "@/repositories";
 
@@ -21,7 +21,7 @@ async function addFavorite(userId: string, productId: string) {
   const product = await productsRepository.findById(productId);
 
   if (!product) {
-    throw new NotFoundError(ErrorCode.PRODUCT_NOT_FOUND, "Produto não encontrado");
+    throw new ProductNotFoundError();
   }
 
   try {
