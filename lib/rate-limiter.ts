@@ -1,43 +1,24 @@
-import {
-  RateLimiterMemory,
-  RateLimiterRedis,
-  RateLimiterRes
-} from "rate-limiter-flexible";
+import Redis from "ioredis";
+import { RateLimiterRedis, RateLimiterRes } from "rate-limiter-flexible";
+import { env } from "@/config/env.config";
 import {
   type RateLimitTier,
   rateLimiterConfig
 } from "@/config/rate-limiter.config";
 
-type RateLimiter = RateLimiterMemory | RateLimiterRedis;
-
-function createLimiters(): Record<RateLimitTier, RateLimiter> {
-  const redisUrl = process.env.REDIS_URL;
-
-  if (redisUrl) {
-    // Dynamic import avoids bundling ioredis when REDIS_URL is not set
-    // biome-ignore lint: dynamic conditional import
-    const Redis = require("ioredis");
-    const redis = new Redis(redisUrl);
-
-    return Object.fromEntries(
-      Object.entries(rateLimiterConfig).map(([tier, cfg]) => [
-        tier,
-        new RateLimiterRedis({
-          storeClient: redis,
-          keyPrefix: `rl:${tier}`,
-          ...cfg,
-          insuranceLimiter: new RateLimiterMemory(cfg)
-        })
-      ])
-    ) as Record<RateLimitTier, RateLimiterRedis>;
-  }
+function createLimiters(): Record<RateLimitTier, RateLimiterRedis> {
+  const redis = new Redis(env.redisUrl);
 
   return Object.fromEntries(
     Object.entries(rateLimiterConfig).map(([tier, cfg]) => [
       tier,
-      new RateLimiterMemory(cfg)
+      new RateLimiterRedis({
+        storeClient: redis,
+        keyPrefix: `rl:${tier}`,
+        ...cfg
+      })
     ])
-  ) as Record<RateLimitTier, RateLimiterMemory>;
+  ) as Record<RateLimitTier, RateLimiterRedis>;
 }
 
 const limiters = createLimiters();
