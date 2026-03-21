@@ -1,7 +1,6 @@
 import { Prisma } from "@prisma/client";
-import { ErrorCode } from "@/dtos";
 import type { FavoriteDTO } from "@/dtos";
-import { ConflictError, ProductNotFoundError } from "@/errors";
+import { ProductAlreadyFavoritedError, ProductNotFoundError } from "@/errors";
 import { toNumber } from "@/lib";
 import { favoritesRepository, productsRepository } from "@/repositories";
 
@@ -31,7 +30,7 @@ async function addFavorite(userId: string, productId: string) {
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
-      throw new ConflictError(ErrorCode.PRODUCT_ALREADY_FAVORITED, "Produto já está nos favoritos");
+      throw new ProductAlreadyFavoritedError();
     }
 
     throw error;

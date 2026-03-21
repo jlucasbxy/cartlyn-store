@@ -10,3 +10,4 @@ export { ProductNotFoundOrUnavailableError } from "./product-not-found-or-unavai
 export { CartItemNotFoundError } from "./cart-item-not-found-error";
 export { CartEmptyError } from "./cart-empty-error";
 export { CartItemsUnavailableError } from "./cart-items-unavailable-error";
+export { ProductAlreadyFavoritedError } from "./product-already-favorited-error";
