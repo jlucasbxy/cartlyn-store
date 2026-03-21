@@ -1,7 +1,8 @@
 import { redirect } from "next/navigation";
 import type { ProductDTO } from "@/dtos";
 import { auth } from "@/lib";
-import { productsService, ServiceError } from "@/services";
+import { NotFoundError } from "@/errors";
+import { productsService } from "@/services";
 import { ProductDetailsClient } from "./product-details-client";
 
 export default async function ProductDetailPage({
@@ -15,7 +16,7 @@ export default async function ProductDetailPage({
   try {
     product = await productsService.getProductById(id);
   } catch (error) {
-    if (error instanceof ServiceError && error.status === 404) {
+    if (error instanceof NotFoundError) {
       redirect("/store");
     }
     throw error;

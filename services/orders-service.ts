@@ -1,8 +1,9 @@
 import type { Prisma } from "@prisma/client";
+import { ErrorCode } from "@/dtos";
 import type { OrderDTO } from "@/dtos";
+import { ValidationError } from "@/errors";
 import { toNumber } from "@/lib";
 import { cartRepository, ordersRepository } from "@/repositories";
-import { ServiceError } from "@/services/service-error";
 
 type SerializableOrderItem = {
   id: string;
@@ -53,18 +54,16 @@ async function checkout(userId: string): Promise<OrderDTO> {
   const cartItems = await cartRepository.findUserCartWithProducts(userId);
 
   if (cartItems.length === 0) {
-    throw new ServiceError("Carrinho vazio", 400);
+    throw new ValidationError(ErrorCode.CART_EMPTY, "Carrinho vazio");
   }
 
   const inactiveProducts = cartItems.filter((item) => !item.product.active);
 
   if (inactiveProducts.length > 0) {
-    throw new ServiceError(
+    throw new ValidationError(
+      ErrorCode.CART_ITEMS_UNAVAILABLE,
       "Alguns produtos no carrinho não estão mais disponíveis",
-      400,
-      {
-        inactiveProducts: inactiveProducts.map((item) => item.product.name)
-      }
+      { inactiveProducts: inactiveProducts.map((item) => item.product.name) }
     );
   }
 

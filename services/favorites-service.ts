@@ -1,8 +1,9 @@
 import { Prisma } from "@prisma/client";
+import { ErrorCode } from "@/dtos";
 import type { FavoriteDTO } from "@/dtos";
+import { ConflictError, NotFoundError } from "@/errors";
 import { toNumber } from "@/lib";
 import { favoritesRepository, productsRepository } from "@/repositories";
-import { ServiceError } from "@/services/service-error";
 
 async function getFavorites(userId: string): Promise<FavoriteDTO[]> {
   const favorites = await favoritesRepository.findUserFavorites(userId);
@@ -20,7 +21,7 @@ async function addFavorite(userId: string, productId: string) {
   const product = await productsRepository.findById(productId);
 
   if (!product) {
-    throw new ServiceError("Produto não encontrado", 404);
+    throw new NotFoundError(ErrorCode.PRODUCT_NOT_FOUND, "Produto não encontrado");
   }
 
   try {
@@ -30,7 +31,7 @@ async function addFavorite(userId: string, productId: string) {
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
-      throw new ServiceError("Produto já está nos favoritos", 400);
+      throw new ConflictError(ErrorCode.PRODUCT_ALREADY_FAVORITED, "Produto já está nos favoritos");
     }
 
     throw error;

@@ -6,4 +6,3 @@ export { ordersService } from "./orders-service";
 export { productsService } from "./products-service";
 export { registerService } from "./register-service";
 export { sellerDashboardService } from "./seller-dashboard-service";
-export { ServiceError } from "./service-error";

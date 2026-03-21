@@ -1,14 +1,15 @@
 import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { ErrorCode } from "@/dtos";
+import { ConflictError } from "@/errors";
 import { usersRepository } from "@/repositories";
 import type { RegisterInput } from "@/schemas";
-import { ServiceError } from "@/services/service-error";
 
 async function registerUser(data: RegisterInput) {
   const existingUser = await usersRepository.findByEmail(data.email);
 
   if (existingUser) {
-    throw new ServiceError("Email já cadastrado", 400);
+    throw new ConflictError(ErrorCode.EMAIL_ALREADY_EXISTS, "Email já cadastrado");
   }
 
   const hashedPassword = await bcrypt.hash(data.password, 10);
@@ -25,7 +26,7 @@ async function registerUser(data: RegisterInput) {
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
-      throw new ServiceError("Email já cadastrado", 400);
+      throw new ConflictError(ErrorCode.EMAIL_ALREADY_EXISTS, "Email já cadastrado");
     }
 
     throw error;

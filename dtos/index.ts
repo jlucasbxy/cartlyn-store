@@ -1,3 +1,4 @@
+export { ErrorCode } from "@/dtos/error-code-dto";
 export type {
   CartDTO,
   CartItemBaseDTO,

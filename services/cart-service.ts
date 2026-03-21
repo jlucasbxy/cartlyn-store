@@ -1,8 +1,9 @@
 import { Prisma } from "@prisma/client";
+import { ErrorCode } from "@/dtos";
 import type { CartDTO, CartItemBaseDTO } from "@/dtos";
+import { NotFoundError } from "@/errors";
 import { toNumber } from "@/lib";
 import { cartRepository, productsRepository } from "@/repositories";
-import { ServiceError } from "@/services/service-error";
 
 async function getCart(userId: string): Promise<CartDTO> {
   const cartItems = await cartRepository.findUserCart(userId);
@@ -32,7 +33,7 @@ async function addToCart(
   const product = await productsRepository.findById(productId);
 
   if (!product || !product.active) {
-    throw new ServiceError("Produto não encontrado ou indisponível", 404);
+    throw new NotFoundError(ErrorCode.PRODUCT_NOT_FOUND_OR_UNAVAILABLE, "Produto não encontrado ou indisponível");
   }
 
   const cartItem = await cartRepository.upsertItem(userId, productId, quantity);
@@ -70,7 +71,7 @@ async function updateCartItem(
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2025"
     ) {
-      throw new ServiceError("Item não encontrado no carrinho", 404);
+      throw new NotFoundError(ErrorCode.CART_ITEM_NOT_FOUND, "Item não encontrado no carrinho");
     }
 
     throw error;
@@ -85,7 +86,7 @@ async function removeFromCart(userId: string, productId: string) {
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2025"
     ) {
-      throw new ServiceError("Item não encontrado no carrinho", 404);
+      throw new NotFoundError(ErrorCode.CART_ITEM_NOT_FOUND, "Item não encontrado no carrinho");
     }
 
     throw error;

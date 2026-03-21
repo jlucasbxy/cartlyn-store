@@ -1,4 +1,6 @@
+import { ErrorCode } from "@/dtos";
 import type { ProductBaseDTO, ProductDTO, ProductListDTO } from "@/dtos";
+import { NotFoundError, UnauthorizedError } from "@/errors";
 import { toNumber } from "@/lib";
 import { productsRepository } from "@/repositories";
 import type {
@@ -6,7 +8,6 @@ import type {
   ProductUpdateInput,
   SearchProductsInput
 } from "@/schemas";
-import { ServiceError } from "@/services/service-error";
 
 type SearchProductsFilters = SearchProductsInput & {
   sellerId?: string;
@@ -35,7 +36,7 @@ async function getProductById(id: string): Promise<ProductDTO> {
   const product = await productsRepository.findVisibleById(id);
 
   if (!product) {
-    throw new ServiceError("Produto não encontrado", 404);
+    throw new NotFoundError(ErrorCode.PRODUCT_NOT_FOUND, "Produto não encontrado");
   }
 
   return {
@@ -64,11 +65,11 @@ async function updateProduct(
   const existingProduct = await productsRepository.findById(productId);
 
   if (!existingProduct) {
-    throw new ServiceError("Produto não encontrado", 404);
+    throw new NotFoundError(ErrorCode.PRODUCT_NOT_FOUND, "Produto não encontrado");
   }
 
   if (existingProduct.sellerId !== sellerId) {
-    throw new ServiceError("Não autorizado", 403);
+    throw new UnauthorizedError(ErrorCode.UNAUTHORIZED);
   }
 
   const product = await productsRepository.updateById(productId, data);
@@ -83,11 +84,11 @@ async function deleteProduct(sellerId: string, productId: string) {
   const existingProduct = await productsRepository.findById(productId);
 
   if (!existingProduct) {
-    throw new ServiceError("Produto não encontrado", 404);
+    throw new NotFoundError(ErrorCode.PRODUCT_NOT_FOUND, "Produto não encontrado");
   }
 
   if (existingProduct.sellerId !== sellerId) {
-    throw new ServiceError("Não autorizado", 403);
+    throw new UnauthorizedError(ErrorCode.UNAUTHORIZED);
   }
 
   await productsRepository.deactivateById(productId);
