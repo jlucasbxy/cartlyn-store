@@ -37,13 +37,13 @@ export function CartClient({ initialItems, total }: CartClientProps) {
     newQuantity: number
   ) => {
     if (newQuantity < 1) return;
-    try {
-      await updateCartItem(productId, newQuantity);
-      startTransition(() => router.refresh());
-      toast.success("Quantidade atualizada");
-    } catch {
-      toast.error("Erro ao atualizar quantidade");
+    const result = await updateCartItem(productId, newQuantity);
+    if ("error" in result) {
+      toast.error(result.error);
+      return;
     }
+    startTransition(() => router.refresh());
+    toast.success("Quantidade atualizada");
   };
 
   const handleRemoveItem = async (productId: string) => {
@@ -56,13 +56,13 @@ export function CartClient({ initialItems, total }: CartClientProps) {
 
     if (!confirmed) return;
 
-    try {
-      await removeFromCart(productId);
-      startTransition(() => router.refresh());
-      toast.success("Item removido do carrinho");
-    } catch {
-      toast.error("Erro ao remover item");
+    const result = await removeFromCart(productId);
+    if ("error" in result) {
+      toast.error(result.error);
+      return;
     }
+    startTransition(() => router.refresh());
+    toast.success("Item removido do carrinho");
   };
 
   const handleCheckout = async () => {
@@ -81,10 +81,9 @@ export function CartClient({ initialItems, total }: CartClientProps) {
     if (!confirmed) return;
 
     setCheckoutLoading(true);
-    try {
-      await checkout();
-    } catch {
-      toast.error("Erro ao finalizar pedido");
+    const result = await checkout();
+    if (result && "error" in result) {
+      toast.error(result.error);
       setCheckoutLoading(false);
     }
   };
