@@ -1,9 +1,15 @@
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib";
 import { sellerDashboardService } from "@/services";
 import { Card, PageLayout, StatsCard } from "@/components";
+
+export const metadata: Metadata = {
+  title: "Dashboard - Cartlyn Store",
+  description: "Painel do vendedor"
+};
 
 export default async function SellerDashboardPage() {
   const session = await auth();
