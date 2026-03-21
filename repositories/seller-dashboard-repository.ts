@@ -1,57 +1,68 @@
 import type { Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { prisma } from "@/lib";
 import { productsRepository } from "@/repositories/products-repository";
 
-async function getDashboardStats(sellerId: string) {
-  const totalProducts = await productsRepository.countBySeller(sellerId);
+type Deps = {
+  prisma: PrismaClient;
+  productsRepository: typeof productsRepository;
+};
 
-  const productsSoldAggregate = await prisma.orderItem.aggregate({
-    where: {
-      product: {
-        sellerId
+export function createSellerDashboardRepository(deps: Deps) {
+  async function getDashboardStats(sellerId: string) {
+    const totalProducts = await deps.productsRepository.countBySeller(sellerId);
+
+    const productsSoldAggregate = await deps.prisma.orderItem.aggregate({
+      where: {
+        product: {
+          sellerId
+        }
+      },
+      _sum: {
+        quantity: true
       }
-    },
-    _sum: {
-      quantity: true
-    }
-  });
+    });
 
-  const totalRevenueRows = await prisma.$queryRaw<
-    Array<{ total: Prisma.Decimal | null }>
-  >`
+    const totalRevenueRows = await deps.prisma.$queryRaw<
+      Array<{ total: Prisma.Decimal | null }>
+    >`
         SELECT COALESCE(SUM(oi."price" * oi."quantity"), 0) AS total
         FROM "OrderItem" oi
         INNER JOIN "Product" p ON p."id" = oi."productId"
         WHERE p."sellerId" = ${sellerId}
     `;
 
-  const topProducts = await prisma.orderItem.groupBy({
-    by: ["productId"],
-    where: {
-      product: {
-        sellerId
-      }
-    },
-    _sum: {
-      quantity: true
-    },
-    orderBy: {
+    const topProducts = await deps.prisma.orderItem.groupBy({
+      by: ["productId"],
+      where: {
+        product: {
+          sellerId
+        }
+      },
       _sum: {
-        quantity: "desc"
-      }
-    },
-    take: 1
-  });
+        quantity: true
+      },
+      orderBy: {
+        _sum: {
+          quantity: "desc"
+        }
+      },
+      take: 1
+    });
 
-  return {
-    totalProducts,
-    totalProductsSold: productsSoldAggregate._sum.quantity ?? 0,
-    totalRevenue: totalRevenueRows[0]?.total ?? 0,
-    bestSellingProductId: topProducts[0]?.productId,
-    bestSellingProductQuantity: topProducts[0]?._sum.quantity ?? 0
-  };
+    return {
+      totalProducts,
+      totalProductsSold: productsSoldAggregate._sum.quantity ?? 0,
+      totalRevenue: totalRevenueRows[0]?.total ?? 0,
+      bestSellingProductId: topProducts[0]?.productId,
+      bestSellingProductQuantity: topProducts[0]?._sum.quantity ?? 0
+    };
+  }
+
+  return { getDashboardStats };
 }
 
-export const sellerDashboardRepository = {
-  getDashboardStats
-};
+export const sellerDashboardRepository = createSellerDashboardRepository({
+  prisma,
+  productsRepository
+});

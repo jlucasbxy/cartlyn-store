@@ -1,67 +1,73 @@
 import type { Prisma } from "@prisma/client";
+import { PrismaClient } from "@prisma/client";
 import { prisma } from "@/lib";
 
 type TransactionCartItem = Prisma.CartItemGetPayload<{
   include: { product: true };
 }>;
 
-function findUserOrders(userId: string) {
-  return prisma.order.findMany({
-    where: { userId },
-    include: {
-      items: {
-        include: {
-          product: {
-            select: {
-              id: true,
-              name: true,
-              imageUrl: true
-            }
-          }
-        }
-      }
-    },
-    orderBy: { createdAt: "desc" }
-  });
-}
+type Deps = {
+  prisma: PrismaClient;
+};
 
-function createOrderFromCart(
-  userId: string,
-  cartItems: TransactionCartItem[],
-  total: number
-) {
-  return prisma.$transaction(async (tx: Prisma.TransactionClient) => {
-    const order = await tx.order.create({
-      data: {
-        userId,
-        total,
-        items: {
-          create: cartItems.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.product.price,
-            productName: item.product.name
-          }))
-        }
-      },
+export function createOrdersRepository(deps: Deps) {
+  function findUserOrders(userId: string) {
+    return deps.prisma.order.findMany({
+      where: { userId },
       include: {
         items: {
           include: {
-            product: true
+            product: {
+              select: {
+                id: true,
+                name: true,
+                imageUrl: true
+              }
+            }
           }
         }
-      }
+      },
+      orderBy: { createdAt: "desc" }
     });
+  }
 
-    await tx.cartItem.deleteMany({
-      where: { userId }
+  function createOrderFromCart(
+    userId: string,
+    cartItems: TransactionCartItem[],
+    total: number
+  ) {
+    return deps.prisma.$transaction(async (tx: Prisma.TransactionClient) => {
+      const order = await tx.order.create({
+        data: {
+          userId,
+          total,
+          items: {
+            create: cartItems.map((item) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.product.price,
+              productName: item.product.name
+            }))
+          }
+        },
+        include: {
+          items: {
+            include: {
+              product: true
+            }
+          }
+        }
+      });
+
+      await tx.cartItem.deleteMany({
+        where: { userId }
+      });
+
+      return order;
     });
+  }
 
-    return order;
-  });
+  return { findUserOrders, createOrderFromCart };
 }
 
-export const ordersRepository = {
-  findUserOrders,
-  createOrderFromCart
-};
+export const ordersRepository = createOrdersRepository({ prisma });
