@@ -68,7 +68,7 @@ async function updateProduct(
   }
 
   if (existingProduct.sellerId !== sellerId) {
-    throw new UnauthorizedError(ErrorCode.UNAUTHORIZED);
+    throw new UnauthorizedError();
   }
 
   const product = await productsRepository.updateById(productId, data);
@@ -87,7 +87,7 @@ async function deleteProduct(sellerId: string, productId: string) {
   }
 
   if (existingProduct.sellerId !== sellerId) {
-    throw new UnauthorizedError(ErrorCode.UNAUTHORIZED);
+    throw new UnauthorizedError();
   }
 
   await productsRepository.deactivateById(productId);
