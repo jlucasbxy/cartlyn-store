@@ -33,45 +33,47 @@ export default function ProductCard({
 
   const handleAddToCart = async () => {
     if (!session) {
-      toast.warning("Por favor, faça login para adicionar ao carrinho");
+      toast.warning("Por favor, faca login para adicionar ao carrinho");
       return;
     }
 
     setLoading(true);
-    try {
-      await addToCart(product.id, 1);
+    const result = await addToCart(product.id, 1);
+    if ("error" in result) {
+      toast.error(result.error);
+    } else {
       toast.success("Produto adicionado ao carrinho!");
-    } catch {
-      toast.error("Erro ao adicionar ao carrinho");
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   const handleToggleFavorite = async () => {
     if (!session) {
-      toast.warning("Por favor, faça login para favoritar");
+      toast.warning("Por favor, faca login para favoritar");
       return;
     }
 
     setLoading(true);
-    try {
-      if (favorite) {
-        await removeFavorite(product.id);
+    if (favorite) {
+      const result = await removeFavorite(product.id);
+      if ("error" in result) {
+        toast.error(result.error);
+      } else {
         setFavorite(false);
         onFavoriteToggle?.(product.id, false);
         toast.success("Produto removido dos favoritos");
+      }
+    } else {
+      const result = await addFavorite(product.id);
+      if ("error" in result) {
+        toast.error(result.error);
       } else {
-        await addFavorite(product.id);
         setFavorite(true);
         onFavoriteToggle?.(product.id, true);
         toast.success("Produto adicionado aos favoritos!");
       }
-    } catch {
-      toast.error("Erro ao favoritar produto");
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   return (
