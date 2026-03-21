@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { PageLayout, ProductCard } from "@/components";
 import { productsService } from "@/services";
 import { StoreFilters } from "./store-filters";
 import { StorePagination } from "./store-pagination";
+
+export const metadata: Metadata = {
+  title: "Loja - Cartlyn Store",
+  description: "Explore nossos produtos e encontre as melhores ofertas"
+};
 
 interface StorePageProps {
   searchParams: Promise<{
