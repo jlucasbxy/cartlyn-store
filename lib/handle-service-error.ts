@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { DomainError } from "@/errors";
+import { logger } from "./logger";
 
 export function handleServiceError(error: unknown, fallbackMessage: string) {
   if (error instanceof DomainError) {
@@ -12,5 +13,6 @@ export function handleServiceError(error: unknown, fallbackMessage: string) {
     return NextResponse.json(body, { status });
   }
 
+  logger.error({ err: error }, fallbackMessage);
   return NextResponse.json({ error: fallbackMessage }, { status: 500 });
 }
