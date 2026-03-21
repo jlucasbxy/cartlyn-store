@@ -1,9 +1,29 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import type { ProductDTO } from "@/dtos";
 import { auth } from "@/lib";
 import { NotFoundError } from "@/errors";
 import { productsService } from "@/services";
 import { ProductDetailsClient } from "./product-details-client";
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  try {
+    const product = await productsService.getProductById(id);
+    return {
+      title: `${product.name} - Cartlyn Store`,
+      description: product.description.slice(0, 160)
+    };
+  } catch {
+    return {
+      title: "Produto nao encontrado - Cartlyn Store"
+    };
+  }
+}
 
 export default async function ProductDetailPage({
   params
