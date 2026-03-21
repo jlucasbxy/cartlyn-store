@@ -15,7 +15,7 @@ function createLimiters(): Record<RateLimitTier, RateLimiter> {
 
   if (redisUrl) {
     // Dynamic import avoids bundling ioredis when REDIS_URL is not set
-    // biome-ignore lint/suspicious/noRequireImports: dynamic conditional import
+    // biome-ignore lint: dynamic conditional import
     const Redis = require("ioredis");
     const redis = new Redis(redisUrl);
 

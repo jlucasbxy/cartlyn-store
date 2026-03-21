@@ -25,7 +25,7 @@ interface Product {
   publishedAt: string;
 }
 
-interface Pagination {
+interface PaginationData {
   limit: number;
   nextCursor: string | null;
   hasNextPage: boolean;
@@ -33,7 +33,7 @@ interface Pagination {
 
 interface Props {
   initialProducts: Product[];
-  initialPagination: Pagination;
+  initialPagination: PaginationData;
 }
 
 export function SellerProductsClient({
