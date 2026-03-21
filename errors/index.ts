@@ -8,3 +8,4 @@ export { InvalidUserTypeError } from "./invalid-user-type-error";
 export { ProductNotFoundError } from "./product-not-found-error";
 export { ProductNotFoundOrUnavailableError } from "./product-not-found-or-unavailable-error";
 export { CartItemNotFoundError } from "./cart-item-not-found-error";
+export { CartEmptyError } from "./cart-empty-error";

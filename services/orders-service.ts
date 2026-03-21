@@ -1,7 +1,7 @@
 import type { Prisma } from "@prisma/client";
 import { ErrorCode } from "@/dtos";
 import type { OrderDTO } from "@/dtos";
-import { ValidationError } from "@/errors";
+import { CartEmptyError, ValidationError } from "@/errors";
 import { toNumber } from "@/lib";
 import { cartRepository, ordersRepository } from "@/repositories";
 
@@ -54,7 +54,7 @@ async function checkout(userId: string): Promise<OrderDTO> {
   const cartItems = await cartRepository.findUserCartWithProducts(userId);
 
   if (cartItems.length === 0) {
-    throw new ValidationError(ErrorCode.CART_EMPTY, "Carrinho vazio");
+    throw new CartEmptyError();
   }
 
   const inactiveProducts = cartItems.filter((item) => !item.product.active);
