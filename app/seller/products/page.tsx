@@ -1,7 +1,13 @@
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib";
 import { productsService } from "@/services";
 import { SellerProductsClient } from "./seller-products-client";
+
+export const metadata: Metadata = {
+  title: "Meus Produtos - Cartlyn Store",
+  description: "Gerencie seus produtos"
+};
 
 export default async function SellerProductsPage() {
   const session = await auth();
