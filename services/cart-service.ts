@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { ErrorCode } from "@/dtos";
 import type { CartDTO, CartItemBaseDTO } from "@/dtos";
-import { NotFoundError } from "@/errors";
+import { NotFoundError, ProductNotFoundOrUnavailableError } from "@/errors";
 import { toNumber } from "@/lib";
 import { cartRepository, productsRepository } from "@/repositories";
 
@@ -33,7 +33,7 @@ async function addToCart(
   const product = await productsRepository.findById(productId);
 
   if (!product || !product.active) {
-    throw new NotFoundError(ErrorCode.PRODUCT_NOT_FOUND_OR_UNAVAILABLE, "Produto não encontrado ou indisponível");
+    throw new ProductNotFoundOrUnavailableError();
   }
 
   const cartItem = await cartRepository.upsertItem(userId, productId, quantity);
