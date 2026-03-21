@@ -9,7 +9,15 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["development", "test", "production"]).default("production")
 });
 
-const parsed = envSchema.parse(process.env);
+const parsed = envSchema.superRefine((data, ctx) => {
+  if (data.NODE_ENV === "production" && data.LOG_LEVEL && data.LOG_LEVEL !== "warn") {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      path: ["LOG_LEVEL"],
+      message: "LOG_LEVEL must be 'warn' in production"
+    });
+  }
+}).parse(process.env);
 
 export const env = {
   databaseUrl: parsed.DATABASE_URL,
