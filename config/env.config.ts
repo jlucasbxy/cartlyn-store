@@ -16,6 +16,6 @@ export const env = {
   nextAuthSecret: parsed.NEXTAUTH_SECRET,
   nextAuthUrl: parsed.NEXTAUTH_URL,
   redisUrl: parsed.REDIS_URL,
-  logLevel: parsed.LOG_LEVEL,
+  logLevel: parsed.NODE_ENV === "production" ? "warn" : (parsed.LOG_LEVEL ?? "info"),
   nodeEnv: parsed.NODE_ENV
 };
