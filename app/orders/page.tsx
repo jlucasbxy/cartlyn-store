@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { Card, PageLayout } from "@/components";
 import { auth } from "@/lib";
 import { ordersService } from "@/services";
-import { Card, PageLayout } from "@/components";
 
 export const metadata: Metadata = {
   title: "Pedidos - Cartlyn Store",

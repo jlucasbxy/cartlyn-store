@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import type { ProductDTO } from "@/dtos";
-import { auth } from "@/lib";
 import { NotFoundError } from "@/errors";
+import { auth } from "@/lib";
 import { productsService } from "@/services";
 import { ProductDetailsClient } from "./product-details-client";
 

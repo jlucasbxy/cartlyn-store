@@ -5,5 +5,5 @@ export { useLoginForm } from "./use-login-form";
 export { useProductDelete } from "./use-product-delete";
 export { useProductForm } from "./use-product-form";
 export { useRegisterForm } from "./use-register-form";
-export { useSellerProductsPage } from "./use-seller-products-page";
 export { useSellerProducts } from "./use-seller-products";
+export { useSellerProductsPage } from "./use-seller-products-page";

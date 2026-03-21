@@ -7,7 +7,10 @@ export function handleServiceError(error: unknown, fallbackMessage: string) {
     const status = (error as DomainError & { status: number }).status ?? 500;
     const details = (error as DomainError & { details?: unknown }).details;
 
-    const body: Record<string, unknown> = { error: error.message, code: error.code };
+    const body: Record<string, unknown> = {
+      error: error.message,
+      code: error.code
+    };
     if (details !== undefined) body.details = details;
 
     return NextResponse.json(body, { status });

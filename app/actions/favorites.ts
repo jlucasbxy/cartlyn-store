@@ -6,9 +6,7 @@ import { logger } from "@/lib/logger";
 import { favoritesService } from "@/services";
 import type { ActionResult } from "./types";
 
-export async function addFavorite(
-  productId: string
-): Promise<ActionResult> {
+export async function addFavorite(productId: string): Promise<ActionResult> {
   const session = await auth();
   if (!session) return { error: "Nao autenticado" };
   try {
@@ -21,9 +19,7 @@ export async function addFavorite(
   }
 }
 
-export async function removeFavorite(
-  productId: string
-): Promise<ActionResult> {
+export async function removeFavorite(productId: string): Promise<ActionResult> {
   const session = await auth();
   if (!session) return { error: "Nao autenticado" };
   try {

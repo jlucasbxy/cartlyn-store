@@ -1,7 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { Button, Card, ConfirmModal, EmptyState, FileInput, FormInput, Loading, Modal, PageLayout, Pagination } from "@/components";
+import {
+  Button,
+  Card,
+  ConfirmModal,
+  EmptyState,
+  FileInput,
+  FormInput,
+  Loading,
+  Modal,
+  PageLayout,
+  Pagination
+} from "@/components";
 import { useSellerProductsPage } from "@/hooks";
 
 interface Product {
@@ -25,7 +36,10 @@ interface Props {
   initialPagination: Pagination;
 }
 
-export function SellerProductsClient({ initialProducts, initialPagination }: Props) {
+export function SellerProductsClient({
+  initialProducts,
+  initialPagination
+}: Props) {
   const {
     showForm,
     showCSVUpload,

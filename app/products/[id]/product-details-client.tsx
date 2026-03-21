@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { addToCart, addFavorite } from "@/app/actions";
+import { addFavorite, addToCart } from "@/app/actions";
 import { Button, Card, FormInput, PageLayout } from "@/components";
 import { ArrowLeftIcon } from "@/components/icons";
 

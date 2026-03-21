@@ -4,8 +4,8 @@ import {
   RateLimiterRes
 } from "rate-limiter-flexible";
 import {
-  rateLimiterConfig,
-  type RateLimitTier
+  type RateLimitTier,
+  rateLimiterConfig
 } from "@/config/rate-limiter.config";
 
 type RateLimiter = RateLimiterMemory | RateLimiterRedis;

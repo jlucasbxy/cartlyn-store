@@ -1,3 +1,3 @@
-export type { ActionResult } from "./types";
-export { addToCart, updateCartItem, removeFromCart, checkout } from "./cart";
+export { addToCart, checkout, removeFromCart, updateCartItem } from "./cart";
 export { addFavorite, removeFavorite } from "./favorites";
+export type { ActionResult } from "./types";

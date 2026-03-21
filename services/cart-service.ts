@@ -1,6 +1,9 @@
 import { Prisma } from "@prisma/client";
 import type { CartDTO, CartItemBaseDTO } from "@/dtos";
-import { CartItemNotFoundError, ProductNotFoundOrUnavailableError } from "@/errors";
+import {
+  CartItemNotFoundError,
+  ProductNotFoundOrUnavailableError
+} from "@/errors";
 import { toNumber } from "@/lib";
 import { cartRepository, productsRepository } from "@/repositories";
 
@@ -41,7 +44,11 @@ export function createCartService(deps: Deps) {
       throw new ProductNotFoundOrUnavailableError();
     }
 
-    const cartItem = await deps.cartRepository.upsertItem(userId, productId, quantity);
+    const cartItem = await deps.cartRepository.upsertItem(
+      userId,
+      productId,
+      quantity
+    );
 
     return {
       ...cartItem,
@@ -101,4 +108,7 @@ export function createCartService(deps: Deps) {
   return { getCart, addToCart, updateCartItem, removeFromCart };
 }
 
-export const cartService = createCartService({ cartRepository, productsRepository });
+export const cartService = createCartService({
+  cartRepository,
+  productsRepository
+});

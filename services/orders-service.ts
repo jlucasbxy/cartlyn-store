@@ -56,7 +56,8 @@ export function createOrdersService(deps: Deps) {
   }
 
   async function checkout(userId: string): Promise<OrderDTO> {
-    const cartItems = await deps.cartRepository.findUserCartWithProducts(userId);
+    const cartItems =
+      await deps.cartRepository.findUserCartWithProducts(userId);
 
     if (cartItems.length === 0) {
       throw new CartEmptyError();
@@ -65,7 +66,9 @@ export function createOrdersService(deps: Deps) {
     const inactiveProducts = cartItems.filter((item) => !item.product.active);
 
     if (inactiveProducts.length > 0) {
-      throw new CartItemsUnavailableError({ inactiveProducts: inactiveProducts.map((item) => item.product.name) });
+      throw new CartItemsUnavailableError({
+        inactiveProducts: inactiveProducts.map((item) => item.product.name)
+      });
     }
 
     const total = cartItems.reduce(
@@ -85,4 +88,7 @@ export function createOrdersService(deps: Deps) {
   return { getOrders, checkout };
 }
 
-export const ordersService = createOrdersService({ ordersRepository, cartRepository });
+export const ordersService = createOrdersService({
+  ordersRepository,
+  cartRepository
+});

@@ -1,4 +1,3 @@
-export { ErrorCode } from "@/dtos/error-code-dto";
 export type {
   CartDTO,
   CartItemBaseDTO,
@@ -10,6 +9,7 @@ export type {
   DashboardBestProductDTO,
   DashboardDTO
 } from "@/dtos/dashboard.dto";
+export { ErrorCode } from "@/dtos/error-code-dto";
 export type { FavoriteDTO, FavoriteProductDTO } from "@/dtos/favorite.dto";
 export type {
   OrderDTO,

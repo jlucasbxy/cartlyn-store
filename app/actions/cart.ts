@@ -42,9 +42,7 @@ export async function updateCartItem(
   }
 }
 
-export async function removeFromCart(
-  productId: string
-): Promise<ActionResult> {
+export async function removeFromCart(productId: string): Promise<ActionResult> {
   const session = await auth();
   if (!session) return { error: "Nao autenticado" };
   try {

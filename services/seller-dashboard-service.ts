@@ -9,7 +9,8 @@ type Deps = {
 
 export function createSellerDashboardService(deps: Deps) {
   async function getDashboard(sellerId: string): Promise<DashboardDTO> {
-    const stats = await deps.sellerDashboardRepository.getDashboardStats(sellerId);
+    const stats =
+      await deps.sellerDashboardRepository.getDashboardStats(sellerId);
 
     let bestSellingProduct = null;
 

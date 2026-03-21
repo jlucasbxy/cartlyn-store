@@ -1,6 +1,5 @@
-import { useRef } from "react";
 import { useSession } from "next-auth/react";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 interface Product {
   id: string;
