@@ -2,33 +2,43 @@ import type { DashboardDTO } from "@/dtos";
 import { toNumber } from "@/lib";
 import { productsRepository, sellerDashboardRepository } from "@/repositories";
 
-async function getDashboard(sellerId: string): Promise<DashboardDTO> {
-  const stats = await sellerDashboardRepository.getDashboardStats(sellerId);
+type Deps = {
+  sellerDashboardRepository: typeof sellerDashboardRepository;
+  productsRepository: typeof productsRepository;
+};
 
-  let bestSellingProduct = null;
+export function createSellerDashboardService(deps: Deps) {
+  async function getDashboard(sellerId: string): Promise<DashboardDTO> {
+    const stats = await deps.sellerDashboardRepository.getDashboardStats(sellerId);
 
-  if (stats.bestSellingProductId) {
-    const product = await productsRepository.findBasicById(
-      stats.bestSellingProductId
-    );
+    let bestSellingProduct = null;
 
-    if (product) {
-      bestSellingProduct = {
-        ...product,
-        price: toNumber(product.price),
-        quantitySold: stats.bestSellingProductQuantity
-      };
+    if (stats.bestSellingProductId) {
+      const product = await deps.productsRepository.findBasicById(
+        stats.bestSellingProductId
+      );
+
+      if (product) {
+        bestSellingProduct = {
+          ...product,
+          price: toNumber(product.price),
+          quantitySold: stats.bestSellingProductQuantity
+        };
+      }
     }
+
+    return {
+      totalProducts: stats.totalProducts,
+      totalProductsSold: stats.totalProductsSold,
+      totalRevenue: toNumber(stats.totalRevenue),
+      bestSellingProduct
+    };
   }
 
-  return {
-    totalProducts: stats.totalProducts,
-    totalProductsSold: stats.totalProductsSold,
-    totalRevenue: toNumber(stats.totalRevenue),
-    bestSellingProduct
-  };
+  return { getDashboard };
 }
 
-export const sellerDashboardService = {
-  getDashboard
-};
+export const sellerDashboardService = createSellerDashboardService({
+  sellerDashboardRepository,
+  productsRepository
+});

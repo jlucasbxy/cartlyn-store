@@ -4,59 +4,44 @@ import { CartItemNotFoundError, ProductNotFoundOrUnavailableError } from "@/erro
 import { toNumber } from "@/lib";
 import { cartRepository, productsRepository } from "@/repositories";
 
-async function getCart(userId: string): Promise<CartDTO> {
-  const cartItems = await cartRepository.findUserCart(userId);
+type Deps = {
+  cartRepository: typeof cartRepository;
+  productsRepository: typeof productsRepository;
+};
 
-  const total = cartItems.reduce(
-    (sum, item) => sum + toNumber(item.product.price) * item.quantity,
-    0
-  );
+export function createCartService(deps: Deps) {
+  async function getCart(userId: string): Promise<CartDTO> {
+    const cartItems = await deps.cartRepository.findUserCart(userId);
 
-  return {
-    items: cartItems.map((item) => ({
-      ...item,
-      product: {
-        ...item.product,
-        price: toNumber(item.product.price)
-      }
-    })),
-    total
-  };
-}
+    const total = cartItems.reduce(
+      (sum, item) => sum + toNumber(item.product.price) * item.quantity,
+      0
+    );
 
-async function addToCart(
-  userId: string,
-  productId: string,
-  quantity: number
-): Promise<CartItemBaseDTO> {
-  const product = await productsRepository.findById(productId);
-
-  if (!product || !product.active) {
-    throw new ProductNotFoundOrUnavailableError();
+    return {
+      items: cartItems.map((item) => ({
+        ...item,
+        product: {
+          ...item.product,
+          price: toNumber(item.product.price)
+        }
+      })),
+      total
+    };
   }
 
-  const cartItem = await cartRepository.upsertItem(userId, productId, quantity);
+  async function addToCart(
+    userId: string,
+    productId: string,
+    quantity: number
+  ): Promise<CartItemBaseDTO> {
+    const product = await deps.productsRepository.findById(productId);
 
-  return {
-    ...cartItem,
-    product: {
-      ...cartItem.product,
-      price: toNumber(cartItem.product.price)
+    if (!product || !product.active) {
+      throw new ProductNotFoundOrUnavailableError();
     }
-  };
-}
 
-async function updateCartItem(
-  userId: string,
-  productId: string,
-  quantity: number
-): Promise<CartItemBaseDTO> {
-  try {
-    const cartItem = await cartRepository.updateQuantity(
-      userId,
-      productId,
-      quantity
-    );
+    const cartItem = await deps.cartRepository.upsertItem(userId, productId, quantity);
 
     return {
       ...cartItem,
@@ -65,36 +50,55 @@ async function updateCartItem(
         price: toNumber(cartItem.product.price)
       }
     };
-  } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      throw new CartItemNotFoundError();
-    }
-
-    throw error;
   }
+
+  async function updateCartItem(
+    userId: string,
+    productId: string,
+    quantity: number
+  ): Promise<CartItemBaseDTO> {
+    try {
+      const cartItem = await deps.cartRepository.updateQuantity(
+        userId,
+        productId,
+        quantity
+      );
+
+      return {
+        ...cartItem,
+        product: {
+          ...cartItem.product,
+          price: toNumber(cartItem.product.price)
+        }
+      };
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        throw new CartItemNotFoundError();
+      }
+
+      throw error;
+    }
+  }
+
+  async function removeFromCart(userId: string, productId: string) {
+    try {
+      await deps.cartRepository.deleteItem(userId, productId);
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        throw new CartItemNotFoundError();
+      }
+
+      throw error;
+    }
+  }
+
+  return { getCart, addToCart, updateCartItem, removeFromCart };
 }
 
-async function removeFromCart(userId: string, productId: string) {
-  try {
-    await cartRepository.deleteItem(userId, productId);
-  } catch (error) {
-    if (
-      error instanceof Prisma.PrismaClientKnownRequestError &&
-      error.code === "P2025"
-    ) {
-      throw new CartItemNotFoundError();
-    }
-
-    throw error;
-  }
-}
-
-export const cartService = {
-  getCart,
-  addToCart,
-  updateCartItem,
-  removeFromCart
-};
+export const cartService = createCartService({ cartRepository, productsRepository });

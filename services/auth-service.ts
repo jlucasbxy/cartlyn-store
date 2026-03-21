@@ -1,27 +1,33 @@
 import bcrypt from "bcryptjs";
 import { usersRepository } from "@/repositories";
 
-async function validateCredentials(email: string, password: string) {
-  const user = await usersRepository.findActiveByEmail(email);
+type Deps = {
+  usersRepository: typeof usersRepository;
+};
 
-  if (!user || !user.active) {
-    return null;
+export function createAuthService(deps: Deps) {
+  async function validateCredentials(email: string, password: string) {
+    const user = await deps.usersRepository.findActiveByEmail(email);
+
+    if (!user || !user.active) {
+      return null;
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+
+    if (!isPasswordValid) {
+      return null;
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role
+    };
   }
 
-  const isPasswordValid = await bcrypt.compare(password, user.password);
-
-  if (!isPasswordValid) {
-    return null;
-  }
-
-  return {
-    id: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role
-  };
+  return { validateCredentials };
 }
 
-export const authService = {
-  validateCredentials
-};
+export const authService = createAuthService({ usersRepository });
