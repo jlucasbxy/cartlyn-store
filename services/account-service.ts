@@ -1,5 +1,4 @@
-import { ErrorCode } from "@/dtos";
-import { ValidationError } from "@/errors";
+import { InvalidUserTypeError } from "@/errors";
 import { usersRepository } from "@/repositories";
 
 async function deactivateOrDeleteAccount(userId: string, role: string) {
@@ -19,7 +18,7 @@ async function deactivateOrDeleteAccount(userId: string, role: string) {
     };
   }
 
-  throw new ValidationError(ErrorCode.INVALID_USER_TYPE, "Tipo de usuário inválido");
+  throw new InvalidUserTypeError();
 }
 
 export const accountService = {
