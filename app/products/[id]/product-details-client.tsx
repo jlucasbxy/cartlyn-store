@@ -37,27 +37,25 @@ export function ProductDetailsClient({
   const handleAddToCart = async () => {
     const quantity = parseInt(quantityRef.current?.value || "1", 10);
     setActionLoading(true);
-    try {
-      await addToCart(product.id, quantity);
+    const result = await addToCart(product.id, quantity);
+    if ("error" in result) {
+      toast.error(result.error);
+    } else {
       toast.success("Produto adicionado ao carrinho!");
       router.push("/cart");
-    } catch {
-      toast.error("Erro ao adicionar ao carrinho");
-    } finally {
-      setActionLoading(false);
     }
+    setActionLoading(false);
   };
 
   const handleAddToFavorites = async () => {
     setActionLoading(true);
-    try {
-      await addFavorite(product.id);
+    const result = await addFavorite(product.id);
+    if ("error" in result) {
+      toast.error(result.error);
+    } else {
       toast.success("Produto adicionado aos favoritos!");
-    } catch {
-      toast.error("Erro ao adicionar aos favoritos");
-    } finally {
-      setActionLoading(false);
     }
+    setActionLoading(false);
   };
 
   return (
