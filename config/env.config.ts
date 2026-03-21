@@ -17,7 +17,7 @@ const parsed = envSchema
       data.LOG_LEVEL !== "warn"
     ) {
       ctx.addIssue({
-        code: z.ZodIssueCode.custom,
+        code: "custom",
         path: ["LOG_LEVEL"],
         message: "LOG_LEVEL must be 'warn' in production"
       });
