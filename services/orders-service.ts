@@ -1,7 +1,6 @@
 import type { Prisma } from "@prisma/client";
-import { ErrorCode } from "@/dtos";
 import type { OrderDTO } from "@/dtos";
-import { CartEmptyError, ValidationError } from "@/errors";
+import { CartEmptyError, CartItemsUnavailableError } from "@/errors";
 import { toNumber } from "@/lib";
 import { cartRepository, ordersRepository } from "@/repositories";
 
@@ -60,11 +59,7 @@ async function checkout(userId: string): Promise<OrderDTO> {
   const inactiveProducts = cartItems.filter((item) => !item.product.active);
 
   if (inactiveProducts.length > 0) {
-    throw new ValidationError(
-      ErrorCode.CART_ITEMS_UNAVAILABLE,
-      "Alguns produtos no carrinho não estão mais disponíveis",
-      { inactiveProducts: inactiveProducts.map((item) => item.product.name) }
-    );
+    throw new CartItemsUnavailableError({ inactiveProducts: inactiveProducts.map((item) => item.product.name) });
   }
 
   const total = cartItems.reduce(
