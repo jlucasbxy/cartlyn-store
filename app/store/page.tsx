@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import { unstable_cache } from "next/cache";
+import { cacheLife, cacheTag } from "next/cache";
 import { PageLayout, ProductCard } from "@/components";
 import { auth } from "@/lib/server";
 import { favoritesService, productsService } from "@/services";
 import { StoreFilters } from "./store-filters";
 import { StorePagination } from "./store-pagination";
 
-const getCachedProducts = unstable_cache(
-  (params: Parameters<typeof productsService.getProducts>[0]) =>
-    productsService.getProducts(params),
-  ["store-products"],
-  { revalidate: 60, tags: ["products"] }
-);
+async function getProducts(
+  params: Parameters<typeof productsService.getProducts>[0]
+) {
+  "use cache";
+  cacheLife("minutes");
+  cacheTag("products");
+  return productsService.getProducts(params);
+}
 
 export const metadata: Metadata = {
   title: "Loja - Cartlyn Store",
@@ -34,7 +36,7 @@ export default async function StorePage({ searchParams }: StorePageProps) {
   const minPrice = params.minPrice ? parseFloat(params.minPrice) : undefined;
   const maxPrice = params.maxPrice ? parseFloat(params.maxPrice) : undefined;
 
-  const { products, pagination } = await getCachedProducts({
+  const { products, pagination } = await getProducts({
     query: params.query,
     cursor: params.cursor,
     limit: 12,
