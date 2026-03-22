@@ -9,7 +9,13 @@ let client = null;
 
 function getRedis() {
   if (!client) {
-    client = new Redis(process.env.REDIS_URL, {
+    const url = new URL(process.env.REDIS_URL);
+    client = new Redis({
+      host: url.hostname,
+      port: Number(url.port) || 6379,
+      username: url.username || undefined,
+      password: url.password || undefined,
+      db: url.pathname ? Number(url.pathname.slice(1)) || 0 : 0,
       maxRetriesPerRequest: 3,
       enableReadyCheck: true,
       lazyConnect: false
