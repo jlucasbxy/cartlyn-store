@@ -81,59 +81,72 @@ export default function ProductCard({
   };
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md dark:shadow-gray-700/50 overflow-hidden hover:shadow-xl dark:hover:shadow-gray-600/50 transition-all">
+    <div className="group bg-white dark:bg-gray-800/60 rounded-xl border border-gray-200/80 dark:border-gray-700/50 overflow-hidden transition-all duration-300 hover:shadow-lg hover:shadow-gray-200/50 dark:hover:shadow-black/20 hover:border-gray-300 dark:hover:border-gray-600 animate-fade-in">
       <Link href={`/products/${product.id}`}>
-        <div className="relative h-48 w-full">
+        <div className="relative h-48 w-full overflow-hidden bg-gray-100 dark:bg-gray-700/50">
           <Image
             src={product.imageUrl}
             alt={product.name}
             fill
-            className="object-cover"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
             unoptimized
           />
         </div>
       </Link>
       <div className="p-4">
         <Link href={`/products/${product.id}`}>
-          <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 hover:text-primary transition-colors">
+          <h3 className="font-semibold text-gray-900 dark:text-white mb-1 hover:text-primary transition-colors line-clamp-1">
             {product.name}
           </h3>
         </Link>
-        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2 line-clamp-2">
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-2 line-clamp-2 leading-relaxed">
           {product.description}
         </p>
-        <p className="text-xs text-gray-600 dark:text-gray-400 mb-3">
-          Vendedor: {product.seller.name}
+        <p className="text-xs text-gray-400 dark:text-gray-500 mb-3">
+          {product.seller.name}
         </p>
         <div className="flex items-center justify-between">
-          <span className="text-2xl font-bold text-primary">
+          <span className="text-xl font-bold text-primary">
             R$ {product.price.toFixed(2)}
           </span>
         </div>
         {session?.user.role === "CLIENT" && (
-          <div className="mt-4 flex gap-2">
+          <div className="mt-3 flex gap-2">
             <button
               type="button"
               onClick={handleAddToCart}
               disabled={loading}
-              className="flex-1 bg-primary text-white px-4 py-2 rounded-md hover:bg-primary/90 disabled:opacity-50 text-sm font-medium"
+              className="flex-1 bg-primary text-white px-3 py-2 rounded-lg hover:bg-primary-dark disabled:opacity-40 text-sm font-medium transition-all duration-200 cursor-pointer"
             >
-              {loading ? "Adicionando..." : "Adicionar ao Carrinho"}
+              {loading ? "..." : "Adicionar"}
             </button>
             <button
               type="button"
               onClick={handleToggleFavorite}
               disabled={loading}
-              className={`px-4 py-2 rounded-md border-2 ${
+              className={`w-10 h-10 flex items-center justify-center rounded-lg border transition-all duration-200 cursor-pointer ${
                 favorite
-                  ? "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-600 dark:text-red-400"
-                  : "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300"
-              } hover:bg-gray-50 dark:hover:bg-gray-600`}
+                  ? "bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800/50 text-red-500"
+                  : "bg-white dark:bg-gray-700/50 border-gray-200 dark:border-gray-600/50 text-gray-400 dark:text-gray-500 hover:text-red-400 hover:border-red-200 dark:hover:border-red-800/50"
+              }`}
               title={
                 favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"
               }
             >
-              {favorite ? "❤️" : "🤍"}
+              <svg
+                aria-hidden="true"
+                className="w-4 h-4"
+                fill={favorite ? "currentColor" : "none"}
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                />
+              </svg>
             </button>
           </div>
         )}
