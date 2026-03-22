@@ -19,11 +19,7 @@ export function CsvUploadModal({
   uploading
 }: CsvUploadModalProps) {
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title="Upload de Produtos via CSV"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title="Upload de Produtos via CSV">
       <form onSubmit={onUpload} className="space-y-6">
         <div>
           <FileInput

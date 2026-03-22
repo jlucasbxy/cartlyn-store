@@ -1,4 +1,6 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { type ReactNode, useEffect, useId, useRef } from "react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -24,21 +26,63 @@ export function Modal({
   maxWidth = "md",
   title
 }: ModalProps) {
+  const titleId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
+  useEffect(() => {
+    if (isOpen) {
+      dialogRef.current?.focus();
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
+  const handleBackdropClick = (e: React.MouseEvent) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 bg-black/50 dark:bg-black/75 flex items-center justify-center z-50 p-4 backdrop-blur-sm">
+    // biome-ignore lint/a11y/useKeyWithClickEvents: Escape key is handled via document listener
+    // biome-ignore lint/a11y/noStaticElementInteractions: backdrop is a visual overlay, not interactive content
+    <div
+      className="fixed inset-0 bg-black/50 dark:bg-black/75 flex items-center justify-center z-50 p-4 backdrop-blur-sm"
+      onClick={handleBackdropClick}
+    >
       <div
-        className={`bg-white dark:bg-gray-800 rounded-lg p-6 shadow-2xl ${maxWidthClasses[maxWidth]} w-full max-h-[90vh] overflow-y-auto transition-colors`}
+        ref={dialogRef}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby={title ? titleId : undefined}
+        tabIndex={-1}
+        className={`bg-white dark:bg-gray-800 rounded-lg p-6 shadow-2xl ${maxWidthClasses[maxWidth]} w-full max-h-[90vh] overflow-y-auto transition-colors outline-none`}
       >
         {title && (
           <div className="flex justify-between items-center mb-4">
-            <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            <h2
+              id={titleId}
+              className="text-xl font-bold text-gray-900 dark:text-white"
+            >
               {title}
             </h2>
             <button
               type="button"
               onClick={onClose}
+              aria-label="Fechar"
               className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
             >
               <svg
