@@ -120,12 +120,9 @@ export function FileInput({
                 {(selectedFile.size / 1024).toFixed(2)} KB
               </p>
             </div>
-            <button
-              type="button"
-              className="text-sm text-primary hover:text-primary-dark font-medium"
-            >
+            <span className="text-sm text-primary hover:text-primary-dark font-medium">
               Alterar arquivo
-            </button>
+            </span>
           </div>
         ) : (
           <div className="space-y-3">
