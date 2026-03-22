@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { auth } from "@/lib";
+import { auth } from "@/lib/server";
 import { productsService } from "@/services";
 import { SellerProductsClient } from "./seller-products-client";
 

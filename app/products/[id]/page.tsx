@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
 import type { ProductDTO } from "@/dtos";
 import { NotFoundError } from "@/errors";
-import { auth } from "@/lib";
+import { auth } from "@/lib/server";
 import { productsService } from "@/services";
 import { ProductDetailsClient } from "./product-details-client";
 

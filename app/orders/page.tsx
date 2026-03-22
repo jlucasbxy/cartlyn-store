@@ -3,7 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Card, PageLayout } from "@/components";
-import { auth } from "@/lib";
+import { auth } from "@/lib/server";
 import { ordersService } from "@/services";
 
 export const metadata: Metadata = {

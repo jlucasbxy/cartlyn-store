@@ -1,6 +1,6 @@
 import type { ProductBaseDTO, ProductDTO, ProductListDTO } from "@/dtos";
 import { ProductNotFoundError, UnauthorizedError } from "@/errors";
-import { toNumber } from "@/lib";
+import { toNumber } from "@/lib/client";
 import { productsRepository } from "@/repositories";
 import type {
   CreateProductDTO,

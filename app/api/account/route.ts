@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth, handleServiceError } from "@/lib";
+import { auth, handleServiceError } from "@/lib/server";
 import { accountService } from "@/services";
 
 // DELETE - Delete client account or deactivate seller account

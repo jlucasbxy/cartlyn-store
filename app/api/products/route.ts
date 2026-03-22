@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { auth, handleServiceError } from "@/lib";
+import { auth, handleServiceError } from "@/lib/server";
 import { productSchema, searchProductsSchema } from "@/schemas";
 import { productsService } from "@/services";
 

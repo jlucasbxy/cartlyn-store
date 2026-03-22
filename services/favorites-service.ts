@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import type { FavoriteDTO } from "@/dtos";
 import { ProductAlreadyFavoritedError, ProductNotFoundError } from "@/errors";
-import { toNumber } from "@/lib";
+import { toNumber } from "@/lib/client";
 import { favoritesRepository, productsRepository } from "@/repositories";
 
 type Deps = {

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { handleServiceError } from "@/lib";
+import { handleServiceError } from "@/lib/server";
 import { registerSchema } from "@/schemas";
 import { registerService } from "@/services";
 

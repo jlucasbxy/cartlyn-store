@@ -4,7 +4,7 @@ import {
   CartItemNotFoundError,
   ProductNotFoundOrUnavailableError
 } from "@/errors";
-import { toNumber } from "@/lib";
+import { toNumber } from "@/lib/client";
 import { cartRepository, productsRepository } from "@/repositories";
 
 type Deps = {

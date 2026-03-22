@@ -1,5 +1,5 @@
 import type { DashboardDTO } from "@/dtos";
-import { toNumber } from "@/lib";
+import { toNumber } from "@/lib/client";
 import { productsRepository, sellerDashboardRepository } from "@/repositories";
 
 type Deps = {

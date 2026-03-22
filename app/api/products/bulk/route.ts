@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import Papa from "papaparse";
-import { auth, handleServiceError } from "@/lib";
+import { auth, handleServiceError } from "@/lib/server";
 import { csvProductSchema } from "@/schemas";
 import { productsService } from "@/services";
 
