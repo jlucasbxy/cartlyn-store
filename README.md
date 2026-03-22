@@ -2,15 +2,8 @@
 
 Uma plataforma completa de e-commerce desenvolvida com Next.js 15, TypeScript e Prisma, permitindo que vendedores gerenciem produtos e clientes realizem compras.
 
-## 🌐 Ambiente de Demonstração
-
-**Acesse a aplicação em produção:** [https://desafio-fullstack-cartlyn.vercel.app](https://desafio-fullstack-cartlyn.vercel.app)
-
-Utilize as [credenciais de teste](#credenciais-de-teste) para fazer login.
-
 ## 📋 Índice
 
-- [Ambiente de Demonstração](#ambiente-de-demonstração)
 - [Sobre o Projeto](#sobre-o-projeto)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Arquitetura](#arquitetura)
