@@ -23,7 +23,7 @@ export function createFavoritesService(deps: Deps) {
   }
 
   async function addFavorite(userId: string, productId: string) {
-    const product = await deps.productsRepository.findById(productId);
+    const product = await deps.productsRepository.findActiveById(productId);
 
     if (!product) {
       throw new ProductNotFoundError();
