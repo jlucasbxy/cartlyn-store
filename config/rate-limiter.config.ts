@@ -18,8 +18,20 @@ const parsed = z
   .parse(process.env);
 
 export const rateLimiterConfig = {
-  STRICTEST: { points: parsed.RATE_LIMIT_STRICTEST_POINTS, duration: parsed.RATE_LIMIT_STRICTEST_DURATION },
-  STRICT: { points: parsed.RATE_LIMIT_STRICT_POINTS, duration: parsed.RATE_LIMIT_STRICT_DURATION },
-  MODERATE: { points: parsed.RATE_LIMIT_MODERATE_POINTS, duration: parsed.RATE_LIMIT_MODERATE_DURATION },
-  DEFAULT: { points: parsed.RATE_LIMIT_DEFAULT_POINTS, duration: parsed.RATE_LIMIT_DEFAULT_DURATION }
+  STRICTEST: {
+    points: parsed.RATE_LIMIT_STRICTEST_POINTS,
+    duration: parsed.RATE_LIMIT_STRICTEST_DURATION
+  },
+  STRICT: {
+    points: parsed.RATE_LIMIT_STRICT_POINTS,
+    duration: parsed.RATE_LIMIT_STRICT_DURATION
+  },
+  MODERATE: {
+    points: parsed.RATE_LIMIT_MODERATE_POINTS,
+    duration: parsed.RATE_LIMIT_MODERATE_DURATION
+  },
+  DEFAULT: {
+    points: parsed.RATE_LIMIT_DEFAULT_POINTS,
+    duration: parsed.RATE_LIMIT_DEFAULT_DURATION
+  }
 } satisfies Record<RateLimitTier, { points: number; duration: number }>;

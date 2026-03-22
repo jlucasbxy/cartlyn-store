@@ -1,10 +1,10 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
-import { prisma } from "@/prisma";
 import type {
   CreateProductDTO,
   SearchProductsDTO,
   UpdateProductDTO
 } from "@/dtos";
+import { prisma } from "@/prisma";
 
 export type ProductSearchFilters = SearchProductsDTO & {
   sellerId?: string;

@@ -17,7 +17,7 @@ const routeRules: RouteRule[] = [
     tier: "STRICTEST"
   },
   { method: "POST", pathname: "/api/auth/register", tier: "STRICT" },
-{ method: "POST", pathname: "/api/products/bulk", tier: "MODERATE" }
+  { method: "POST", pathname: "/api/products/bulk", tier: "MODERATE" }
 ];
 
 function getTier(request: NextRequest): RateLimitTier {

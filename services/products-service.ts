@@ -1,12 +1,14 @@
-import type { ProductBaseDTO, ProductDTO, ProductListDTO } from "@/dtos";
-import { ProductNotFoundError, UnauthorizedError } from "@/errors";
-import { toNumber } from "@/lib/client";
-import { productsRepository } from "@/repositories";
 import type {
   CreateProductDTO,
+  ProductBaseDTO,
+  ProductDTO,
+  ProductListDTO,
   SearchProductsDTO,
   UpdateProductDTO
 } from "@/dtos";
+import { ProductNotFoundError, UnauthorizedError } from "@/errors";
+import { toNumber } from "@/lib/client";
+import { productsRepository } from "@/repositories";
 
 type SearchProductsFilters = SearchProductsDTO & {
   sellerId?: string;

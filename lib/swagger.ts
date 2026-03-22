@@ -91,7 +91,9 @@ export function getApiDocs() {
                   "application/json": {
                     schema: {
                       type: "object",
-                      properties: { status: { type: "string", example: "healthy" } }
+                      properties: {
+                        status: { type: "string", example: "healthy" }
+                      }
                     }
                   }
                 }
@@ -102,7 +104,9 @@ export function getApiDocs() {
                   "application/json": {
                     schema: {
                       type: "object",
-                      properties: { status: { type: "string", example: "unhealthy" } }
+                      properties: {
+                        status: { type: "string", example: "unhealthy" }
+                      }
                     }
                   }
                 }
@@ -168,14 +172,45 @@ export function getApiDocs() {
           get: {
             tags: ["Products"],
             summary: "List products",
-            description: "Returns a paginated list of products with optional filtering",
+            description:
+              "Returns a paginated list of products with optional filtering",
             parameters: [
-              { name: "query", in: "query", schema: { type: "string" }, description: "Search term" },
-              { name: "cursor", in: "query", schema: { type: "string" }, description: "Pagination cursor (product ID)" },
-              { name: "limit", in: "query", schema: { type: "integer", default: 12 }, description: "Number of results per page" },
-              { name: "minPrice", in: "query", schema: { type: "number" }, description: "Minimum price filter" },
-              { name: "maxPrice", in: "query", schema: { type: "number" }, description: "Maximum price filter" },
-              { name: "sellerId", in: "query", schema: { type: "string" }, description: "Filter by seller ID" }
+              {
+                name: "query",
+                in: "query",
+                schema: { type: "string" },
+                description: "Search term"
+              },
+              {
+                name: "cursor",
+                in: "query",
+                schema: { type: "string" },
+                description: "Pagination cursor (product ID)"
+              },
+              {
+                name: "limit",
+                in: "query",
+                schema: { type: "integer", default: 12 },
+                description: "Number of results per page"
+              },
+              {
+                name: "minPrice",
+                in: "query",
+                schema: { type: "number" },
+                description: "Minimum price filter"
+              },
+              {
+                name: "maxPrice",
+                in: "query",
+                schema: { type: "number" },
+                description: "Maximum price filter"
+              },
+              {
+                name: "sellerId",
+                in: "query",
+                schema: { type: "string" },
+                description: "Filter by seller ID"
+              }
             ],
             responses: {
               "200": {
@@ -183,7 +218,8 @@ export function getApiDocs() {
                 headers: {
                   "Cache-Control": {
                     schema: { type: "string" },
-                    description: "public, s-maxage=60, stale-while-revalidate=300"
+                    description:
+                      "public, s-maxage=60, stale-while-revalidate=300"
                   }
                 },
                 content: {
@@ -263,7 +299,12 @@ export function getApiDocs() {
             tags: ["Products"],
             summary: "Get product by ID",
             parameters: [
-              { name: "id", in: "path", required: true, schema: { type: "string" } }
+              {
+                name: "id",
+                in: "path",
+                required: true,
+                schema: { type: "string" }
+              }
             ],
             responses: {
               "200": {
@@ -271,7 +312,8 @@ export function getApiDocs() {
                 headers: {
                   "Cache-Control": {
                     schema: { type: "string" },
-                    description: "public, s-maxage=60, stale-while-revalidate=300"
+                    description:
+                      "public, s-maxage=60, stale-while-revalidate=300"
                   }
                 },
                 content: {
@@ -293,10 +335,16 @@ export function getApiDocs() {
           patch: {
             tags: ["Products"],
             summary: "Update a product",
-            description: "Partially updates a product. Requires SELLER role and ownership.",
+            description:
+              "Partially updates a product. Requires SELLER role and ownership.",
             security: [{ sessionCookie: [] }],
             parameters: [
-              { name: "id", in: "path", required: true, schema: { type: "string" } }
+              {
+                name: "id",
+                in: "path",
+                required: true,
+                schema: { type: "string" }
+              }
             ],
             requestBody: {
               required: true,
@@ -350,10 +398,16 @@ export function getApiDocs() {
           delete: {
             tags: ["Products"],
             summary: "Delete a product",
-            description: "Deletes a product. Requires SELLER role and ownership.",
+            description:
+              "Deletes a product. Requires SELLER role and ownership.",
             security: [{ sessionCookie: [] }],
             parameters: [
-              { name: "id", in: "path", required: true, schema: { type: "string" } }
+              {
+                name: "id",
+                in: "path",
+                required: true,
+                schema: { type: "string" }
+              }
             ],
             responses: {
               "200": {
@@ -390,7 +444,8 @@ export function getApiDocs() {
           post: {
             tags: ["Products"],
             summary: "Bulk create products from CSV",
-            description: "Creates multiple products from a CSV file. Requires SELLER role. CSV columns: name, price, description, imageUrl",
+            description:
+              "Creates multiple products from a CSV file. Requires SELLER role. CSV columns: name, price, description, imageUrl",
             security: [{ sessionCookie: [] }],
             requestBody: {
               required: true,
@@ -427,7 +482,10 @@ export function getApiDocs() {
                             type: "object",
                             properties: {
                               row: { type: "integer" },
-                              errors: { type: "array", items: { type: "object" } }
+                              errors: {
+                                type: "array",
+                                items: { type: "object" }
+                              }
                             }
                           }
                         }
@@ -459,7 +517,8 @@ export function getApiDocs() {
           get: {
             tags: ["Seller"],
             summary: "Get seller dashboard",
-            description: "Returns dashboard statistics for the authenticated seller.",
+            description:
+              "Returns dashboard statistics for the authenticated seller.",
             security: [{ sessionCookie: [] }],
             responses: {
               "200": {
@@ -488,7 +547,8 @@ export function getApiDocs() {
           delete: {
             tags: ["Account"],
             summary: "Delete or deactivate account",
-            description: "Deletes a CLIENT account or deactivates a SELLER account (soft delete, preserves order history).",
+            description:
+              "Deletes a CLIENT account or deactivates a SELLER account (soft delete, preserves order history).",
             security: [{ sessionCookie: [] }],
             responses: {
               "200": {

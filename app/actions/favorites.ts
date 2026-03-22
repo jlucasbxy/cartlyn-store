@@ -1,8 +1,8 @@
 "use server";
 
 import { DomainError } from "@/errors";
-import { auth } from "@/lib/server";
 import { logger } from "@/lib/logger";
+import { auth } from "@/lib/server";
 import { favoritesService } from "@/services";
 import type { ActionResult } from "./types";
 

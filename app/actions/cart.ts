@@ -3,8 +3,8 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { DomainError } from "@/errors";
-import { auth } from "@/lib/server";
 import { logger } from "@/lib/logger";
+import { auth } from "@/lib/server";
 import { cartService, ordersService } from "@/services";
 import type { ActionResult } from "./types";
 
