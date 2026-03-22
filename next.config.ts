@@ -2,7 +2,7 @@ import path from "path";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  cacheHandler: path.resolve("./cache-handler.js"),
+  cacheHandler: path.resolve("./cache-handler.mjs"),
   cacheMaxMemorySize: 0,
   transpilePackages: ["swagger-ui-react"],
   headers: async () => [
