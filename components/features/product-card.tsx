@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { addFavorite, addToCart, removeFavorite } from "@/app/actions";
 
@@ -30,6 +30,10 @@ export default function ProductCard({
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
   const [favorite, setFavorite] = useState(isFavorite);
+
+  useEffect(() => {
+    setFavorite(isFavorite);
+  }, [isFavorite]);
 
   const handleAddToCart = async () => {
     if (!session) {
@@ -122,9 +126,9 @@ export default function ProductCard({
               disabled={loading}
               className={`px-4 py-2 rounded-md border-2 ${
                 favorite
-                  ? "bg-red-50 border-red-500 text-red-600"
-                  : "bg-white border-gray-300 text-gray-600"
-              } hover:bg-gray-50`}
+                  ? "bg-red-50 dark:bg-red-900/30 border-red-500 text-red-600 dark:text-red-400"
+                  : "bg-white dark:bg-gray-700 border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+              } hover:bg-gray-50 dark:hover:bg-gray-600`}
               title={
                 favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"
               }
