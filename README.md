@@ -33,17 +33,26 @@ Cartlyn Store é uma aplicação full-stack de e-commerce que permite:
 
 ### Frontend
 - **Next.js 15.5.6** - Framework React com App Router
+- **React 19** - Biblioteca UI
 - **TypeScript** - Tipagem estática
-- **Tailwind CSS** - Estilização
+- **Tailwind CSS v4** - Estilização
 - **React Toastify** - Notificações
 - **Next-Auth** - Autenticação
 
 ### Backend
 - **Next.js API Routes** - Backend separado via rotas API
-- **Prisma** - ORM para banco de dados
-- **PostgreSQL** - Banco de dados
+- **Prisma 7** - ORM para banco de dados
+- **PostgreSQL** - Banco de dados principal
+- **Redis** - Cache e rate limiting
 - **bcryptjs** - Hash de senhas
 - **Zod** - Validação de dados
+- **Pino** - Logging estruturado
+- **rate-limiter-flexible** - Rate limiting
+- **PapaParse** - Parsing de arquivos CSV
+- **Swagger/OpenAPI** - Documentação de API
+
+### Qualidade de Código
+- **Biome** - Linter e formatter
 
 ## 🏗️ Arquitetura
 
@@ -60,43 +69,32 @@ Este projeto utiliza **API Routes do Next.js** para criar uma clara separação 
 ```
 /app/api/
 ├── auth/          # Autenticação e registro
-├── products/      # CRUD de produtos
-├── cart/          # Gerenciamento do carrinho
-├── orders/        # Pedidos
-├── favorites/     # Produtos favoritos
+├── products/      # CRUD de produtos (com bulk import)
 ├── account/       # Gerenciamento de conta
-└── seller/        # Endpoints exclusivos para vendedores
+├── seller/        # Endpoints exclusivos para vendedores
+├── health/        # Health check
+└── docs/          # Documentação OpenAPI (Swagger)
 ```
 
-#### Frontend (Client Components)
+#### Frontend (Client Components + Server Actions)
 - **Localização:** `/app/*` (pages) e `/components/*`
 - **Função:** Interface do usuário e experiência
-- **Comunicação:** Client-side fetch para API Routes
+- **Comunicação:** Server Actions para cart e favorites; client-side fetch para demais operações
 - **Estado:** React Hooks e custom hooks
 
-### Por que Client Fetch ao invés de Server Actions?
+### Arquitetura em Camadas (Backend)
 
-**Decisão Arquitetural:** Optei por utilizar `fetch` client-side ao invés de Server Actions para atender os requisitos da aplicação:
+O backend segue uma arquitetura em camadas clara:
 
-1. **Separação Clara de Responsabilidades**
-   - Backend: API Routes funcionam como um backend REST tradicional
-   - Frontend: Componentes client fazem requisições HTTP
-   - Esta abordagem reflete melhor a arquitetura de aplicações com backend separado
+```
+API Route → Service → Repository → Prisma Client → PostgreSQL
+```
 
-2. **RESTful API Completa**
-   - As API Routes podem ser consumidas por qualquer cliente (web, mobile, desktop)
-   - Facilita futura migração para microserviços se necessário
-   - Permite testes independentes do backend
-
-3. **Familiaridade e Padrões**
-   - Padrão REST é amplamente conhecido e documentado
-   - Facilita onboarding de novos desenvolvedores
-   - Integração mais simples com ferramentas de teste de API
-
-4. **Flexibilidade**
-   - Possibilidade de adicionar rate limiting, caching, etc. nas rotas
-   - Logs e monitoramento centralizados
-   - Versionamento de API mais simples
+- **Schemas (`/schemas`)** — Validação de entrada com Zod
+- **DTOs (`/dtos`)** — Contratos de request/response tipados
+- **Services (`/services`)** — Lógica de negócio
+- **Repositories (`/repositories`)** — Acesso a dados (queries Prisma)
+- **Errors (`/errors`)** — Erros de domínio customizados
 
 ## ✨ Funcionalidades
 
@@ -122,6 +120,9 @@ Este projeto utiliza **API Routes do Next.js** para criar uma clara separação 
 - ✅ Validação de dados com Zod
 - ✅ Soft delete para usuários e produtos
 - ✅ Paginação de resultados
+- ✅ Rate limiting com Redis
+- ✅ Logging estruturado com Pino
+- ✅ Documentação de API com Swagger
 - ✅ Dark mode
 - ✅ Design responsivo
 - ✅ TypeScript em toda a aplicação
@@ -131,6 +132,7 @@ Este projeto utiliza **API Routes do Next.js** para criar uma clara separação 
 ### Pré-requisitos
 - Node.js 18+
 - PostgreSQL
+- Redis
 - npm ou yarn
 
 ### Passos
@@ -138,7 +140,7 @@ Este projeto utiliza **API Routes do Next.js** para criar uma clara separação 
 1. Clone o repositório
 ```bash
 git clone <url-do-repositorio>
-cd desafio-fullstack-cartlyn
+cd cartlyn-store
 ```
 
 2. Instale as dependências
@@ -152,11 +154,6 @@ cp .env.example .env
 ```
 
 4. Configure o banco de dados no arquivo `.env`
-```env
-DATABASE_URL="postgresql://usuario:senha@localhost:5432/cartlyn_store"
-NEXTAUTH_SECRET="sua-chave-secreta-aqui"
-NEXTAUTH_URL="http://localhost:3000"
-```
 
 5. Execute as migrations do Prisma
 ```bash
@@ -182,43 +179,48 @@ npm run dev
 Crie um arquivo `.env` na raiz do projeto:
 
 ```env
-# Database para o docker-compose
-
+# Database (para o docker-compose)
 POSTGRES_USER=cartlyn
 POSTGRES_PASSWORD=cartlyn123
 POSTGRES_DB=cartlyn_store
 POSTGRES_PORT=5432
 
-DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}" # reutiliza as variaveis do docker-compose para criar a url que vai ser usada pelo prisma se não for usar o docker-compose apenas essa variável é suficiente para subir a aplicação.
+# Prisma
+DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}"
 
 # NextAuth
 NEXTAUTH_SECRET="chave-secreta-para-jwt"
 NEXTAUTH_URL="http://localhost:3000"
+
+# Redis
+REDIS_URL="redis://localhost:6379"
 ```
 
-### Banco de Dados
+### Banco de Dados e Redis
 
-O projeto utiliza PostgreSQL. Você pode usar o docker-compose.yml disponível na raiz do projeto:
+O projeto utiliza PostgreSQL e Redis. Você pode subir ambos via docker-compose:
 
 ```bash
-    docker compose up -d
+docker compose up -d
 ```
 
 ## 📁 Estrutura de Pastas
 
 ```
-desafio-fullstack-cartlyn/
+cartlyn-store/
 ├── app/                          # Next.js App Router
 │   ├── api/                      # Backend - API Routes
-│   │   ├── auth/                 # Autenticação
-│   │   ├── products/             # CRUD Produtos
-│   │   ├── cart/                 # Carrinho
-│   │   ├── orders/               # Pedidos
-│   │   ├── favorites/            # Favoritos
-│   │   └── seller/               # Rotas do vendedor
+│   │   ├── auth/                 # Autenticação e registro
+│   │   ├── products/             # CRUD Produtos + bulk import
+│   │   ├── account/              # Gerenciamento de conta
+│   │   ├── seller/               # Rotas do vendedor
+│   │   ├── health/               # Health check
+│   │   └── docs/                 # Documentação OpenAPI
+│   ├── actions/                  # Server Actions (cart, favorites)
 │   ├── (auth)/                   # Páginas de autenticação
 │   │   ├── login/
 │   │   └── register/
+│   ├── api-docs/                 # Página de documentação Swagger
 │   ├── products/[id]/            # Detalhes do produto
 │   ├── seller/                   # Páginas do vendedor
 │   │   ├── products/
@@ -228,61 +230,132 @@ desafio-fullstack-cartlyn/
 │   ├── orders/                   # Histórico de pedidos
 │   ├── favorites/                # Produtos favoritos
 │   ├── settings/                 # Configurações da conta
+│   ├── error.tsx                 # Página de erro
+│   ├── not-found.tsx             # Página 404
 │   └── layout.tsx                # Layout principal
 ├── components/                   # Componentes React
-│   ├── button.tsx
-│   ├── card.tsx
-│   ├── form-input.tsx
-│   ├── modal.tsx
-│   ├── navbar.tsx
-│   ├── pagination.tsx
-│   └── ...
+│   ├── layout/                   # Componentes de layout
+│   │   ├── navbar.tsx
+│   │   ├── page-layout.tsx
+│   │   └── providers.tsx
+│   ├── ui/                       # Componentes de UI genéricos
+│   │   ├── button.tsx
+│   │   ├── card.tsx
+│   │   ├── modal.tsx
+│   │   ├── confirm-modal.tsx
+│   │   ├── form-input.tsx
+│   │   ├── file-input.tsx
+│   │   └── loading.tsx
+│   ├── features/                 # Componentes de funcionalidades
+│   │   ├── product-card.tsx
+│   │   ├── pagination.tsx
+│   │   ├── empty-state.tsx
+│   │   └── stats-card.tsx
+│   └── icons/                    # Ícones SVG
 ├── hooks/                        # Custom React Hooks
-│   ├── use-cart.ts
-│   ├── use-favorites.ts
+│   ├── use-color-scheme.ts
+│   ├── use-confirm.ts
+│   ├── use-csv-upload.ts
+│   ├── use-login-form.ts
 │   ├── use-product-form.ts
-│   ├── use-store-products.ts
+│   ├── use-product-delete.ts
+│   ├── use-register-form.ts
+│   ├── use-seller-products.ts
+│   └── use-seller-products-page.ts
+├── services/                     # Lógica de negócio
+│   ├── account-service.ts
+│   ├── auth-service.ts
+│   ├── cart-service.ts
+│   ├── favorites-service.ts
+│   ├── orders-service.ts
+│   ├── products-service.ts
+│   ├── register-service.ts
+│   └── seller-dashboard-service.ts
+├── repositories/                 # Acesso a dados (Prisma)
+│   ├── cart-repository.ts
+│   ├── favorites-repository.ts
+│   ├── orders-repository.ts
+│   ├── products-repository.ts
+│   ├── seller-dashboard-repository.ts
+│   └── users-repository.ts
+├── schemas/                      # Schemas de validação Zod
+│   ├── login-schema.ts
+│   ├── register-schema.ts
+│   ├── product-schema.ts
+│   ├── product-update-schema.ts
+│   ├── csv-product-schema.ts
+│   ├── search-products-schema.ts
+│   ├── add-to-cart-schema.ts
+│   ├── update-cart-item-schema.ts
+│   └── favorite-schema.ts
+├── dtos/                         # Data Transfer Objects
+│   ├── auth.dto.ts
+│   ├── cart.dto.ts
+│   ├── dashboard.dto.ts
+│   ├── favorite.dto.ts
+│   ├── order.dto.ts
+│   └── product.dto.ts
+├── errors/                       # Erros de domínio customizados
+│   ├── domain-error.ts           # Classe base
+│   ├── not-found-error.ts
+│   ├── unauthorized-error.ts
+│   ├── conflict-error.ts
+│   ├── validation-error.ts
 │   └── ...
-├── lib/                          # Utilitários e configurações
+├── config/                       # Configurações
+│   ├── env.config.ts             # Variáveis de ambiente
+│   └── rate-limiter.config.ts    # Configuração de rate limiting
+├── lib/                          # Utilitários
 │   ├── auth.ts                   # Configuração Next-Auth
-│   ├── prisma.ts                 # Cliente Prisma
-│   ├── validations.ts            # Schemas Zod
-│   └── format-zod-error.ts
+│   ├── logger.ts                 # Logger Pino
+│   ├── price.ts                  # Formatação de preços
+│   ├── rate-limiter.ts           # Rate limiter
+│   ├── swagger.ts                # Configuração Swagger
+│   ├── format-zod-error.ts       # Formatação de erros Zod
+│   └── handle-service-error.ts   # Tratamento de erros de serviço
+├── types/                        # Tipos TypeScript globais
 ├── prisma/                       # Configuração do Prisma
 │   ├── schema.prisma             # Schema do banco
 │   └── seed/                     # Seeds
 ├── public/                       # Arquivos estáticos
-├── .env                          # Variáveis de ambiente
+├── docker-compose.yml            # PostgreSQL + Redis
+├── biome.json                    # Configuração do Biome
 ├── package.json
 └── README.md
 ```
 
 ## 🎨 Decisões de Arquitetura
 
-### 1. Custom Hooks para Lógica de Negócio
+### 1. Arquitetura em Camadas
+O backend é organizado em camadas bem definidas (API → Service → Repository), garantindo separação de responsabilidades, testabilidade e facilidade de manutenção. Cada camada tem uma responsabilidade única e bem delimitada.
+
+### 2. Custom Hooks para Lógica Client-Side
 Toda a lógica client-side foi extraída para custom hooks, mantendo os componentes limpos e focados em UI:
-- `use-cart.ts` - Gerenciamento do carrinho
-- `use-favorites.ts` - Gerenciamento de favoritos
-- `use-product-form.ts` - Formulário de produtos
-- `use-seller-products.ts` - Lista de produtos do vendedor
+- `use-seller-products.ts` / `use-seller-products-page.ts` — Produtos do vendedor
+- `use-product-form.ts` — Formulário de produtos
+- `use-csv-upload.ts` — Upload CSV
+- `use-confirm.ts` — Modal de confirmação
 
-### 2. Uncontrolled Components com useRef
-Formulários que só leem valores no submit utilizam `useRef` ao invés de `useState` para:
-- Eliminar re-renders desnecessários
-- Melhor performance
-- Código mais limpo
+### 3. Server Actions para Cart e Favorites
+Cart e Favorites utilizam **Server Actions** ao invés de client-side fetch, aproveitando a integração server-first do Next.js para essas operações frequentes.
 
-### 3. Soft Delete
+### 4. Erros de Domínio Customizados
+Uma hierarquia de erros customizados (`DomainError` como base) permite tratamento semântico de erros no backend, retornando status HTTP corretos sem lógica condicional espalhada.
+
+### 5. Soft Delete
 Usuários e produtos nunca são deletados do banco, apenas marcados como inativos:
 - Preserva histórico de compras
 - Permite auditoria
 - Possibilita reativação
 
-### 4. Validação em Duas Camadas
+### 6. Validação em Duas Camadas
 - **Frontend:** Zod schemas para feedback imediato
 - **Backend:** Mesmos schemas Zod nas API Routes para segurança
 
-### 5. Autenticação Stateless
+### 7. Rate Limiting com Redis
+Todas as rotas de API possuem rate limiting via `rate-limiter-flexible` com Redis como backend, protegendo contra abuso e ataques de força bruta.
+
+### 8. Autenticação Stateless
 Next-Auth com JWT para autenticação stateless e escalável.
 
 ## 👥 Credenciais de Teste
