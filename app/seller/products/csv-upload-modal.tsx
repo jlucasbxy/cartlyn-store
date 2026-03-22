@@ -19,23 +19,21 @@ export function CsvUploadModal({
   uploading
 }: CsvUploadModalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} title="Upload de Produtos via CSV">
-      <form onSubmit={onUpload} className="space-y-6">
-        <div>
-          <FileInput
-            accept=".csv"
-            onChange={onFileChange}
-            selectedFile={selectedFile}
-            label="Selecionar arquivo CSV"
-            description="Formato: name,price,description,imageUrl"
-          />
-        </div>
+    <Modal isOpen={isOpen} onClose={onClose} title="Importar via CSV">
+      <form onSubmit={onUpload} className="space-y-5">
+        <FileInput
+          accept=".csv"
+          onChange={onFileChange}
+          selectedFile={selectedFile}
+          label="Selecionar arquivo CSV"
+          description="Formato: name,price,description,imageUrl"
+        />
 
-        <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-          <h4 className="text-sm font-semibold text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
+        <div className="bg-blue-50 dark:bg-blue-900/10 border border-blue-100 dark:border-blue-800/30 rounded-lg p-4">
+          <h4 className="text-sm font-medium text-blue-800 dark:text-blue-300 mb-2 flex items-center gap-2">
             <svg
               aria-hidden="true"
-              className="w-5 h-5"
+              className="w-4 h-4"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -47,19 +45,14 @@ export function CsvUploadModal({
                 d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
               />
             </svg>
-            Formato do arquivo CSV
+            Formato do CSV
           </h4>
-          <p className="text-xs text-blue-800 dark:text-blue-200 mb-2">
-            O arquivo deve conter as seguintes colunas na primeira linha:
-          </p>
-          <code className="block bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-gray-100 p-2 rounded border border-blue-200 dark:border-blue-700 font-mono">
+          <code className="block bg-white dark:bg-gray-800 text-xs text-gray-700 dark:text-gray-300 p-2.5 rounded border border-blue-100 dark:border-blue-800/30 font-mono mb-2">
             name,price,description,imageUrl
           </code>
-          <p className="text-xs text-blue-800 dark:text-blue-200 mt-2">
-            <strong>Exemplo:</strong>
-          </p>
-          <code className="block bg-white dark:bg-gray-800 text-xs text-gray-900 dark:text-gray-100 p-2 rounded border border-blue-200 dark:border-blue-700 font-mono mt-1">
-            Produto 1,99.90,Descrição do produto,https://exemplo.com/imagem.jpg
+          <p className="text-xs text-blue-700 dark:text-blue-400">Exemplo:</p>
+          <code className="block bg-white dark:bg-gray-800 text-xs text-gray-700 dark:text-gray-300 p-2.5 rounded border border-blue-100 dark:border-blue-800/30 font-mono mt-1">
+            Produto 1,99.90,Descrição,https://exemplo.com/img.jpg
           </code>
         </div>
 
@@ -67,11 +60,7 @@ export function CsvUploadModal({
           <Button type="button" onClick={onClose} variant="secondary">
             Cancelar
           </Button>
-          <Button
-            type="submit"
-            disabled={uploading || !selectedFile}
-            variant="success"
-          >
+          <Button type="submit" disabled={uploading || !selectedFile}>
             {uploading ? "Enviando..." : "Enviar CSV"}
           </Button>
         </div>

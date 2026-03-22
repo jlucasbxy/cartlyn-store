@@ -52,7 +52,7 @@ export function ProductFormModal({
         <div>
           <label
             htmlFor="description"
-            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1"
+            className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5"
           >
             Descrição *
           </label>
@@ -60,14 +60,14 @@ export function ProductFormModal({
             id="description"
             name="description"
             rows={4}
-            className={`appearance-none rounded relative block w-full px-3 py-2 border placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white bg-white dark:bg-gray-700 focus:outline-none focus:ring-primary focus:border-primary focus:z-10 sm:text-sm transition-colors ${
+            className={`appearance-none rounded-lg block w-full px-4 py-2.5 border placeholder-gray-400 dark:placeholder-gray-500 text-gray-900 dark:text-white bg-white dark:bg-gray-800/80 focus:outline-none focus-ring text-sm transition-all duration-200 ${
               errors.description
-                ? "border-red-500 dark:border-red-500"
-                : "border-gray-300 dark:border-gray-600"
+                ? "border-red-400 dark:border-red-500"
+                : "border-gray-200 dark:border-gray-600/80 hover:border-gray-300 dark:hover:border-gray-500"
             }`}
           />
           {errors.description && (
-            <p className="mt-1 text-sm text-red-600 dark:text-red-400">
+            <p className="mt-1.5 text-sm text-red-500 dark:text-red-400">
               {errors.description}
             </p>
           )}
@@ -78,7 +78,7 @@ export function ProductFormModal({
           type="url"
           errorMsg={errors.imageUrl}
         />
-        <div className="flex gap-2 justify-end">
+        <div className="flex gap-2 justify-end pt-2">
           <Button type="button" onClick={onClose} variant="secondary">
             Cancelar
           </Button>

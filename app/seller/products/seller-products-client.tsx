@@ -71,9 +71,14 @@ export function SellerProductsClient({
   return (
     <PageLayout>
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 dark:text-white">
-          Meus Produtos
-        </h1>
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+            Meus Produtos
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400">
+            Gerencie seu catálogo
+          </p>
+        </div>
         <div className="flex gap-2 w-full sm:w-auto">
           <Button
             onClick={handleNewProduct}
@@ -84,11 +89,11 @@ export function SellerProductsClient({
           </Button>
           <Button
             onClick={handleOpenCSVUpload}
-            variant="success"
+            variant="secondary"
             size="sm"
             className="flex-1 sm:flex-initial"
           >
-            📄 CSV
+            Importar CSV
           </Button>
         </div>
       </div>
@@ -116,7 +121,7 @@ export function SellerProductsClient({
         <EmptyState title="Você ainda não cadastrou nenhum produto" />
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-3 stagger-children">
             {products.map((product) => (
               <SellerProductCard
                 key={product.id}
