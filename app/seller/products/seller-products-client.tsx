@@ -1,6 +1,13 @@
 "use client";
 
-import { ConfirmModal, EmptyState, Loading, PageLayout, Pagination, Button } from "@/components";
+import {
+  Button,
+  ConfirmModal,
+  EmptyState,
+  Loading,
+  PageLayout,
+  Pagination
+} from "@/components";
 import { useSellerProductsPage } from "@/hooks";
 import { CsvUploadModal } from "./csv-upload-modal";
 import { ProductFormModal } from "./product-form-modal";
@@ -39,7 +46,6 @@ export function SellerProductsClient({
     loading,
     pagination,
     hasPreviousPage,
-    status,
     productForm,
     csvUpload,
     confirmState,
@@ -54,7 +60,7 @@ export function SellerProductsClient({
     handleClose
   } = useSellerProductsPage(10, initialProducts, initialPagination);
 
-  if (status === "loading" || loading) {
+  if (loading) {
     return (
       <PageLayout>
         <Loading />
