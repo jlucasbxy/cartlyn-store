@@ -96,9 +96,16 @@ export function CartClient({ initialItems, total }: CartClientProps) {
 
   return (
     <PageLayout>
-      <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">
-        Carrinho de Compras
-      </h1>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+          Carrinho de Compras
+        </h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {initialItems.length === 0
+            ? "Nenhum item no carrinho"
+            : `${initialItems.length} ${initialItems.length === 1 ? "item" : "itens"}`}
+        </p>
+      </div>
 
       {initialItems.length === 0 ? (
         <EmptyState
@@ -107,8 +114,8 @@ export function CartClient({ initialItems, total }: CartClientProps) {
           onAction={() => router.push("/store")}
         />
       ) : (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2 space-y-4">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="lg:col-span-2 space-y-3">
             {initialItems.map((item) => (
               <CartItemCard
                 key={item.id}

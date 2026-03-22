@@ -1,4 +1,4 @@
-import { Button, Card } from "@/components";
+import { Button } from "@/components";
 
 interface OrderSummaryProps {
   total: number;
@@ -14,32 +14,27 @@ export function OrderSummary({
   onContinueShopping
 }: OrderSummaryProps) {
   return (
-    <Card className="sticky top-8">
-      <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-4">
+    <div className="bg-white dark:bg-gray-800/60 rounded-xl border border-gray-200/80 dark:border-gray-700/50 p-5 sticky top-20">
+      <h2 className="text-lg font-bold text-gray-900 dark:text-white mb-4">
         Resumo do Pedido
       </h2>
-      <div className="space-y-2 mb-4">
-        <div className="flex justify-between text-gray-600 dark:text-gray-300">
+      <div className="space-y-2 mb-4 text-sm">
+        <div className="flex justify-between text-gray-500 dark:text-gray-400">
           <span>Subtotal</span>
           <span>R$ {total.toFixed(2)}</span>
         </div>
-        <div className="flex justify-between text-gray-600 dark:text-gray-300">
+        <div className="flex justify-between text-gray-500 dark:text-gray-400">
           <span>Frete</span>
-          <span>Grátis</span>
+          <span className="text-primary font-medium">Grátis</span>
         </div>
-        <div className="border-t pt-2 mt-2">
-          <div className="flex justify-between text-xl font-bold text-gray-900 dark:text-white">
+        <div className="border-t border-gray-100 dark:border-gray-700/50 pt-3 mt-3">
+          <div className="flex justify-between text-lg font-bold text-gray-900 dark:text-white">
             <span>Total</span>
             <span>R$ {total.toFixed(2)}</span>
           </div>
         </div>
       </div>
-      <Button
-        onClick={onCheckout}
-        disabled={checkoutLoading}
-        fullWidth
-        size="lg"
-      >
+      <Button onClick={onCheckout} disabled={checkoutLoading} fullWidth>
         {checkoutLoading ? "Finalizando..." : "Finalizar Compra"}
       </Button>
       <Button
@@ -50,6 +45,6 @@ export function OrderSummary({
       >
         Continuar Comprando
       </Button>
-    </Card>
+    </div>
   );
 }
