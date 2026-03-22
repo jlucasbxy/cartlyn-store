@@ -6,4 +6,3 @@ export const csvProductSchema = z.object({
   description: z.string().min(10),
   imageUrl: z.url()
 });
-

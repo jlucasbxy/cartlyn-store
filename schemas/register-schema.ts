@@ -8,4 +8,3 @@ export const registerSchema = z.object({
     message: "Selecione um papel de usuário"
   })
 });
-

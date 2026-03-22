@@ -7,4 +7,3 @@ export const searchProductsSchema = z.object({
   minPrice: z.number().positive().optional(),
   maxPrice: z.number().positive().optional()
 });
-

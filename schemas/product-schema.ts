@@ -6,4 +6,3 @@ export const productSchema = z.object({
   description: z.string().min(10),
   imageUrl: z.url()
 });
-
