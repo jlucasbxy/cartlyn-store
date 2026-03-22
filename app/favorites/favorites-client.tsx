@@ -35,9 +35,16 @@ export function FavoritesClient({ initialFavorites }: Props) {
 
   return (
     <PageLayout>
-      <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">
-        Meus Favoritos
-      </h1>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+          Meus Favoritos
+        </h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          {favorites.length === 0
+            ? "Nenhum favorito ainda"
+            : `${favorites.length} ${favorites.length === 1 ? "produto" : "produtos"}`}
+        </p>
+      </div>
 
       {favorites.length === 0 ? (
         <EmptyState
@@ -46,7 +53,7 @@ export function FavoritesClient({ initialFavorites }: Props) {
           onAction={() => router.push("/store")}
         />
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 stagger-children">
           {favorites.map((favorite) => (
             <ProductCard
               key={favorite.id}
