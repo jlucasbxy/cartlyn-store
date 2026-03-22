@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { unstable_cache } from "next/cache";
 import { PageLayout, ProductCard } from "@/components";
-import { productsService } from "@/services";
+import { auth } from "@/lib/server";
+import { favoritesService, productsService } from "@/services";
 import { StoreFilters } from "./store-filters";
 import { StorePagination } from "./store-pagination";
 
@@ -41,6 +42,15 @@ export default async function StorePage({ searchParams }: StorePageProps) {
     maxPrice
   });
 
+  const session = await auth();
+  const favoriteIds = new Set<string>();
+  if (session) {
+    const favorites = await favoritesService.getFavorites(session.user.id);
+    for (const fav of favorites) {
+      favoriteIds.add(fav.product.id);
+    }
+  }
+
   return (
     <PageLayout>
       <div className="mb-8">
@@ -64,7 +74,7 @@ export default async function StorePage({ searchParams }: StorePageProps) {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 stagger-children">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} isFavorite={favoriteIds.has(product.id)} />
             ))}
           </div>
 
