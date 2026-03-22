@@ -178,8 +178,10 @@ export default function Navbar() {
           </div>
         </div>
       </div>
-      {menuOpen && (
-        <div className="md:hidden absolute left-0 right-0 top-full border-t border-gray-200/60 dark:border-gray-700/40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-lg">
+      <div
+        className={`md:hidden absolute left-0 right-0 top-full border-t border-gray-200/60 dark:border-gray-700/40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-lg grid transition-[grid-template-rows,opacity] duration-200 ease-out ${menuOpen ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}`}
+      >
+        <div className="overflow-hidden">
           <div className="px-4 py-3 space-y-1">
             <Link
               href="/store"
@@ -200,7 +202,7 @@ export default function Navbar() {
             ))}
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 }
