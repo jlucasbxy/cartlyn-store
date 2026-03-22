@@ -6,7 +6,7 @@ type Deps = {
 };
 
 export function createCartRepository(deps: Deps) {
-  function findUserCart(userId: string) {
+  function findUserCartForDisplay(userId: string) {
     return deps.prisma.cartItem.findMany({
       where: { userId },
       include: {
@@ -25,7 +25,7 @@ export function createCartRepository(deps: Deps) {
     });
   }
 
-  function findUserCartWithProducts(userId: string) {
+  function findUserCartForCheckout(userId: string) {
     return deps.prisma.cartItem.findMany({
       where: { userId },
       include: { product: true }
@@ -96,8 +96,8 @@ export function createCartRepository(deps: Deps) {
   }
 
   return {
-    findUserCart,
-    findUserCartWithProducts,
+    findUserCartForDisplay,
+    findUserCartForCheckout,
     upsertItem,
     updateQuantity,
     deleteItem,

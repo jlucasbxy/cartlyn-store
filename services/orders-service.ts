@@ -56,8 +56,7 @@ export function createOrdersService(deps: Deps) {
   }
 
   async function checkout(userId: string): Promise<OrderDTO> {
-    const cartItems =
-      await deps.cartRepository.findUserCartWithProducts(userId);
+    const cartItems = await deps.cartRepository.findUserCartForCheckout(userId);
 
     if (cartItems.length === 0) {
       throw new CartEmptyError();

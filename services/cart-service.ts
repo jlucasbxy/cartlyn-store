@@ -14,7 +14,7 @@ type Deps = {
 
 export function createCartService(deps: Deps) {
   async function getCart(userId: string): Promise<CartDTO> {
-    const cartItems = await deps.cartRepository.findUserCart(userId);
+    const cartItems = await deps.cartRepository.findUserCartForDisplay(userId);
 
     const total = cartItems.reduce(
       (sum, item) => sum + toNumber(item.product.price) * item.quantity,
