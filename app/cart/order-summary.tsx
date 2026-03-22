@@ -19,11 +19,11 @@ export function OrderSummary({
         Resumo do Pedido
       </h2>
       <div className="space-y-2 mb-4">
-        <div className="flex justify-between text-gray-600">
+        <div className="flex justify-between text-gray-600 dark:text-gray-300">
           <span>Subtotal</span>
           <span>R$ {total.toFixed(2)}</span>
         </div>
-        <div className="flex justify-between text-gray-600">
+        <div className="flex justify-between text-gray-600 dark:text-gray-300">
           <span>Frete</span>
           <span>Grátis</span>
         </div>
