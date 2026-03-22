@@ -61,18 +61,18 @@ export function ProductDetailsClient({
 
   return (
     <PageLayout>
-      <Button
+      <button
+        type="button"
         onClick={() => router.back()}
-        variant="outline"
-        className="mb-6 flex items-center gap-2"
+        className="inline-flex items-center gap-1.5 text-sm text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition-colors cursor-pointer"
       >
         <ArrowLeftIcon />
         <span>Voltar</span>
-      </Button>
+      </button>
 
-      <Card padding="none" className="overflow-hidden">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
-          <div className="relative h-96 w-full rounded-lg overflow-hidden">
+      <Card padding="none" className="overflow-hidden animate-fade-in">
+        <div className="grid grid-cols-1 md:grid-cols-2">
+          <div className="relative h-80 md:h-full min-h-[400px] bg-gray-100 dark:bg-gray-700/50">
             <Image
               src={product.imageUrl}
               alt={product.name}
@@ -82,39 +82,46 @@ export function ProductDetailsClient({
             />
           </div>
 
-          <div className="flex flex-col">
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
-              {product.name}
-            </h1>
-
-            <div className="mb-4">
-              <span className="text-4xl font-bold text-primary">
+          <div className="p-6 sm:p-8 flex flex-col">
+            <div className="mb-6">
+              <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white mb-3">
+                {product.name}
+              </h1>
+              <span className="text-3xl font-bold text-primary">
                 R$ {product.price.toFixed(2)}
               </span>
             </div>
 
             <div className="mb-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
+              <h2 className="text-sm font-semibold text-gray-900 dark:text-white mb-2 uppercase tracking-wide">
                 Descrição
               </h2>
-              <p className="text-gray-900 dark:text-gray-100 leading-relaxed">
+              <p className="text-gray-600 dark:text-gray-300 leading-relaxed text-sm">
                 {product.description}
               </p>
             </div>
 
-            <div className="mb-6">
-              <p className="text-base text-gray-900 dark:text-gray-100">
-                <span className="font-semibold">Vendedor:</span>{" "}
-                {product.seller.name}
-              </p>
-              <p className="text-base text-gray-900 dark:text-gray-100">
-                <span className="font-semibold">Publicado em:</span>{" "}
-                {new Date(product.publishedAt).toLocaleDateString("pt-BR")}
-              </p>
+            <div className="flex gap-6 mb-6 text-sm">
+              <div>
+                <p className="text-gray-400 dark:text-gray-500 mb-0.5">
+                  Vendedor
+                </p>
+                <p className="font-medium text-gray-900 dark:text-white">
+                  {product.seller.name}
+                </p>
+              </div>
+              <div>
+                <p className="text-gray-400 dark:text-gray-500 mb-0.5">
+                  Publicado
+                </p>
+                <p className="font-medium text-gray-900 dark:text-white">
+                  {new Date(product.publishedAt).toLocaleDateString("pt-BR")}
+                </p>
+              </div>
             </div>
 
             {role === "CLIENT" && (
-              <div className="mt-auto">
+              <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700/50">
                 <div className="mb-4">
                   <FormInput
                     ref={quantityRef}
@@ -124,15 +131,14 @@ export function ProductDetailsClient({
                     name="quantity"
                     min="1"
                     defaultValue="1"
-                    className="w-24"
+                    className="w-20"
                   />
                 </div>
 
-                <div className="flex gap-4">
+                <div className="flex gap-3">
                   <Button
                     onClick={handleAddToCart}
                     disabled={cartLoading}
-                    size="lg"
                     fullWidth
                   >
                     {cartLoading ? "Adicionando..." : "Adicionar ao Carrinho"}
@@ -141,25 +147,33 @@ export function ProductDetailsClient({
                     onClick={handleAddToFavorites}
                     disabled={favoriteLoading}
                     variant="outline"
-                    size="lg"
                     title="Adicionar aos favoritos"
                   >
-                    ❤️
+                    <svg
+                      aria-hidden="true"
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                      />
+                    </svg>
                   </Button>
                 </div>
               </div>
             )}
 
             {!role && (
-              <div className="mt-auto">
-                <p className="text-gray-900 dark:text-gray-100 text-base mb-4">
+              <div className="mt-auto pt-4 border-t border-gray-100 dark:border-gray-700/50">
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-3">
                   Faça login para comprar este produto
                 </p>
-                <Button
-                  onClick={() => router.push("/login")}
-                  size="lg"
-                  fullWidth
-                >
+                <Button onClick={() => router.push("/login")} fullWidth>
                   Fazer Login
                 </Button>
               </div>
