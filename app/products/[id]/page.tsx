@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
 import { unstable_cache } from "next/cache";
+import { redirect } from "next/navigation";
 import type { ProductDTO } from "@/dtos";
 import { NotFoundError } from "@/errors";
 import { auth } from "@/lib/server";

@@ -32,11 +32,12 @@ export function ProductDetailsClient({
 }: ProductDetailsClientProps) {
   const router = useRouter();
   const quantityRef = useRef<HTMLInputElement>(null);
-  const [actionLoading, setActionLoading] = useState(false);
+  const [cartLoading, setCartLoading] = useState(false);
+  const [favoriteLoading, setFavoriteLoading] = useState(false);
 
   const handleAddToCart = async () => {
     const quantity = parseInt(quantityRef.current?.value || "1", 10);
-    setActionLoading(true);
+    setCartLoading(true);
     const result = await addToCart(product.id, quantity);
     if ("error" in result) {
       toast.error(result.error);
@@ -44,18 +45,18 @@ export function ProductDetailsClient({
       toast.success("Produto adicionado ao carrinho!");
       router.push("/cart");
     }
-    setActionLoading(false);
+    setCartLoading(false);
   };
 
   const handleAddToFavorites = async () => {
-    setActionLoading(true);
+    setFavoriteLoading(true);
     const result = await addFavorite(product.id);
     if ("error" in result) {
       toast.error(result.error);
     } else {
       toast.success("Produto adicionado aos favoritos!");
     }
-    setActionLoading(false);
+    setFavoriteLoading(false);
   };
 
   return (
@@ -130,15 +131,15 @@ export function ProductDetailsClient({
                 <div className="flex gap-4">
                   <Button
                     onClick={handleAddToCart}
-                    disabled={actionLoading}
+                    disabled={cartLoading}
                     size="lg"
                     fullWidth
                   >
-                    {actionLoading ? "Adicionando..." : "Adicionar ao Carrinho"}
+                    {cartLoading ? "Adicionando..." : "Adicionar ao Carrinho"}
                   </Button>
                   <Button
                     onClick={handleAddToFavorites}
-                    disabled={actionLoading}
+                    disabled={favoriteLoading}
                     variant="outline"
                     size="lg"
                     title="Adicionar aos favoritos"
