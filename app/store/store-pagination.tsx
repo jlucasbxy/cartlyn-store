@@ -17,15 +17,13 @@ export function StorePagination({
 
   const prevCursorsParam = searchParams.get("prevCursors") || "";
   const prevCursors = prevCursorsParam ? prevCursorsParam.split(",") : [];
-  const hasPreviousPage = prevCursors.length > 0;
+  const hasPreviousPage = searchParams.has("prevCursors");
 
   const onNext = () => {
     if (!hasNextPage || !nextCursor) return;
     const params = new URLSearchParams(searchParams.toString());
     const currentCursor = searchParams.get("cursor") || "";
-    const newPrevCursors = currentCursor
-      ? [...prevCursors, currentCursor]
-      : prevCursors;
+    const newPrevCursors = [...prevCursors, currentCursor];
     if (newPrevCursors.length > 0) {
       params.set("prevCursors", newPrevCursors.join(","));
     }
