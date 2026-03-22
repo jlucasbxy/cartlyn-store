@@ -7,11 +7,12 @@ type Deps = {
 };
 
 export function createUsersRepository(deps: Deps) {
-  function checkEmailExists(email: string) {
-    return deps.prisma.user.findUnique({
+  async function checkEmailExists(email: string) {
+    const user = await deps.prisma.user.findUnique({
       where: { email },
       select: { id: true }
     });
+    return user !== null;
   }
 
   function findActiveByEmail(email: string) {
