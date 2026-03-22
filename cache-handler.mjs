@@ -4,6 +4,23 @@ import { Redis } from "ioredis";
 const CACHE_PREFIX = "nxt:c:";
 const TAGS_PREFIX = "nxt:t:";
 
+function replacer(_key, value) {
+  if (value instanceof Map) {
+    return { __type: "Map", value: Array.from(value.entries()) };
+  }
+  return value;
+}
+
+function reviver(_key, value) {
+  if (value && value.__type === "Map") {
+    return new Map(value.value);
+  }
+  if (value && value.type === "Buffer" && Array.isArray(value.data)) {
+    return Buffer.from(value.data);
+  }
+  return value;
+}
+
 /** @type {Redis | null} */
 let client = null;
 
@@ -41,7 +58,7 @@ class CacheHandler {
     try {
       const raw = await this.redis.get(`${CACHE_PREFIX}${key}`);
       if (!raw) return null;
-      return JSON.parse(raw);
+      return JSON.parse(raw, reviver);
     } catch (err) {
       console.error("[cache-handler] get error:", err.message);
       return null;
@@ -62,7 +79,7 @@ class CacheHandler {
       tags
     };
 
-    const serialized = JSON.stringify(entry);
+    const serialized = JSON.stringify(entry, replacer);
     const cacheKey = `${CACHE_PREFIX}${key}`;
 
     try {
