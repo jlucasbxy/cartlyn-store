@@ -2,19 +2,16 @@
 import { useCallback, useEffect, useState } from "react";
 
 export function useColorScheme() {
-  const [isDark, setIsDark] = useState<boolean>(false);
+  const [isDark, setIsDark] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    const stored = localStorage.getItem("theme");
+    if (stored) return stored === "dark";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
+  });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-
-    // Check stored preference or system preference
-    const stored = localStorage.getItem("theme");
-    if (stored) {
-      setIsDark(stored === "dark");
-    } else {
-      setIsDark(window.matchMedia("(prefers-color-scheme: dark)").matches);
-    }
   }, []);
 
   useEffect(() => {
