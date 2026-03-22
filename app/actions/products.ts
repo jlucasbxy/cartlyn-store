@@ -10,6 +10,7 @@ import {
   productSchema,
   productUpdateSchema
 } from "@/schemas";
+import { z } from "@/schemas/zod-config";
 import { productsService } from "@/services";
 import type { ActionResult } from "./types";
 
@@ -92,19 +93,18 @@ export async function createBulkProducts(
     skipEmptyLines: true
   });
 
-  const validProducts = [];
-  for (const row of results.data) {
-    const validated = csvProductSchema.safeParse(row);
-    if (validated.success) validProducts.push(validated.data);
+  const validated = z.array(csvProductSchema).safeParse(results.data);
+  if (!validated.success) {
+    const issues = validated.error.issues
+      .map((i) => `Linha ${(i.path[0] as number) + 2}: ${i.message}`)
+      .join("; ");
+    return { error: `Dados inválidos — ${issues}` };
   }
-
-  if (validProducts.length === 0)
-    return { error: "Nenhum produto válido encontrado" };
 
   try {
     const created = await productsService.createBulkProducts(
       session.user.id,
-      validProducts
+      validated.data
     );
     revalidatePath("/seller/products");
     return {
