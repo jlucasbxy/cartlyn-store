@@ -1,4 +1,5 @@
 import { type FormEvent, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 import { formatZodError } from "@/lib/format-zod-error";
 import { productSchema } from "@/schemas";
 
@@ -102,7 +103,8 @@ export function useProductForm({
           }
         }
       }
-    } catch (_error) {
+    } catch {
+      toast.error("Erro ao salvar produto. Tente novamente.");
     } finally {
       setLoading(false);
     }
