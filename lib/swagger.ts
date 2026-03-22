@@ -40,7 +40,7 @@ export function getApiDocs() {
               updatedAt: { type: "string", format: "date-time" }
             }
           },
-          ProductInput: {
+          CreateProductDTO: {
             type: "object",
             required: ["name", "price", "description", "imageUrl"],
             properties: {
@@ -50,7 +50,7 @@ export function getApiDocs() {
               imageUrl: { type: "string", format: "uri" }
             }
           },
-          ProductUpdateInput: {
+          UpdateProductDTO: {
             type: "object",
             properties: {
               name: { type: "string", minLength: 1, maxLength: 200 },
@@ -59,7 +59,7 @@ export function getApiDocs() {
               imageUrl: { type: "string", format: "uri" }
             }
           },
-          RegisterInput: {
+          RegisterDTO: {
             type: "object",
             required: ["email", "password", "name", "role"],
             properties: {
@@ -118,7 +118,7 @@ export function getApiDocs() {
               required: true,
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/RegisterInput" }
+                  schema: { $ref: "#/components/schemas/RegisterDTO" }
                 }
               }
             },
@@ -220,7 +220,7 @@ export function getApiDocs() {
               required: true,
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/ProductInput" }
+                  schema: { $ref: "#/components/schemas/CreateProductDTO" }
                 }
               }
             },
@@ -302,7 +302,7 @@ export function getApiDocs() {
               required: true,
               content: {
                 "application/json": {
-                  schema: { $ref: "#/components/schemas/ProductUpdateInput" }
+                  schema: { $ref: "#/components/schemas/UpdateProductDTO" }
                 }
               }
             },

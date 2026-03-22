@@ -22,6 +22,6 @@ export type FavoriteDTO = {
   product: FavoriteProductDTO;
 };
 
-export type FavoriteInput = {
+export type CreateFavoriteDTO = {
   productId: string;
 };

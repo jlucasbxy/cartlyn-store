@@ -31,21 +31,21 @@ export type ProductListDTO = {
   pagination: CursorPaginationDTO;
 };
 
-export type ProductInput = {
+export type CreateProductDTO = {
   name: string;
   price: number;
   description: string;
   imageUrl: string;
 };
 
-export type ProductUpdateInput = {
+export type UpdateProductDTO = {
   name?: string;
   price?: number;
   description?: string;
   imageUrl?: string;
 };
 
-export type SearchProductsInput = {
+export type SearchProductsDTO = {
   query?: string;
   cursor?: string;
   limit: number;
@@ -53,7 +53,7 @@ export type SearchProductsInput = {
   maxPrice?: number;
 };
 
-export type CsvProductInput = {
+export type CsvProductDTO = {
   name: string;
   price: number;
   description: string;

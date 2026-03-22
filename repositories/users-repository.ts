@@ -1,6 +1,6 @@
 import type { PrismaClient } from "@prisma/client";
 import { prisma } from "@/lib";
-import type { RegisterInput } from "@/dtos";
+import type { RegisterDTO } from "@/dtos";
 
 type Deps = {
   prisma: PrismaClient;
@@ -20,7 +20,7 @@ export function createUsersRepository(deps: Deps) {
   }
 
   function createUser(
-    data: Omit<RegisterInput, "password"> & { password: string }
+    data: Omit<RegisterDTO, "password"> & { password: string }
   ) {
     return deps.prisma.user.create({
       data,

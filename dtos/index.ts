@@ -1,12 +1,12 @@
-export type { LoginInput, RegisterInput } from "@/dtos/auth.dto";
+export type { LoginDTO, RegisterDTO } from "@/dtos/auth.dto";
 export type {
-  AddToCartInput,
+  AddToCartDTO,
   CartDTO,
   CartItemBaseDTO,
   CartItemDTO,
   CartProductBaseDTO,
   CartProductDTO,
-  UpdateCartItemInput
+  UpdateCartItemDTO
 } from "@/dtos/cart.dto";
 export type {
   DashboardBestProductDTO,
@@ -14,8 +14,8 @@ export type {
 } from "@/dtos/dashboard.dto";
 export { ErrorCode } from "@/dtos/error-code-dto";
 export type {
+  CreateFavoriteDTO,
   FavoriteDTO,
-  FavoriteInput,
   FavoriteProductDTO
 } from "@/dtos/favorite.dto";
 export type {
@@ -24,13 +24,13 @@ export type {
   OrderItemProductDTO
 } from "@/dtos/order.dto";
 export type {
-  CsvProductInput,
+  CreateProductDTO,
+  CsvProductDTO,
   CursorPaginationDTO,
   ProductBaseDTO,
   ProductDTO,
-  ProductInput,
   ProductListDTO,
-  ProductUpdateInput,
-  SearchProductsInput,
-  SellerDTO
+  SearchProductsDTO,
+  SellerDTO,
+  UpdateProductDTO
 } from "@/dtos/product.dto";

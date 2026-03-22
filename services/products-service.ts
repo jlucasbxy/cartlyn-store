@@ -3,12 +3,12 @@ import { ProductNotFoundError, UnauthorizedError } from "@/errors";
 import { toNumber } from "@/lib";
 import { productsRepository } from "@/repositories";
 import type {
-  ProductInput,
-  ProductUpdateInput,
-  SearchProductsInput
+  CreateProductDTO,
+  SearchProductsDTO,
+  UpdateProductDTO
 } from "@/dtos";
 
-type SearchProductsFilters = SearchProductsInput & {
+type SearchProductsFilters = SearchProductsDTO & {
   sellerId?: string;
 };
 
@@ -51,7 +51,7 @@ export function createProductsService(deps: Deps) {
 
   async function createProduct(
     sellerId: string,
-    data: ProductInput
+    data: CreateProductDTO
   ): Promise<ProductBaseDTO> {
     const product = await deps.productsRepository.createProduct(sellerId, data);
 
@@ -64,7 +64,7 @@ export function createProductsService(deps: Deps) {
   async function updateProduct(
     sellerId: string,
     productId: string,
-    data: ProductUpdateInput
+    data: UpdateProductDTO
   ): Promise<ProductBaseDTO> {
     const existingProduct = await deps.productsRepository.findById(productId);
 
@@ -100,7 +100,7 @@ export function createProductsService(deps: Deps) {
 
   async function createBulkProducts(
     sellerId: string,
-    products: Array<ProductInput>
+    products: Array<CreateProductDTO>
   ) {
     const result = await deps.productsRepository.createManyProducts(
       products.map((product) => ({ ...product, sellerId }))

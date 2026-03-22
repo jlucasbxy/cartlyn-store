@@ -36,11 +36,11 @@ export type CartDTO = {
   total: number;
 };
 
-export type AddToCartInput = {
+export type AddToCartDTO = {
   productId: string;
   quantity: number;
 };
 
-export type UpdateCartItemInput = {
+export type UpdateCartItemDTO = {
   quantity: number;
 };

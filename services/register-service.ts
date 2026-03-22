@@ -2,14 +2,14 @@ import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { EmailAlreadyExistsError } from "@/errors";
 import { usersRepository } from "@/repositories";
-import type { RegisterInput } from "@/dtos";
+import type { RegisterDTO } from "@/dtos";
 
 type Deps = {
   usersRepository: typeof usersRepository;
 };
 
 export function createRegisterService(deps: Deps) {
-  async function registerUser(data: RegisterInput) {
+  async function registerUser(data: RegisterDTO) {
     const existingUser = await deps.usersRepository.findByEmail(data.email);
 
     if (existingUser) {

@@ -1,12 +1,12 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
 import { prisma } from "@/lib";
 import type {
-  ProductInput,
-  ProductUpdateInput,
-  SearchProductsInput
+  CreateProductDTO,
+  SearchProductsDTO,
+  UpdateProductDTO
 } from "@/dtos";
 
-export type ProductSearchFilters = SearchProductsInput & {
+export type ProductSearchFilters = SearchProductsDTO & {
   sellerId?: string;
 };
 
@@ -82,7 +82,7 @@ export function createProductsRepository(deps: Deps) {
     return { products, nextCursor, hasNextPage };
   }
 
-  function createProduct(sellerId: string, data: ProductInput) {
+  function createProduct(sellerId: string, data: CreateProductDTO) {
     return deps.prisma.product.create({
       data: {
         ...data,
@@ -110,7 +110,7 @@ export function createProductsRepository(deps: Deps) {
     });
   }
 
-  function updateById(id: string, data: ProductUpdateInput) {
+  function updateById(id: string, data: UpdateProductDTO) {
     return deps.prisma.product.update({
       where: { id },
       data
@@ -125,7 +125,7 @@ export function createProductsRepository(deps: Deps) {
   }
 
   function createManyProducts(
-    data: Array<ProductInput & { sellerId: string }>
+    data: Array<CreateProductDTO & { sellerId: string }>
   ) {
     return deps.prisma.product.createMany({
       data,
