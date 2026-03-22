@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import { deactivateOrDeleteAccount } from "@/app/actions";
 import { Button, ConfirmModal, Loading, PageLayout } from "@/components";
 import { useConfirm } from "@/hooks";
 
@@ -47,20 +48,19 @@ export default function SettingsPage() {
 
     setLoading(true);
     try {
-      const response = await fetch("/api/account", {
-        method: "DELETE"
-      });
+      const result = await deactivateOrDeleteAccount();
 
-      if (response.ok) {
-        const data = await response.json();
-        toast.success(data.message);
-
+      if ("error" in result) {
+        toast.error(result.error);
+      } else {
+        toast.success(
+          isClient
+            ? "Conta excluída com sucesso"
+            : "Conta desativada com sucesso"
+        );
         setTimeout(() => {
           signOut({ callbackUrl: "/" });
         }, 1500);
-      } else {
-        const data = await response.json();
-        toast.error(data.error || "Erro ao processar solicitação");
       }
     } catch {
       toast.error("Erro ao processar solicitação");
