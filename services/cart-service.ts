@@ -38,9 +38,9 @@ export function createCartService(deps: Deps) {
     productId: string,
     quantity: number
   ): Promise<CartItemBaseDTO> {
-    const product = await deps.productsRepository.findActiveById(productId);
+    const exists = await deps.productsRepository.checkActiveExists(productId);
 
-    if (!product) {
+    if (!exists) {
       throw new ProductNotFoundOrUnavailableError();
     }
 

@@ -112,9 +112,18 @@ export function createProductsRepository(deps: Deps) {
     });
   }
 
+  async function checkActiveExists(id: string) {
+    const product = await deps.prisma.product.findFirst({
+      where: { id, active: true },
+      select: { id: true }
+    });
+    return product !== null;
+  }
+
   function findActiveById(id: string) {
     return deps.prisma.product.findFirst({
-      where: { id, active: true }
+      where: { id, active: true },
+      select: { id: true, sellerId: true }
     });
   }
 
@@ -177,6 +186,7 @@ export function createProductsRepository(deps: Deps) {
     findProducts,
     createProduct,
     findVisibleById,
+    checkActiveExists,
     findActiveById,
     updateById,
     deactivateById,
