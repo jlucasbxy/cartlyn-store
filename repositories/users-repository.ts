@@ -15,7 +15,7 @@ export function createUsersRepository(deps: Deps) {
 
   function findActiveByEmail(email: string) {
     return deps.prisma.user.findUnique({
-      where: { email }
+      where: { email, active: true }
     });
   }
 
