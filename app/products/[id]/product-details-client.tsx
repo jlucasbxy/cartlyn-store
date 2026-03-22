@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { addFavorite, addToCart } from "@/app/actions";
+import { addFavorite, addToCart, removeFavorite } from "@/app/actions";
 import { Button, Card, FormInput, PageLayout } from "@/components";
 import { ArrowLeftIcon } from "@/components/icons";
 
@@ -24,16 +24,19 @@ interface Product {
 interface ProductDetailsClientProps {
   product: Product;
   role?: string;
+  isFavorite?: boolean;
 }
 
 export function ProductDetailsClient({
   product,
-  role
+  role,
+  isFavorite: initialFavorite = false
 }: ProductDetailsClientProps) {
   const router = useRouter();
   const quantityRef = useRef<HTMLInputElement>(null);
   const [cartLoading, setCartLoading] = useState(false);
   const [favoriteLoading, setFavoriteLoading] = useState(false);
+  const [favorite, setFavorite] = useState(initialFavorite);
 
   const handleAddToCart = async () => {
     const quantity = parseInt(quantityRef.current?.value || "1", 10);
@@ -48,13 +51,24 @@ export function ProductDetailsClient({
     setCartLoading(false);
   };
 
-  const handleAddToFavorites = async () => {
+  const handleToggleFavorite = async () => {
     setFavoriteLoading(true);
-    const result = await addFavorite(product.id);
-    if ("error" in result) {
-      toast.error(result.error);
+    if (favorite) {
+      const result = await removeFavorite(product.id);
+      if ("error" in result) {
+        toast.error(result.error);
+      } else {
+        setFavorite(false);
+        toast.success("Produto removido dos favoritos");
+      }
     } else {
-      toast.success("Produto adicionado aos favoritos!");
+      const result = await addFavorite(product.id);
+      if ("error" in result) {
+        toast.error(result.error);
+      } else {
+        setFavorite(true);
+        toast.success("Produto adicionado aos favoritos!");
+      }
     }
     setFavoriteLoading(false);
   };
@@ -144,15 +158,15 @@ export function ProductDetailsClient({
                     {cartLoading ? "Adicionando..." : "Adicionar ao Carrinho"}
                   </Button>
                   <Button
-                    onClick={handleAddToFavorites}
+                    onClick={handleToggleFavorite}
                     disabled={favoriteLoading}
                     variant="outline"
-                    title="Adicionar aos favoritos"
+                    title={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
                   >
                     <svg
                       aria-hidden="true"
-                      className="w-5 h-5"
-                      fill="none"
+                      className={`w-5 h-5 ${favorite ? "text-red-500" : ""}`}
+                      fill={favorite ? "currentColor" : "none"}
                       stroke="currentColor"
                       viewBox="0 0 24 24"
                     >

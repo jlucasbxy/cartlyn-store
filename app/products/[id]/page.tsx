@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import type { ProductDTO } from "@/dtos";
 import { NotFoundError } from "@/errors";
 import { auth } from "@/lib/server";
-import { productsService } from "@/services";
+import { favoritesService, productsService } from "@/services";
 import { ProductDetailsClient } from "./product-details-client";
 
 const getCachedProduct = unstable_cache(
@@ -51,10 +51,17 @@ export default async function ProductDetailPage({
 
   const session = await auth();
 
+  let isFavorite = false;
+  if (session) {
+    const favorites = await favoritesService.getFavorites(session.user.id);
+    isFavorite = favorites.some((fav) => fav.product.id === product.id);
+  }
+
   return (
     <ProductDetailsClient
       product={{ ...product, publishedAt: product.publishedAt.toISOString() }}
       role={session?.user.role}
+      isFavorite={isFavorite}
     />
   );
 }
