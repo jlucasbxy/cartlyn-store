@@ -59,7 +59,10 @@ export default async function ProductDetailPage({
 
   return (
     <ProductDetailsClient
-      product={{ ...product, publishedAt: new Date(product.publishedAt).toISOString() }}
+      product={{
+        ...product,
+        publishedAt: new Date(product.publishedAt).toISOString()
+      }}
       role={session?.user.role}
       isFavorite={isFavorite}
     />

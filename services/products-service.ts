@@ -68,7 +68,8 @@ export function createProductsService(deps: Deps) {
     productId: string,
     data: UpdateProductDTO
   ): Promise<ProductBaseDTO> {
-    const existingProduct = await deps.productsRepository.findActiveById(productId);
+    const existingProduct =
+      await deps.productsRepository.findActiveById(productId);
 
     if (!existingProduct) {
       throw new ProductNotFoundError();
@@ -87,7 +88,8 @@ export function createProductsService(deps: Deps) {
   }
 
   async function deleteProduct(sellerId: string, productId: string) {
-    const existingProduct = await deps.productsRepository.findActiveById(productId);
+    const existingProduct =
+      await deps.productsRepository.findActiveById(productId);
 
     if (!existingProduct) {
       throw new ProductNotFoundError();

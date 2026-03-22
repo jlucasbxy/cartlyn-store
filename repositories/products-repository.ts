@@ -82,12 +82,15 @@ export function createProductsRepository(deps: Deps) {
     return { products, nextCursor, hasNextPage };
   }
 
-  function createProduct(sellerId: string, data: {
-    name: string;
-    price: number;
-    description: string;
-    imageUrl: string;
-  }) {
+  function createProduct(
+    sellerId: string,
+    data: {
+      name: string;
+      price: number;
+      description: string;
+      imageUrl: string;
+    }
+  ) {
     return deps.prisma.product.create({
       data: {
         ...data,
@@ -115,12 +118,15 @@ export function createProductsRepository(deps: Deps) {
     });
   }
 
-function updateById(id: string, data: {
-    name?: string;
-    price?: number;
-    description?: string;
-    imageUrl?: string;
-  }) {
+  function updateById(
+    id: string,
+    data: {
+      name?: string;
+      price?: number;
+      description?: string;
+      imageUrl?: string;
+    }
+  ) {
     return deps.prisma.product.update({
       where: { id },
       data
