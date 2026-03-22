@@ -30,12 +30,19 @@ export function ConfirmModal({
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title} maxWidth="sm">
       <div className="space-y-4">
-        <p className="text-gray-700 dark:text-gray-300">{message}</p>
-        <div className="flex gap-3 justify-end">
-          <Button type="button" onClick={onClose} variant="secondary">
+        <p className="text-sm text-gray-600 dark:text-gray-400 leading-relaxed">
+          {message}
+        </p>
+        <div className="flex gap-2 justify-end">
+          <Button type="button" onClick={onClose} variant="secondary" size="sm">
             {cancelText}
           </Button>
-          <Button type="button" onClick={handleConfirm} variant={variant}>
+          <Button
+            type="button"
+            onClick={handleConfirm}
+            variant={variant}
+            size="sm"
+          >
             {confirmText}
           </Button>
         </div>
