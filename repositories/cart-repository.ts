@@ -84,25 +84,13 @@ export function createCartRepository(deps: Deps) {
     });
   }
 
-  function clearUserCartAndFavorites(userId: string) {
-    return deps.prisma.$transaction([
-      deps.prisma.cartItem.deleteMany({
-        where: { userId }
-      }),
-      deps.prisma.favorite.deleteMany({
-        where: { userId }
-      })
-    ]);
-  }
-
   return {
     findUserCartForDisplay,
     findUserCartForCheckout,
     upsertItem,
     updateQuantity,
     deleteItem,
-    clearUserCart,
-    clearUserCartAndFavorites
+    clearUserCart
   };
 }
 
