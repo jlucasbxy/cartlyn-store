@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 interface Product {
   id: string;
@@ -57,7 +58,8 @@ export function useSellerProducts(
           setProducts(data.products);
           setPagination(data.pagination);
         }
-      } catch (_error) {
+      } catch {
+        toast.error("Erro ao carregar produtos. Tente novamente.");
       } finally {
         setLoading(false);
       }
