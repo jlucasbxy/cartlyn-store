@@ -179,7 +179,7 @@ export default function Navbar() {
         </div>
       </div>
       {menuOpen && (
-        <div className="md:hidden border-t border-gray-200/60 dark:border-gray-700/40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm">
+        <div className="md:hidden absolute left-0 right-0 top-full border-t border-gray-200/60 dark:border-gray-700/40 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-lg">
           <div className="px-4 py-3 space-y-1">
             <Link
               href="/store"
