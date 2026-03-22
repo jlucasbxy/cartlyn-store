@@ -1,12 +1,12 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
-import type {
-  CreateProductDTO,
-  SearchProductsDTO,
-  UpdateProductDTO
-} from "@/dtos";
 import { prisma } from "@/prisma";
 
-export type ProductSearchFilters = SearchProductsDTO & {
+export type ProductSearchFilters = {
+  query?: string;
+  cursor?: string;
+  limit: number;
+  minPrice?: number;
+  maxPrice?: number;
   sellerId?: string;
 };
 
@@ -82,7 +82,12 @@ export function createProductsRepository(deps: Deps) {
     return { products, nextCursor, hasNextPage };
   }
 
-  function createProduct(sellerId: string, data: CreateProductDTO) {
+  function createProduct(sellerId: string, data: {
+    name: string;
+    price: number;
+    description: string;
+    imageUrl: string;
+  }) {
     return deps.prisma.product.create({
       data: {
         ...data,
@@ -116,7 +121,12 @@ export function createProductsRepository(deps: Deps) {
     });
   }
 
-  function updateById(id: string, data: UpdateProductDTO) {
+  function updateById(id: string, data: {
+    name?: string;
+    price?: number;
+    description?: string;
+    imageUrl?: string;
+  }) {
     return deps.prisma.product.update({
       where: { id },
       data
@@ -131,7 +141,13 @@ export function createProductsRepository(deps: Deps) {
   }
 
   function createManyProducts(
-    data: Array<CreateProductDTO & { sellerId: string }>
+    data: Array<{
+      name: string;
+      price: number;
+      description: string;
+      imageUrl: string;
+      sellerId: string;
+    }>
   ) {
     return deps.prisma.product.createMany({
       data,
