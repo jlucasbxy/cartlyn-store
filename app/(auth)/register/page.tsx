@@ -55,7 +55,7 @@ export default function RegisterPage() {
             <FormInput
               id="email"
               name="email"
-              type="text"
+              type="email"
               placeholder="Email"
               errorMsg={errors.email}
             />
