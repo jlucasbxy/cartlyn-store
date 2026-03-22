@@ -59,18 +59,20 @@ export function CartItemCard({
         <div className="flex items-center gap-2">
           <button
             type="button"
+            aria-label="Diminuir quantidade"
             onClick={() => onUpdateQuantity(item.product.id, item.quantity - 1)}
-            className="w-8 h-8 bg-gray-200 text-gray-900 font-bold rounded hover:bg-gray-300 transition-colors"
+            className="w-8 h-8 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-bold rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
           >
             -
           </button>
-          <span className="w-12 text-center font-bold text-gray-900">
+          <span className="w-12 text-center font-bold text-gray-900 dark:text-white">
             {item.quantity}
           </span>
           <button
             type="button"
+            aria-label="Aumentar quantidade"
             onClick={() => onUpdateQuantity(item.product.id, item.quantity + 1)}
-            className="w-8 h-8 bg-gray-200 text-gray-900 font-bold rounded hover:bg-gray-300 transition-colors"
+            className="w-8 h-8 bg-gray-200 dark:bg-gray-700 text-gray-900 dark:text-white font-bold rounded hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
           >
             +
           </button>
