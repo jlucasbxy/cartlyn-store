@@ -27,7 +27,7 @@ export default function ProductCard({
   onFavoriteToggle,
   isFavorite = false
 }: ProductCardProps) {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const [loading, setLoading] = useState(false);
   const [favorite, setFavorite] = useState(isFavorite);
 
@@ -110,7 +110,12 @@ export default function ProductCard({
             R$ {product.price.toFixed(2)}
           </span>
         </div>
-        {session?.user.role === "CLIENT" && (
+        {status === "loading" ? (
+          <div className="mt-3 flex gap-2">
+            <div className="flex-1 h-9 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+            <div className="w-10 h-10 bg-gray-200 dark:bg-gray-700 rounded-lg animate-pulse" />
+          </div>
+        ) : session?.user.role === "CLIENT" ? (
           <div className="mt-3 flex gap-2">
             <button
               type="button"
@@ -149,7 +154,7 @@ export default function ProductCard({
               </svg>
             </button>
           </div>
-        )}
+        ) : null}
       </div>
     </div>
   );
