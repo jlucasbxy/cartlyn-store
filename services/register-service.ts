@@ -10,7 +10,7 @@ type Deps = {
 
 export function createRegisterService(deps: Deps) {
   async function registerUser(data: RegisterDTO) {
-    const existingUser = await deps.usersRepository.findByEmail(data.email);
+    const existingUser = await deps.usersRepository.checkEmailExists(data.email);
 
     if (existingUser) {
       throw new EmailAlreadyExistsError();

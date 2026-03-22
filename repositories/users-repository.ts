@@ -7,9 +7,10 @@ type Deps = {
 };
 
 export function createUsersRepository(deps: Deps) {
-  function findByEmail(email: string) {
+  function checkEmailExists(email: string) {
     return deps.prisma.user.findUnique({
-      where: { email }
+      where: { email },
+      select: { id: true }
     });
   }
 
@@ -62,7 +63,7 @@ export function createUsersRepository(deps: Deps) {
   }
 
   return {
-    findByEmail,
+    checkEmailExists,
     findActiveByEmail,
     createUser,
     deactivateClientAccount,
