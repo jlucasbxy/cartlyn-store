@@ -115,13 +115,7 @@ export function createProductsRepository(deps: Deps) {
     });
   }
 
-  function findInactiveById(id: string) {
-    return deps.prisma.product.findFirst({
-      where: { id, active: false }
-    });
-  }
-
-  function updateById(id: string, data: {
+function updateById(id: string, data: {
     name?: string;
     price?: number;
     description?: string;
@@ -178,7 +172,6 @@ export function createProductsRepository(deps: Deps) {
     createProduct,
     findVisibleById,
     findActiveById,
-    findInactiveById,
     updateById,
     deactivateById,
     createManyProducts,
