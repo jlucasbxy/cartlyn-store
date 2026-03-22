@@ -7,7 +7,7 @@ import type {
   UpdateProductDTO
 } from "@/dtos";
 import { ProductNotFoundError, UnauthorizedError } from "@/errors";
-import { toNumber } from "@/lib/client";
+import { toNumber } from "@/lib/price";
 import { productsRepository } from "@/repositories";
 
 type SearchProductsFilters = SearchProductsDTO & {
