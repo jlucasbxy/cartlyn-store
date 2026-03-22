@@ -1,7 +1,5 @@
 // @ts-check
-"use strict";
-
-const { Redis } = require("ioredis");
+import { Redis } from "ioredis";
 
 const CACHE_PREFIX = "nxt:c:";
 const TAGS_PREFIX = "nxt:t:";
@@ -109,4 +107,4 @@ class CacheHandler {
   }
 }
 
-module.exports = CacheHandler;
+export default CacheHandler;
