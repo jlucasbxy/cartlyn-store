@@ -6,7 +6,6 @@ import { useConfirm } from "@/hooks/use-confirm";
 import { useCSVUpload } from "@/hooks/use-csv-upload";
 import { useProductDelete } from "@/hooks/use-product-delete";
 import { useProductForm } from "@/hooks/use-product-form";
-import { useSellerProducts } from "@/hooks/use-seller-products";
 
 interface Product {
   id: string;
@@ -18,33 +17,15 @@ interface Product {
   publishedAt: string;
 }
 
-interface Pagination {
-  limit: number;
-  nextCursor: string | null;
-  hasNextPage: boolean;
-}
-
-export function useSellerProductsPage(
-  itemsPerPage: number = 10,
-  initialProducts?: Product[],
-  initialPagination?: Pagination
-) {
+export function useSellerProductsPage(editingProductProp?: Product | null) {
   const router = useRouter();
   const { data: session, status } = useSession();
   const [showForm, setShowForm] = useState(false);
   const [showCSVUpload, setShowCSVUpload] = useState(false);
-  const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [editingProduct, setEditingProduct] = useState<Product | null>(
+    editingProductProp ?? null
+  );
 
-  // Custom hooks
-  const {
-    products,
-    loading,
-    pagination,
-    hasPreviousPage,
-    nextPage,
-    previousPage,
-    refetch
-  } = useSellerProducts(itemsPerPage, initialProducts, initialPagination);
   const { confirm, confirmState, handleClose } = useConfirm();
 
   const productForm = useProductForm({
@@ -52,20 +33,20 @@ export function useSellerProductsPage(
       toast.success(editingProduct ? "Produto atualizado!" : "Produto criado!");
       setShowForm(false);
       setEditingProduct(null);
-      refetch();
+      router.refresh();
     },
     editingProduct
   });
 
   const { deleteProduct } = useProductDelete({
-    onSuccess: refetch,
+    onSuccess: () => router.refresh(),
     onConfirm: confirm
   });
 
   const csvUpload = useCSVUpload({
     onSuccess: () => {
       setShowCSVUpload(false);
-      refetch();
+      router.refresh();
     }
   });
 
@@ -114,10 +95,6 @@ export function useSellerProductsPage(
     showForm,
     showCSVUpload,
     editingProduct,
-    products,
-    loading,
-    pagination,
-    hasPreviousPage,
     status,
 
     // Hooks
@@ -132,8 +109,6 @@ export function useSellerProductsPage(
     handleOpenCSVUpload,
     handleCloseCSVUpload,
     deleteProduct,
-    nextPage,
-    previousPage,
     handleClose
   };
 }

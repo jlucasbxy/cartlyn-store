@@ -1,10 +1,10 @@
 "use client";
 
+import { useRouter, useSearchParams } from "next/navigation";
 import {
   Button,
   ConfirmModal,
   EmptyState,
-  Loading,
   PageLayout,
   Pagination
 } from "@/components";
@@ -30,22 +30,19 @@ interface PaginationData {
 }
 
 interface Props {
-  initialProducts: Product[];
-  initialPagination: PaginationData;
+  products: Product[];
+  pagination: PaginationData;
 }
 
-export function SellerProductsClient({
-  initialProducts,
-  initialPagination
-}: Props) {
+export function SellerProductsClient({ products, pagination }: Props) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const hasPreviousPage = !!searchParams.get("cursor");
+
   const {
     showForm,
     showCSVUpload,
     editingProduct,
-    products,
-    loading,
-    pagination,
-    hasPreviousPage,
     productForm,
     csvUpload,
     confirmState,
@@ -55,18 +52,17 @@ export function SellerProductsClient({
     handleOpenCSVUpload,
     handleCloseCSVUpload,
     deleteProduct,
-    nextPage,
-    previousPage,
     handleClose
-  } = useSellerProductsPage(10, initialProducts, initialPagination);
+  } = useSellerProductsPage();
 
-  if (loading) {
-    return (
-      <PageLayout>
-        <Loading />
-      </PageLayout>
-    );
-  }
+  const nextPage = () => {
+    if (!pagination.hasNextPage || !pagination.nextCursor) return;
+    router.push(`?cursor=${pagination.nextCursor}`);
+  };
+
+  const previousPage = () => {
+    router.back();
+  };
 
   return (
     <PageLayout>
@@ -117,7 +113,7 @@ export function SellerProductsClient({
         uploading={csvUpload.uploading}
       />
 
-      {products.length === 0 && !loading ? (
+      {products.length === 0 ? (
         <EmptyState title="Você ainda não cadastrou nenhum produto" />
       ) : (
         <>

@@ -9,7 +9,11 @@ export const metadata: Metadata = {
   description: "Gerencie seus produtos"
 };
 
-export default async function SellerProductsPage() {
+export default async function SellerProductsPage({
+  searchParams
+}: {
+  searchParams: Promise<{ cursor?: string }>;
+}) {
   const session = await auth();
 
   if (!session) {
@@ -20,12 +24,15 @@ export default async function SellerProductsPage() {
     redirect("/");
   }
 
+  const { cursor } = await searchParams;
+
   const { products, pagination } = await productsService.getProducts({
     sellerId: session.user.id,
-    limit: 10
+    limit: 10,
+    cursor
   });
 
-  const initialProducts = products.map((p) => ({
+  const mappedProducts = products.map((p) => ({
     id: p.id,
     name: p.name,
     price: p.price,
@@ -36,9 +43,6 @@ export default async function SellerProductsPage() {
   }));
 
   return (
-    <SellerProductsClient
-      initialProducts={initialProducts}
-      initialPagination={pagination}
-    />
+    <SellerProductsClient products={mappedProducts} pagination={pagination} />
   );
 }
