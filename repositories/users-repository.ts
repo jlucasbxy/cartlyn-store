@@ -1,5 +1,4 @@
 import type { PrismaClient } from "@prisma/client";
-import type { RegisterDTO } from "@/dtos";
 import { prisma } from "@/prisma";
 
 type Deps = {
@@ -21,9 +20,12 @@ export function createUsersRepository(deps: Deps) {
     });
   }
 
-  function createUser(
-    data: Omit<RegisterDTO, "password"> & { password: string }
-  ) {
+  function createUser(data: {
+    email: string;
+    password: string;
+    name: string;
+    role: "CLIENT" | "SELLER";
+  }) {
     return deps.prisma.user.create({
       data,
       select: {
