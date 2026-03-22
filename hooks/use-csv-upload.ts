@@ -1,5 +1,6 @@
 import { type FormEvent, useState } from "react";
 import { toast } from "react-toastify";
+import { createBulkProducts } from "@/app/actions";
 
 interface UseCSVUploadProps {
   onSuccess: () => void;
@@ -22,19 +23,14 @@ export function useCSVUpload({ onSuccess }: UseCSVUploadProps) {
     formData.append("file", csvFile);
 
     try {
-      const response = await fetch("/api/products/bulk", {
-        method: "POST",
-        body: formData
-      });
+      const result = await createBulkProducts(formData);
 
-      const data = await response.json();
-
-      if (response.ok) {
-        toast.success(data.message);
+      if ("error" in result) {
+        toast.error(result.error);
+      } else {
+        toast.success(result.message ?? "Produtos criados com sucesso");
         setCsvFile(null);
         onSuccess();
-      } else {
-        toast.error(data.error || "Erro ao fazer upload");
       }
     } catch {
       toast.error("Erro ao fazer upload");

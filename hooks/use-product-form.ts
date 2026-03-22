@@ -1,5 +1,6 @@
 import { type FormEvent, useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import { createProduct, updateProduct } from "@/app/actions";
 import { formatZodError } from "@/lib/format-zod-error";
 import { productSchema } from "@/schemas";
 
@@ -31,7 +32,6 @@ export function useProductForm({
   }>({});
   const [loading, setLoading] = useState(false);
 
-  // Reset form when editingProduct changes
   useEffect(() => {
     if (formRef.current) {
       if (editingProduct) {
@@ -62,7 +62,6 @@ export function useProductForm({
 
     const formData = new FormData(formRef.current);
 
-    // Transform form data (convert string price to number)
     const productData = {
       name: formData.get("name") as string,
       price: parseFloat(formData.get("price") as string),
@@ -70,7 +69,6 @@ export function useProductForm({
       imageUrl: formData.get("imageUrl") as string
     };
 
-    // Validate with Zod
     const validation = productSchema.safeParse(productData);
 
     if (!validation.success) {
@@ -80,28 +78,15 @@ export function useProductForm({
     }
 
     try {
-      const url = editingProduct
-        ? `/api/products/${editingProduct.id}`
-        : "/api/products";
-      const method = editingProduct ? "PATCH" : "POST";
+      const result = editingProduct
+        ? await updateProduct(editingProduct.id, productData)
+        : await createProduct(productData);
 
-      const response = await fetch(url, {
-        method,
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(productData)
-      });
-
-      if (response.ok) {
+      if ("error" in result) {
+        toast.error(result.error);
+      } else {
         resetForm();
         onSuccess();
-      } else {
-        const data = await response.json();
-        if (data.error) {
-          // If API returns field-specific errors, set them
-          if (typeof data.error === "object") {
-            setErrors(data.error);
-          }
-        }
       }
     } catch {
       toast.error("Erro ao salvar produto. Tente novamente.");

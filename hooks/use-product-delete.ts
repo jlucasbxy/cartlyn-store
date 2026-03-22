@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { toast } from "react-toastify";
+import { deleteProduct } from "@/app/actions";
 
 interface UseProductDeleteProps {
   onSuccess: () => void;
@@ -18,7 +19,7 @@ export function useProductDelete({
 }: UseProductDeleteProps) {
   const [deleting, setDeleting] = useState(false);
 
-  const deleteProduct = async (productId: string) => {
+  const handleDelete = async (productId: string) => {
     const confirmed = await onConfirm({
       title: "Excluir Produto",
       message: "Deseja realmente excluir este produto?",
@@ -30,15 +31,13 @@ export function useProductDelete({
 
     setDeleting(true);
     try {
-      const response = await fetch(`/api/products/${productId}`, {
-        method: "DELETE"
-      });
+      const result = await deleteProduct(productId);
 
-      if (response.ok) {
+      if ("error" in result) {
+        toast.error(result.error);
+      } else {
         toast.success("Produto excluído!");
         onSuccess();
-      } else {
-        toast.error("Erro ao excluir produto");
       }
     } catch {
       toast.error("Erro ao excluir produto");
@@ -48,7 +47,7 @@ export function useProductDelete({
   };
 
   return {
-    deleteProduct,
+    deleteProduct: handleDelete,
     deleting
   };
 }
