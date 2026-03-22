@@ -1,5 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
-import { prisma } from "@/lib";
+import { prisma } from "@/prisma";
 import type { RegisterDTO } from "@/dtos";
 
 type Deps = {
