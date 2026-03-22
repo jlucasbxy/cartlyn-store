@@ -40,7 +40,7 @@ const clientLinks: NavItem[] = [
 ];
 
 export default function Navbar() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const { isDark, toggle, mounted } = useColorScheme();
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -67,11 +67,18 @@ export default function Navbar() {
             </Link>
             <div className="hidden md:flex items-center gap-1 ml-4">
               <NavLink href="/store">Loja</NavLink>
-              {roleLinks.map((link) => (
-                <NavLink key={link.href} href={link.href}>
-                  {link.label}
-                </NavLink>
-              ))}
+              {status === "loading" ? (
+                <>
+                  <div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mx-3" />
+                  <div className="h-4 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse mx-3" />
+                </>
+              ) : (
+                roleLinks.map((link) => (
+                  <NavLink key={link.href} href={link.href}>
+                    {link.label}
+                  </NavLink>
+                ))
+              )}
             </div>
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
@@ -117,7 +124,9 @@ export default function Navbar() {
                 <div className="w-5 h-5" />
               )}
             </button>
-            {session ? (
+            {status === "loading" ? (
+              <div className="h-8 w-16 bg-gray-200 dark:bg-gray-700 rounded animate-pulse" />
+            ) : session ? (
               <div className="flex items-center gap-3">
                 <div className="hidden lg:flex items-center gap-2">
                   <div className="w-7 h-7 rounded-full bg-primary/10 dark:bg-primary/20 flex items-center justify-center">
