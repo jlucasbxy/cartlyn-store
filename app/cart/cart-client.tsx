@@ -86,6 +86,9 @@ export function CartClient({ initialItems, total }: CartClientProps) {
       const result = await checkout();
       if (result && "error" in result) {
         toast.error(result.error);
+      } else {
+        toast.success("Compra finalizada com sucesso!");
+        router.push("/orders");
       }
     } catch {
       toast.error("Erro ao finalizar compra");

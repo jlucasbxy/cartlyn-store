@@ -1,7 +1,6 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { DomainError } from "@/errors";
 import { logger } from "@/lib/logger";
 import { auth } from "@/lib/server";
@@ -71,7 +70,7 @@ export async function removeFromCart(productId: string): Promise<ActionResult> {
   }
 }
 
-export async function checkout(): Promise<ActionResult | never> {
+export async function checkout(): Promise<ActionResult> {
   const session = await auth();
   if (!session) return { error: "Nao autenticado" };
   try {
@@ -82,5 +81,5 @@ export async function checkout(): Promise<ActionResult | never> {
     return { error: "Erro inesperado" };
   }
   revalidatePath("/cart");
-  redirect("/orders");
+  return { success: true };
 }
