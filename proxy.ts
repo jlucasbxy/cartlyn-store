@@ -1,5 +1,3 @@
-export const runtime = "nodejs";
-
 import { type NextRequest, NextResponse } from "next/server";
 import type { RateLimitTier } from "@/config/rate-limiter.config";
 import { checkRateLimit } from "@/lib/rate-limiter";
@@ -40,7 +38,7 @@ function getIp(request: NextRequest): string {
   );
 }
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const ip = getIp(request);
   const tier = getTier(request);
   const result = await checkRateLimit(ip, tier);
