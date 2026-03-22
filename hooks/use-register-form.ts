@@ -1,5 +1,6 @@
 import { useRouter } from "next/navigation";
 import { type FormEvent, useRef, useState } from "react";
+import { registerUser } from "@/app/actions";
 import { formatZodError } from "@/lib/format-zod-error";
 import { registerWithConfirmSchema } from "@/schemas";
 
@@ -32,7 +33,6 @@ export function useRegisterForm() {
       role: formDataObj.get("role") as "CLIENT" | "SELLER"
     };
 
-    // Validate with Zod
     const validation = registerWithConfirmSchema.safeParse(formData);
 
     if (!validation.success) {
@@ -42,20 +42,11 @@ export function useRegisterForm() {
     }
 
     try {
-      // Remove confirmPassword before sending to API
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { confirmPassword, ...registerData } = formData;
+      const { confirmPassword: _, ...registerData } = formData;
+      const result = await registerUser(registerData);
 
-      const response = await fetch("/api/auth/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(registerData)
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.error || "Erro ao criar conta");
+      if ("error" in result) {
+        setError(result.error);
       } else {
         router.push("/login?registered=true");
       }
