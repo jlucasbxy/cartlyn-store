@@ -47,7 +47,7 @@ export function useProductDelete({
   };
 
   return {
-    deleteProduct: handleDelete,
+    handleDelete,
     deleting
   };
 }
