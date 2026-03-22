@@ -19,7 +19,6 @@ export function StoreFilters() {
     if (query) params.set("query", query);
     if (minPrice) params.set("minPrice", minPrice);
     if (maxPrice) params.set("maxPrice", maxPrice);
-    params.set("page", "1");
 
     router.push(`/store?${params}`);
   };
