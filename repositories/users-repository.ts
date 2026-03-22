@@ -65,10 +65,18 @@ export function createUsersRepository(deps: Deps) {
     ]);
   }
 
+  function updatePassword(userId: string, password: string) {
+    return deps.prisma.user.update({
+      where: { id: userId },
+      data: { password }
+    });
+  }
+
   return {
     checkEmailExists,
     findActiveByEmail,
     createUser,
+    updatePassword,
     deactivateClientAccount,
     deactivateSellerAccount
   };

@@ -1,8 +1,15 @@
 import { Prisma } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import argon2 from "argon2";
 import type { RegisterDTO } from "@/dtos";
 import { EmailAlreadyExistsError } from "@/errors";
 import { usersRepository } from "@/repositories";
+
+const ARGON2_OPTIONS = {
+  type: argon2.argon2id,
+  memoryCost: 19456,
+  timeCost: 2,
+  parallelism: 1
+} as const;
 
 type Deps = {
   usersRepository: typeof usersRepository;
@@ -16,7 +23,7 @@ export function createRegisterService(deps: Deps) {
       throw new EmailAlreadyExistsError();
     }
 
-    const hashedPassword = await bcrypt.hash(data.password, 10);
+    const hashedPassword = await argon2.hash(data.password, ARGON2_OPTIONS);
 
     try {
       return await deps.usersRepository.createUser({

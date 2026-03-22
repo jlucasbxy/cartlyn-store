@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from "bcryptjs";
+import argon2 from "argon2";
 import { env } from "../../config/env.config";
 
 const prisma = new PrismaClient({
@@ -18,7 +18,12 @@ async function main() {
 
   // Hash password for all users
   const password = "12345678";
-  const hashedPassword = await bcrypt.hash(password, 10);
+  const hashedPassword = await argon2.hash(password, {
+    type: argon2.argon2id,
+    memoryCost: 19456,
+    timeCost: 2,
+    parallelism: 1
+  });
 
   // Create sellers
   const seller1 = await prisma.user.create({
