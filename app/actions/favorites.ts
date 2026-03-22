@@ -1,5 +1,6 @@
 "use server";
 
+import { revalidatePath } from "next/cache";
 import { DomainError } from "@/errors";
 import { logger } from "@/lib/logger";
 import { auth } from "@/lib/server";
@@ -11,6 +12,7 @@ export async function addFavorite(productId: string): Promise<ActionResult> {
   if (!session) return { error: "Nao autenticado" };
   try {
     await favoritesService.addFavorite(session.user.id, productId);
+    revalidatePath("/favorites");
     return { success: true };
   } catch (error) {
     if (error instanceof DomainError) return { error: error.message };
@@ -24,6 +26,7 @@ export async function removeFavorite(productId: string): Promise<ActionResult> {
   if (!session) return { error: "Nao autenticado" };
   try {
     await favoritesService.removeFavorite(session.user.id, productId);
+    revalidatePath("/favorites");
     return { success: true };
   } catch (error) {
     if (error instanceof DomainError) return { error: error.message };
