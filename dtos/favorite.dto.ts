@@ -21,3 +21,7 @@ export type FavoriteDTO = {
   createdAt: Date;
   product: FavoriteProductDTO;
 };
+
+export type FavoriteInput = {
+  productId: string;
+};

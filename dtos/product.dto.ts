@@ -30,3 +30,32 @@ export type ProductListDTO = {
   products: ProductDTO[];
   pagination: CursorPaginationDTO;
 };
+
+export type ProductInput = {
+  name: string;
+  price: number;
+  description: string;
+  imageUrl: string;
+};
+
+export type ProductUpdateInput = {
+  name?: string;
+  price?: number;
+  description?: string;
+  imageUrl?: string;
+};
+
+export type SearchProductsInput = {
+  query?: string;
+  cursor?: string;
+  limit: number;
+  minPrice?: number;
+  maxPrice?: number;
+};
+
+export type CsvProductInput = {
+  name: string;
+  price: number;
+  description: string;
+  imageUrl: string;
+};

@@ -7,4 +7,3 @@ export const csvProductSchema = z.object({
   imageUrl: z.url()
 });
 
-export type CsvProductInput = z.infer<typeof csvProductSchema>;

@@ -1,6 +1,6 @@
 import type { PrismaClient } from "@prisma/client";
 import { prisma } from "@/lib";
-import type { RegisterInput } from "@/schemas";
+import type { RegisterInput } from "@/dtos";
 
 type Deps = {
   prisma: PrismaClient;

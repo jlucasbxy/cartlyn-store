@@ -4,7 +4,7 @@ import type {
   ProductInput,
   ProductUpdateInput,
   SearchProductsInput
-} from "@/schemas";
+} from "@/dtos";
 
 export type ProductSearchFilters = SearchProductsInput & {
   sellerId?: string;

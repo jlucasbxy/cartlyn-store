@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { EmailAlreadyExistsError } from "@/errors";
 import { usersRepository } from "@/repositories";
-import type { RegisterInput } from "@/schemas";
+import type { RegisterInput } from "@/dtos";
 
 type Deps = {
   usersRepository: typeof usersRepository;

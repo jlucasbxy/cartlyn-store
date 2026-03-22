@@ -8,4 +8,3 @@ export const searchProductsSchema = z.object({
   maxPrice: z.number().positive().optional()
 });
 
-export type SearchProductsInput = z.infer<typeof searchProductsSchema>;

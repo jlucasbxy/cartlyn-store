@@ -7,4 +7,3 @@ export const productSchema = z.object({
   imageUrl: z.url()
 });
 
-export type ProductInput = z.infer<typeof productSchema>;

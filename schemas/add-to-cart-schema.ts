@@ -5,4 +5,3 @@ export const addToCartSchema = z.object({
   quantity: z.number().int().positive().default(1)
 });
 
-export type AddToCartInput = z.infer<typeof addToCartSchema>;
