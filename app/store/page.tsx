@@ -74,7 +74,11 @@ export default async function StorePage({ searchParams }: StorePageProps) {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 stagger-children">
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} isFavorite={favoriteIds.has(product.id)} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                isFavorite={favoriteIds.has(product.id)}
+              />
             ))}
           </div>
 

@@ -1,7 +1,7 @@
 "use client";
-import { useState } from "react";
 import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useColorScheme } from "@/hooks";
 
@@ -166,6 +166,7 @@ export default function Navbar() {
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
+                aria-hidden="true"
               >
                 {menuOpen ? (
                   <path

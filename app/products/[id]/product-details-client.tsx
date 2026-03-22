@@ -161,7 +161,11 @@ export function ProductDetailsClient({
                     onClick={handleToggleFavorite}
                     disabled={favoriteLoading}
                     variant="outline"
-                    title={favorite ? "Remover dos favoritos" : "Adicionar aos favoritos"}
+                    title={
+                      favorite
+                        ? "Remover dos favoritos"
+                        : "Adicionar aos favoritos"
+                    }
                   >
                     <svg
                       aria-hidden="true"
