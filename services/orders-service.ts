@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import type { OrderDTO } from "@/dtos";
 import { CartEmptyError, CartItemsUnavailableError } from "@/errors";
 import { toNumber } from "@/lib/client";
@@ -70,10 +70,12 @@ export function createOrdersService(deps: Deps) {
       });
     }
 
-    const total = cartItems.reduce(
-      (sum, item) => sum + toNumber(item.product.price) * item.quantity,
-      0
-    );
+    const total = cartItems
+      .reduce(
+        (sum, item) => sum.plus(item.product.price.mul(item.quantity)),
+        new Prisma.Decimal(0)
+      )
+      .toNumber();
 
     const order = await deps.ordersRepository.createOrderFromCart(
       userId,
