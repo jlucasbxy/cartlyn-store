@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { signOut, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { Button, Card, ConfirmModal, Loading, PageLayout } from "@/components";
+import { Button, ConfirmModal, Loading, PageLayout } from "@/components";
 import { useConfirm } from "@/hooks";
 
 export default function SettingsPage() {
@@ -55,7 +55,6 @@ export default function SettingsPage() {
         const data = await response.json();
         toast.success(data.message);
 
-        // Sign out and redirect after a short delay
         setTimeout(() => {
           signOut({ callbackUrl: "/" });
         }, 1500);
@@ -72,46 +71,55 @@ export default function SettingsPage() {
 
   return (
     <PageLayout>
-      <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-8">
-        Configurações da Conta
-      </h1>
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
+          Configurações
+        </h1>
+        <p className="text-sm text-gray-500 dark:text-gray-400">
+          Gerencie sua conta
+        </p>
+      </div>
 
-      <div className="max-w-3xl space-y-6">
+      <div className="max-w-2xl space-y-5">
         {/* Account Information */}
-        <Card>
-          <h2 className="text-2xl font-semibold text-gray-900 dark:text-white mb-4">
+        <div className="bg-white dark:bg-gray-800/60 rounded-xl border border-gray-200/80 dark:border-gray-700/50 p-5">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
             Informações da Conta
           </h2>
-          <div className="space-y-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Nome</p>
-              <p className="text-lg font-medium text-gray-900 dark:text-white">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">
+                Nome
+              </p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
                 {session?.user.name}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">Email</p>
-              <p className="text-lg font-medium text-gray-900 dark:text-white">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">
+                Email
+              </p>
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
                 {session?.user.email}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
+              <p className="text-xs text-gray-400 dark:text-gray-500 mb-0.5">
                 Tipo de Conta
               </p>
-              <p className="text-lg font-medium text-gray-900 dark:text-white">
+              <p className="text-sm font-medium text-gray-900 dark:text-white">
                 {isClient ? "Cliente" : "Vendedor"}
               </p>
             </div>
           </div>
-        </Card>
+        </div>
 
         {/* Danger Zone */}
-        <Card className="border-2 border-red-200 dark:border-red-800">
-          <div className="flex items-start gap-3 mb-4">
+        <div className="bg-white dark:bg-gray-800/60 rounded-xl border border-red-200/80 dark:border-red-800/30 p-5">
+          <div className="flex items-center gap-2 mb-4">
             <svg
               aria-hidden="true"
-              className="w-6 h-6 text-red-600 dark:text-red-400 flex-shrink-0"
+              className="w-5 h-5 text-red-500 dark:text-red-400"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -119,44 +127,38 @@ export default function SettingsPage() {
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
-                strokeWidth={2}
+                strokeWidth={1.5}
                 d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
               />
             </svg>
-            <div>
-              <h2 className="text-2xl font-semibold text-red-600 dark:text-red-400">
-                Zona de Perigo
-              </h2>
-            </div>
+            <h2 className="text-lg font-semibold text-red-600 dark:text-red-400">
+              Zona de Perigo
+            </h2>
           </div>
 
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-4">
-            <h3 className="font-semibold text-red-900 dark:text-red-100 mb-2">
+          <div className="bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-800/30 rounded-lg p-4 mb-4">
+            <h3 className="font-medium text-sm text-red-800 dark:text-red-300 mb-2">
               {isClient ? "Excluir Conta" : "Desativar Conta"}
             </h3>
-            <div className="text-sm text-red-800 dark:text-red-200 mb-3">
+            <div className="text-xs text-red-700 dark:text-red-300/80 space-y-1">
               {isClient ? (
                 <>
-                  <p className="mb-2">Ao excluir sua conta:</p>
-                  <ul className="list-disc list-inside space-y-1">
+                  <p>Ao excluir sua conta:</p>
+                  <ul className="list-disc list-inside space-y-0.5 ml-1">
                     <li>Você não poderá mais fazer login</li>
-                    <li>Seu histórico de compras será mantido no sistema</li>
-                    <li>
-                      Suas informações de favoritos e carrinho serão removidas
-                    </li>
-                    <li>Esta ação é permanente e não pode ser desfeita</li>
+                    <li>Seu histórico de compras será mantido</li>
+                    <li>Favoritos e carrinho serão removidos</li>
+                    <li>Esta ação é permanente</li>
                   </ul>
                 </>
               ) : (
                 <>
-                  <p className="mb-2">Ao desativar sua conta:</p>
-                  <ul className="list-disc list-inside space-y-1">
+                  <p>Ao desativar sua conta:</p>
+                  <ul className="list-disc list-inside space-y-0.5 ml-1">
                     <li>Você não poderá mais fazer login</li>
-                    <li>Todos os seus produtos serão ocultados da loja</li>
-                    <li>
-                      Os produtos existentes não serão deletados do sistema
-                    </li>
-                    <li>Esta ação é permanente e não pode ser desfeita</li>
+                    <li>Seus produtos serão ocultados da loja</li>
+                    <li>Os produtos não serão deletados</li>
+                    <li>Esta ação é permanente</li>
                   </ul>
                 </>
               )}
@@ -166,8 +168,8 @@ export default function SettingsPage() {
           <Button
             onClick={handleDeleteAccount}
             disabled={loading}
-            variant="outline"
-            className="border-red-500 text-red-600 hover:bg-red-50 dark:border-red-400 dark:text-red-400 dark:hover:bg-red-900/20"
+            variant="danger"
+            size="sm"
           >
             {loading
               ? "Processando..."
@@ -175,7 +177,7 @@ export default function SettingsPage() {
                 ? "Excluir Minha Conta"
                 : "Desativar Minha Conta"}
           </Button>
-        </Card>
+        </div>
       </div>
 
       <ConfirmModal
