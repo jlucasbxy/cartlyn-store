@@ -1,7 +1,7 @@
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import { type FormEvent, useRef, useState } from "react";
-import { formatZodError } from "@/lib";
+import { formatZodError } from "@/lib/format-zod-error";
 import { loginSchema } from "@/schemas";
 
 export function useLoginForm() {

@@ -1,5 +1,5 @@
 import { type FormEvent, useEffect, useRef, useState } from "react";
-import { formatZodError } from "@/lib";
+import { formatZodError } from "@/lib/format-zod-error";
 import { productSchema } from "@/schemas";
 
 interface Product {
