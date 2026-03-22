@@ -1,8 +1,16 @@
 import type { Metadata } from "next";
+import { unstable_cache } from "next/cache";
 import { PageLayout, ProductCard } from "@/components";
 import { productsService } from "@/services";
 import { StoreFilters } from "./store-filters";
 import { StorePagination } from "./store-pagination";
+
+const getCachedProducts = unstable_cache(
+  (params: Parameters<typeof productsService.getProducts>[0]) =>
+    productsService.getProducts(params),
+  ["store-products"],
+  { revalidate: 60, tags: ["products"] }
+);
 
 export const metadata: Metadata = {
   title: "Loja - Cartlyn Store",
@@ -25,7 +33,7 @@ export default async function StorePage({ searchParams }: StorePageProps) {
   const minPrice = params.minPrice ? parseFloat(params.minPrice) : undefined;
   const maxPrice = params.maxPrice ? parseFloat(params.maxPrice) : undefined;
 
-  const { products, pagination } = await productsService.getProducts({
+  const { products, pagination } = await getCachedProducts({
     query: params.query,
     cursor: params.cursor,
     limit: 12,
