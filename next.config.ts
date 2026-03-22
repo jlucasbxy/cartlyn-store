@@ -3,8 +3,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
-  cacheHandler: path.resolve("./cache-handler.mjs"),
-  cacheMaxMemorySize: 0,
+  cacheHandlers: {
+    default: path.resolve("./cache-handler.mjs"),
+    remote: path.resolve("./cache-handler.mjs")
+  },
   transpilePackages: ["swagger-ui-react"],
   headers: async () => [
     {

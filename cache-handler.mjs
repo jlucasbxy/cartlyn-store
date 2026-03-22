@@ -2,24 +2,7 @@
 import { Redis } from "ioredis";
 
 const CACHE_PREFIX = "nxt:c:";
-const TAGS_PREFIX = "nxt:t:";
-
-function replacer(_key, value) {
-  if (value instanceof Map) {
-    return { __type: "Map", value: Array.from(value.entries()) };
-  }
-  return value;
-}
-
-function reviver(_key, value) {
-  if (value && value.__type === "Map") {
-    return new Map(value.value);
-  }
-  if (value && value.type === "Buffer" && Array.isArray(value.data)) {
-    return Buffer.from(value.data);
-  }
-  return value;
-}
+const TAG_EXP_PREFIX = "nxt:te:";
 
 /** @type {Redis | null} */
 let client = null;
@@ -45,89 +28,129 @@ function getRedis() {
   return client;
 }
 
-class CacheHandler {
-  constructor(_options) {
-    this.redis = getRedis();
+/**
+ * @param {ReadableStream<Uint8Array>} stream
+ * @returns {Promise<Buffer>}
+ */
+async function readStream(stream) {
+  const reader = stream.getReader();
+  const chunks = [];
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      chunks.push(Buffer.from(value));
+    }
+  } finally {
+    reader.releaseLock();
   }
+  return Buffer.concat(chunks);
+}
 
+export default {
   /**
-   * @param {string} key
-   * @returns {Promise<import('next/dist/server/lib/incremental-cache').CacheHandlerValue | null>}
+   * @param {string} cacheKey
+   * @param {string[]} _softTags
    */
-  async get(key) {
+  async get(cacheKey, _softTags) {
     try {
-      const raw = await this.redis.get(`${CACHE_PREFIX}${key}`);
-      if (!raw) return null;
-      return JSON.parse(raw, reviver);
+      const redis = getRedis();
+      const stored = await redis.get(`${CACHE_PREFIX}${cacheKey}`);
+      if (!stored) return undefined;
+
+      const data = JSON.parse(stored);
+      const buf = Buffer.from(data.value, "base64");
+
+      return {
+        value: new ReadableStream({
+          start(controller) {
+            controller.enqueue(buf);
+            controller.close();
+          }
+        }),
+        tags: data.tags,
+        stale: data.stale,
+        timestamp: data.timestamp,
+        expire: data.expire,
+        revalidate: data.revalidate
+      };
     } catch (err) {
       console.error("[cache-handler] get error:", err.message);
-      return null;
+      return undefined;
     }
-  }
+  },
 
   /**
-   * @param {string} key
-   * @param {any} data
-   * @param {{ revalidate?: number | false; tags?: string[] }} ctx
+   * @param {string} cacheKey
+   * @param {Promise<import('next/dist/server/lib/cache-handlers/types').CacheEntry>} pendingEntry
    */
-  async set(key, data, ctx) {
-    const { revalidate, tags = [] } = ctx;
-
-    const entry = {
-      value: data,
-      lastModified: Date.now(),
-      tags
-    };
-
-    const serialized = JSON.stringify(entry, replacer);
-    const cacheKey = `${CACHE_PREFIX}${key}`;
-
+  async set(cacheKey, pendingEntry) {
     try {
-      const pipeline = this.redis.pipeline();
+      const redis = getRedis();
+      const entry = await pendingEntry;
+      const buf = await readStream(entry.value);
 
-      if (typeof revalidate === "number" && revalidate > 0) {
-        pipeline.setex(cacheKey, revalidate, serialized);
+      const stored = JSON.stringify({
+        value: buf.toString("base64"),
+        tags: entry.tags,
+        stale: entry.stale,
+        timestamp: entry.timestamp,
+        expire: entry.expire,
+        revalidate: entry.revalidate
+      });
+
+      const ttl = entry.expire;
+      if (typeof ttl === "number" && ttl > 0 && isFinite(ttl)) {
+        await redis.setex(`${CACHE_PREFIX}${cacheKey}`, ttl, stored);
       } else {
-        // revalidate: false means cache indefinitely
-        pipeline.set(cacheKey, serialized);
+        await redis.set(`${CACHE_PREFIX}${cacheKey}`, stored);
       }
-
-      for (const tag of tags) {
-        pipeline.sadd(`${TAGS_PREFIX}${tag}`, key);
-      }
-
-      await pipeline.exec();
     } catch (err) {
       console.error("[cache-handler] set error:", err.message);
     }
-  }
+  },
+
+  async refreshTags() {},
 
   /**
-   * @param {string | string[]} tags
+   * @param {string[]} tags
+   * @returns {Promise<number>}
    */
-  async revalidateTag(tags) {
-    const tagList = Array.isArray(tags) ? tags : [tags];
-
+  async getExpiration(tags) {
+    if (tags.length === 0) return 0;
     try {
-      for (const tag of tagList) {
-        const tagKey = `${TAGS_PREFIX}${tag}`;
-        const keys = await this.redis.smembers(tagKey);
+      const redis = getRedis();
+      const keys = tags.map((tag) => `${TAG_EXP_PREFIX}${tag}`);
+      const values = await redis.mget(...keys);
+      const timestamps = values.map(Number).filter((n) => n > 0);
+      return timestamps.length > 0 ? Math.max(...timestamps) : 0;
+    } catch (err) {
+      console.error("[cache-handler] getExpiration error:", err.message);
+      return 0;
+    }
+  },
 
-        if (keys.length > 0) {
-          const pipeline = this.redis.pipeline();
-          for (const k of keys) {
-            pipeline.del(`${CACHE_PREFIX}${k}`);
-          }
-          pipeline.del(tagKey);
-          await pipeline.exec();
+  /**
+   * @param {string[]} tags
+   * @param {{ expire?: number }} [durations]
+   */
+  async updateTags(tags, durations) {
+    try {
+      const redis = getRedis();
+      const now = Date.now();
+      const pipeline = redis.pipeline();
+      for (const tag of tags) {
+        const key = `${TAG_EXP_PREFIX}${tag}`;
+        const ttl = durations?.expire;
+        if (typeof ttl === "number" && ttl > 0 && isFinite(ttl)) {
+          pipeline.setex(key, ttl, String(now));
         } else {
-          await this.redis.del(tagKey);
+          pipeline.set(key, String(now));
         }
       }
+      await pipeline.exec();
     } catch (err) {
-      console.error("[cache-handler] revalidateTag error:", err.message);
+      console.error("[cache-handler] updateTags error:", err.message);
     }
   }
-}
-
-export default CacheHandler;
+};

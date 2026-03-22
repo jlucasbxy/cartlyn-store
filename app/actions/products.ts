@@ -1,6 +1,6 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import Papa from "papaparse";
 import { DomainError } from "@/errors";
 import { logger } from "@/lib/logger";
@@ -28,6 +28,7 @@ export async function createProduct(data: {
   try {
     await productsService.createProduct(session.user.id, validated.data);
     revalidatePath("/seller/products");
+    revalidateTag("products");
     return { success: true };
   } catch (error) {
     if (error instanceof DomainError) return { error: error.message };
@@ -54,6 +55,7 @@ export async function updateProduct(
   try {
     await productsService.updateProduct(session.user.id, id, validated.data);
     revalidatePath("/seller/products");
+    revalidateTag("products");
     return { success: true };
   } catch (error) {
     if (error instanceof DomainError) return { error: error.message };
@@ -69,6 +71,7 @@ export async function deleteProduct(id: string): Promise<ActionResult> {
   try {
     await productsService.deleteProduct(session.user.id, id);
     revalidatePath("/seller/products");
+    revalidateTag("products");
     return { success: true };
   } catch (error) {
     if (error instanceof DomainError) return { error: error.message };
@@ -107,6 +110,7 @@ export async function createBulkProducts(
       validated.data
     );
     revalidatePath("/seller/products");
+    revalidateTag("products");
     return {
       success: true,
       message: `${created} produtos criados com sucesso`
