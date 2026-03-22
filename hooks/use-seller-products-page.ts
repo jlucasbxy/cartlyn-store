@@ -1,6 +1,5 @@
 import { useRouter } from "next/navigation";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
 import { useConfirm } from "@/hooks/use-confirm";
 import { useCSVUpload } from "@/hooks/use-csv-upload";
@@ -19,7 +18,6 @@ interface Product {
 
 export function useSellerProductsPage(editingProductProp?: Product | null) {
   const router = useRouter();
-  const { data: session, status } = useSession();
   const [showForm, setShowForm] = useState(false);
   const [showCSVUpload, setShowCSVUpload] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(
@@ -38,7 +36,7 @@ export function useSellerProductsPage(editingProductProp?: Product | null) {
     editingProduct
   });
 
-  const { deleteProduct } = useProductDelete({
+  const { handleDelete } = useProductDelete({
     onSuccess: () => router.refresh(),
     onConfirm: confirm
   });
@@ -49,20 +47,6 @@ export function useSellerProductsPage(editingProductProp?: Product | null) {
       router.refresh();
     }
   });
-
-  // Authentication check
-  useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/login");
-      return;
-    }
-    if (status === "authenticated" && session?.user.role !== "SELLER") {
-      toast.error(
-        "Acesso negado. Apenas vendedores podem acessar esta página."
-      );
-      router.push("/");
-    }
-  }, [status, session, router]);
 
   const handleEdit = (product: Product) => {
     setEditingProduct(product);
@@ -95,7 +79,6 @@ export function useSellerProductsPage(editingProductProp?: Product | null) {
     showForm,
     showCSVUpload,
     editingProduct,
-    status,
 
     // Hooks
     productForm,
@@ -108,7 +91,7 @@ export function useSellerProductsPage(editingProductProp?: Product | null) {
     handleCloseForm,
     handleOpenCSVUpload,
     handleCloseCSVUpload,
-    deleteProduct,
+    handleDelete,
     handleClose
   };
 }

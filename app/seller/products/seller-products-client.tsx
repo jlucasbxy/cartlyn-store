@@ -51,7 +51,7 @@ export function SellerProductsClient({ products, pagination }: Props) {
     handleCloseForm,
     handleOpenCSVUpload,
     handleCloseCSVUpload,
-    deleteProduct,
+    handleDelete,
     handleClose
   } = useSellerProductsPage();
 
@@ -123,7 +123,7 @@ export function SellerProductsClient({ products, pagination }: Props) {
                 key={product.id}
                 product={product}
                 onEdit={handleEdit}
-                onDelete={deleteProduct}
+                onDelete={handleDelete}
               />
             ))}
           </div>
