@@ -3,6 +3,8 @@ import { handleServiceError } from "@/lib/server";
 import { searchProductsSchema } from "@/schemas";
 import { productsService } from "@/services";
 
+export const dynamic = "force-dynamic";
+
 // Get products (with search and pagination)
 export async function GET(request: NextRequest) {
   try {
