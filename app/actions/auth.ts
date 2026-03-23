@@ -2,6 +2,7 @@
 
 import { DomainError } from "@/errors";
 import { logger } from "@/lib/logger";
+import { checkActionRateLimit } from "@/lib/server/action-rate-limit";
 import { registerSchema } from "@/schemas";
 import { registerService } from "@/services";
 import type { ActionResult } from "./types";
@@ -12,6 +13,9 @@ export async function registerUser(data: {
   password: string;
   role: "CLIENT" | "SELLER";
 }): Promise<ActionResult> {
+  const rateLimit = await checkActionRateLimit("STRICT");
+  if (!rateLimit.allowed) return { error: rateLimit.error };
+
   const validated = registerSchema.safeParse(data);
   if (!validated.success) return { error: "Dados inválidos" };
   try {
