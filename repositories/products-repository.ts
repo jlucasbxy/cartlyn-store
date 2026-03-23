@@ -1,5 +1,6 @@
-import type { Prisma, PrismaClient } from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/prisma";
+import type { PrismaInstance } from "@/prisma";
 
 export type ProductSearchFilters = {
   query?: string;
@@ -22,7 +23,7 @@ const productWithSellerInclude = {
 } satisfies Prisma.ProductInclude;
 
 type Deps = {
-  prisma: PrismaClient;
+  prisma: PrismaInstance;
 };
 
 export function createProductsRepository(deps: Deps) {
@@ -164,6 +165,13 @@ export function createProductsRepository(deps: Deps) {
     });
   }
 
+  function deactivateAllBySeller(sellerId: string) {
+    return deps.prisma.product.updateMany({
+      where: { sellerId },
+      data: { active: false }
+    });
+  }
+
   function countBySeller(sellerId: string) {
     return deps.prisma.product.count({
       where: { sellerId }
@@ -190,6 +198,7 @@ export function createProductsRepository(deps: Deps) {
     findActiveById,
     updateById,
     deactivateById,
+    deactivateAllBySeller,
     createManyProducts,
     countBySeller,
     findBasicById
