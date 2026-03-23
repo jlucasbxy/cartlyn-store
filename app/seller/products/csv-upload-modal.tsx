@@ -1,10 +1,10 @@
-import type { FormEvent } from "react";
+import type { SubmitEventHandler } from "react";
 import { Button, FileInput, Modal } from "@/components";
 
 interface CsvUploadModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onUpload: (e: FormEvent<HTMLFormElement>) => void;
+  onUpload: SubmitEventHandler<HTMLFormElement>;
   onFileChange: (file: File | null) => void;
   selectedFile: File | null;
   uploading: boolean;

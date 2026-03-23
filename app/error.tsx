@@ -1,13 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import type { ReactElement } from "react";
 
 export default function ErrorPage({
+  error,
   reset
 }: {
   error: Error & { digest?: string };
   reset: () => void;
-}) {
+}): ReactElement {
+  void error;
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0f172a] p-4">
       <div className="text-center max-w-md animate-fade-in">

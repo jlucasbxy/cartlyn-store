@@ -86,7 +86,7 @@ export function ProductDetailsClient({
 
       <Card padding="none" className="overflow-hidden animate-fade-in">
         <div className="grid grid-cols-1 md:grid-cols-2">
-          <div className="relative h-80 md:h-full min-h-[400px] bg-gray-100 dark:bg-gray-700/50">
+          <div className="relative h-80 md:h-full min-h-100 bg-gray-100 dark:bg-gray-700/50">
             <Image
               src={product.imageUrl}
               alt={product.name}

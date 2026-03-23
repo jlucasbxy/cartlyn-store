@@ -1,4 +1,4 @@
-import type { FormEvent, RefObject } from "react";
+import type { RefObject, SubmitEventHandler } from "react";
 import { Button, FormInput, Modal } from "@/components";
 
 interface ProductFormErrors {
@@ -13,7 +13,7 @@ interface ProductFormModalProps {
   onClose: () => void;
   isEditing: boolean;
   formRef: RefObject<HTMLFormElement | null>;
-  onSubmit: (e: FormEvent<HTMLFormElement>) => void;
+  onSubmit: SubmitEventHandler<HTMLFormElement>;
   errors: ProductFormErrors;
   loading: boolean;
 }

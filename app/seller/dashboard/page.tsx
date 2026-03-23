@@ -113,7 +113,7 @@ export default async function SellerDashboardPage() {
             Produto Mais Vendido
           </h2>
           <div className="flex gap-5 items-start">
-            <div className="relative h-24 w-24 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700/50">
+            <div className="relative h-24 w-24 shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700/50">
               <Image
                 src={dashboardData.bestSellingProduct.imageUrl}
                 alt={dashboardData.bestSellingProduct.name}

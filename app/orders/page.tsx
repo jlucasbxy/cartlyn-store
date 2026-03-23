@@ -107,7 +107,7 @@ export default async function OrdersPage() {
                 <div className="space-y-3">
                   {order.items.map((item) => (
                     <div key={item.id} className="flex gap-3 items-center">
-                      <div className="relative h-14 w-14 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700/50">
+                      <div className="relative h-14 w-14 shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700/50">
                         <Image
                           src={item.product.imageUrl}
                           alt={item.productName}
@@ -124,7 +124,7 @@ export default async function OrdersPage() {
                           {item.quantity}x R$ {item.price.toFixed(2)}
                         </p>
                       </div>
-                      <div className="text-right flex-shrink-0">
+                      <div className="text-right shrink-0">
                         <p className="font-semibold text-sm text-gray-900 dark:text-white">
                           R$ {(item.price * item.quantity).toFixed(2)}
                         </p>

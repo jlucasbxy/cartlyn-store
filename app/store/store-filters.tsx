@@ -1,5 +1,6 @@
 "use client";
 
+import type { SubmitEventHandler } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Button, FormInput } from "@/components";
 
@@ -7,7 +8,7 @@ export function StoreFilters() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSearch: SubmitEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const params = new URLSearchParams();

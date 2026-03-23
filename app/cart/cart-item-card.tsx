@@ -28,7 +28,7 @@ export function CartItemCard({
 }: CartItemCardProps) {
   return (
     <div className="bg-white dark:bg-gray-800/60 rounded-xl border border-gray-200/80 dark:border-gray-700/50 p-4 flex gap-4 animate-fade-in">
-      <div className="relative h-20 w-20 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700/50">
+      <div className="relative h-20 w-20 shrink-0 rounded-lg overflow-hidden bg-gray-100 dark:bg-gray-700/50">
         <Image
           src={item.product.imageUrl}
           alt={item.product.name}

@@ -33,7 +33,7 @@ export default function RegisterPage() {
   return (
     <div className="min-h-screen flex bg-gray-50 dark:bg-[#0f172a] transition-colors">
       {/* Branding side */}
-      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-primary/90 to-primary-dark relative items-center justify-center p-12 overflow-hidden">
+      <div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-primary/90 to-primary-dark relative items-center justify-center p-12 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_60%,rgba(255,255,255,0.1),transparent_60%)]" />
         <div className="relative text-white max-w-md">
           <div className="flex items-center gap-2 mb-8">

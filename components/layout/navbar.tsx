@@ -58,7 +58,7 @@ export default function Navbar() {
           <div className="flex items-center gap-2 lg:gap-6">
             <Link
               href="/"
-              className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white whitespace-nowrap flex-shrink-0 flex items-center gap-2"
+              className="text-lg sm:text-xl font-bold text-gray-900 dark:text-white whitespace-nowrap shrink-0 flex items-center gap-2"
             >
               <span className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center text-white text-sm font-bold">
                 C

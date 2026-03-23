@@ -25,7 +25,7 @@ export function StatsCard({
           </p>
         </div>
         <div
-          className={`${bgColor} dark:bg-opacity-20 p-2.5 rounded-lg flex-shrink-0`}
+          className={`${bgColor} dark:bg-opacity-20 p-2.5 rounded-lg shrink-0`}
         >
           {icon}
         </div>
