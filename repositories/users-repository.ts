@@ -1,8 +1,8 @@
-import type { PrismaClient, Prisma } from "@prisma/client";
-import { prisma } from "@/prisma";
+import { prisma, runBatch } from "@/prisma";
+import type { PrismaInstance } from "@/prisma";
 
 type Deps = {
-  prisma: PrismaClient | Prisma.TransactionClient;
+  prisma: PrismaInstance;
 };
 
 export function createUsersRepository(deps: Deps) {
@@ -38,22 +38,18 @@ export function createUsersRepository(deps: Deps) {
   }
 
   function deactivateClientAccount(userId: string) {
-    const ops = [
+    return runBatch(deps.prisma, [
       deps.prisma.user.update({
         where: { id: userId },
         data: { active: false }
       }),
       deps.prisma.cartItem.deleteMany({ where: { userId } }),
       deps.prisma.favorite.deleteMany({ where: { userId } })
-    ] as const;
-
-    if ("$transaction" in deps.prisma)
-      return deps.prisma.$transaction([...ops]);
-    return Promise.all(ops);
+    ]);
   }
 
   function deactivateSellerAccount(userId: string) {
-    const ops = [
+    return runBatch(deps.prisma, [
       deps.prisma.user.update({
         where: { id: userId },
         data: { active: false }
@@ -62,11 +58,7 @@ export function createUsersRepository(deps: Deps) {
         where: { sellerId: userId },
         data: { active: false }
       })
-    ] as const;
-
-    if ("$transaction" in deps.prisma)
-      return deps.prisma.$transaction([...ops]);
-    return Promise.all(ops);
+    ]);
   }
 
   function updatePassword(userId: string, password: string) {

@@ -1,6 +1,16 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Prisma } from "@prisma/client";
 import { env } from "@/config/env.config";
+
+export type PrismaInstance = PrismaClient | Prisma.TransactionClient;
+
+export function runBatch(
+  client: PrismaInstance,
+  ops: readonly Prisma.PrismaPromise<unknown>[]
+) {
+  if ("$transaction" in client) return client.$transaction([...ops]);
+  return Promise.all(ops);
+}
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;

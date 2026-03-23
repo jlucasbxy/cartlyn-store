@@ -1,11 +1,11 @@
 import crypto from "node:crypto";
-import type { PrismaClient, Prisma } from "@prisma/client";
-import { prisma } from "@/prisma";
+import { prisma, runBatch } from "@/prisma";
+import type { PrismaInstance } from "@/prisma";
 
 const TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
 
 type Deps = {
-  prisma: PrismaClient | Prisma.TransactionClient;
+  prisma: PrismaInstance;
 };
 
 export function createPasswordResetRepository(deps: Deps) {
@@ -18,18 +18,12 @@ export function createPasswordResetRepository(deps: Deps) {
     const hashedToken = hashToken(rawToken);
     const expiresAt = new Date(Date.now() + TOKEN_EXPIRY_MS);
 
-    const ops = [
+    await runBatch(deps.prisma, [
       deps.prisma.passwordResetToken.deleteMany({ where: { userId } }),
       deps.prisma.passwordResetToken.create({
         data: { token: hashedToken, userId, expiresAt }
       })
-    ] as const;
-
-    if ("$transaction" in deps.prisma) {
-      await deps.prisma.$transaction([...ops]);
-    } else {
-      for (const op of ops) await op;
-    }
+    ]);
 
     return rawToken;
   }
