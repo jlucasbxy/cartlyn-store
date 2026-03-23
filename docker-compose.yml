@@ -19,6 +19,16 @@ services:
     volumes:
       - redis_data:/data
 
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: no
+    environment:
+      MP_SMTP_AUTH: "mailpit:mailpit"
+      MP_SMTP_AUTH_ALLOW_INSECURE: "true"
+    ports:
+      - "1025:1025"
+      - "8025:8025"
+
 volumes:
   store_data:
   redis_data:

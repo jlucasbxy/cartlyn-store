@@ -21,6 +21,9 @@ export function createEmailProvider(deps: Deps) {
     auth: {
       user: env.smtpUser,
       pass: env.smtpPass
+    },
+    tls: {
+      rejectUnauthorized: env.nodeEnv === "production"
     }
   });
 
