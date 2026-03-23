@@ -1,10 +1,10 @@
 import type { PrismaClient } from "@prisma/client";
-import { prisma } from "@/prisma";
 import { InvalidUserTypeError } from "@/errors";
-import { createUsersRepository } from "@/repositories/users-repository";
+import { prisma } from "@/prisma";
 import { createCartRepository } from "@/repositories/cart-repository";
 import { createFavoritesRepository } from "@/repositories/favorites-repository";
 import { createProductsRepository } from "@/repositories/products-repository";
+import { createUsersRepository } from "@/repositories/users-repository";
 
 type Deps = {
   prisma: PrismaClient;

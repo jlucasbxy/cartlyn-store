@@ -1,5 +1,5 @@
-import { prisma } from "@/prisma";
 import type { PrismaInstance } from "@/prisma";
+import { prisma } from "@/prisma";
 
 type Deps = {
   prisma: PrismaInstance;

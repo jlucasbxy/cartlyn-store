@@ -1,17 +1,17 @@
-import argon2 from "argon2";
 import type { PrismaClient } from "@prisma/client";
-import { prisma } from "@/prisma";
+import argon2 from "argon2";
 import { env } from "@/config/env.config";
+import { PasswordResetEmail } from "@/emails/password-reset-email";
+import { prisma } from "@/prisma";
 import { emailProvider } from "@/providers/email-provider";
 import {
-  passwordResetRepository,
-  createPasswordResetRepository
+  createPasswordResetRepository,
+  passwordResetRepository
 } from "@/repositories/password-reset-repository";
 import {
-  usersRepository,
-  createUsersRepository
+  createUsersRepository,
+  usersRepository
 } from "@/repositories/users-repository";
-import { PasswordResetEmail } from "@/emails/password-reset-email";
 
 const ARGON2_OPTIONS = {
   type: argon2.argon2id,

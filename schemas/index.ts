@@ -1,15 +1,15 @@
 export { addToCartSchema } from "@/schemas/add-to-cart-schema";
-export { forgotPasswordSchema } from "@/schemas/forgot-password-schema";
-export {
-  resetPasswordSchema,
-  resetPasswordServerSchema
-} from "@/schemas/reset-password-schema";
 export { csvProductSchema } from "@/schemas/csv-product-schema";
 export { favoriteSchema } from "@/schemas/favorite-schema";
+export { forgotPasswordSchema } from "@/schemas/forgot-password-schema";
 export { loginSchema } from "@/schemas/login-schema";
 export { productSchema } from "@/schemas/product-schema";
 export { productUpdateSchema } from "@/schemas/product-update-schema";
 export { registerSchema } from "@/schemas/register-schema";
 export { registerWithConfirmSchema } from "@/schemas/register-with-confirm-schema";
+export {
+  resetPasswordSchema,
+  resetPasswordServerSchema
+} from "@/schemas/reset-password-schema";
 export { searchProductsSchema } from "@/schemas/search-products-schema";
 export { updateCartItemSchema } from "@/schemas/update-cart-item-schema";

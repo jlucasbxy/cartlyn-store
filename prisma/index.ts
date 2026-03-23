@@ -1,5 +1,5 @@
 import { PrismaPg } from "@prisma/adapter-pg";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { type Prisma, PrismaClient } from "@prisma/client";
 import { env } from "@/config/env.config";
 
 export type PrismaInstance = PrismaClient | Prisma.TransactionClient;

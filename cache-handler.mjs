@@ -100,7 +100,7 @@ export default {
       });
 
       const ttl = entry.expire;
-      if (typeof ttl === "number" && ttl > 0 && isFinite(ttl)) {
+      if (typeof ttl === "number" && ttl > 0 && Number.isFinite(ttl)) {
         await redis.setex(`${CACHE_PREFIX}${cacheKey}`, ttl, stored);
       } else {
         await redis.set(`${CACHE_PREFIX}${cacheKey}`, stored);
@@ -142,7 +142,7 @@ export default {
       for (const tag of tags) {
         const key = `${TAG_EXP_PREFIX}${tag}`;
         const ttl = durations?.expire;
-        if (typeof ttl === "number" && ttl > 0 && isFinite(ttl)) {
+        if (typeof ttl === "number" && ttl > 0 && Number.isFinite(ttl)) {
           pipeline.setex(key, ttl, String(now));
         } else {
           pipeline.set(key, String(now));

@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
-import { prisma } from "@/prisma";
 import type { PrismaInstance } from "@/prisma";
+import { prisma } from "@/prisma";
 
 const TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
 
