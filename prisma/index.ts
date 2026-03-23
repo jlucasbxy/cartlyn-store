@@ -4,12 +4,12 @@ import { env } from "@/config/env.config";
 
 export type PrismaInstance = PrismaClient | Prisma.TransactionClient;
 
-export function runBatch(
+export async function runBatch(
   client: PrismaInstance,
   ops: readonly Prisma.PrismaPromise<unknown>[]
 ) {
   if ("$transaction" in client) return client.$transaction([...ops]);
-  return Promise.all(ops);
+  for (const op of ops) await op;
 }
 
 const globalForPrisma = globalThis as unknown as {
