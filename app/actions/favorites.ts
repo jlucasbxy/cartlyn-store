@@ -5,7 +5,7 @@ import { DomainError } from "@/errors";
 import { logger } from "@/lib/logger";
 import { auth } from "@/lib/server";
 import { favoriteSchema } from "@/schemas";
-import { favoritesService } from "@/services";
+import { favoritesService } from "@/container";
 import type { ActionResult } from "./types";
 
 export async function addFavorite(productId: string): Promise<ActionResult> {

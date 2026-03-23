@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/server";
-import { cartService } from "@/services";
+import { cartService } from "@/container";
 import { CartClient } from "./cart-client";
 
 export const metadata: Metadata = {

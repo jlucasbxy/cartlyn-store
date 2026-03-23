@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { env } from "@/config/env.config";
-import { productsService } from "@/services";
+import { productsService } from "@/container";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = env.nextAuthUrl;

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/server";
-import { favoritesService } from "@/services";
+import { favoritesService } from "@/container";
 import { FavoritesClient } from "./favorites-client";
 
 export const metadata: Metadata = {

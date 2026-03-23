@@ -4,7 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PageLayout, StatsCard } from "@/components";
 import { auth } from "@/lib/server";
-import { sellerDashboardService } from "@/services";
+import { sellerDashboardService } from "@/container";
 
 export const metadata: Metadata = {
   title: "Dashboard - Cartlyn Store",

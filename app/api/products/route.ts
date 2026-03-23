@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { handleServiceError } from "@/lib/server";
 import { searchProductsSchema } from "@/schemas";
-import { productsService } from "@/services";
+import { productsService } from "@/container";
 
 // Get products (with search and pagination)
 export async function GET(request: NextRequest) {

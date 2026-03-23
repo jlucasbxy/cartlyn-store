@@ -4,7 +4,7 @@ import { DomainError } from "@/errors";
 import { logger } from "@/lib/logger";
 import { checkActionRateLimit } from "@/lib/server/action-rate-limit";
 import { registerSchema } from "@/schemas";
-import { registerService } from "@/services";
+import { registerService } from "@/container";
 import type { ActionResult } from "./types";
 
 export async function registerUser(data: {

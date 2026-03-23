@@ -4,7 +4,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { PageLayout } from "@/components";
 import { auth } from "@/lib/server";
-import { ordersService } from "@/services";
+import { ordersService } from "@/container";
 
 export const metadata: Metadata = {
   title: "Pedidos - Cartlyn Store",

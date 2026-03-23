@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { auth } from "@/lib/server";
-import { productsService } from "@/services";
+import { productsService } from "@/container";
 import { SellerProductsClient } from "./seller-products-client";
 
 export const metadata: Metadata = {

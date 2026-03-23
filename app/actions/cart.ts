@@ -5,7 +5,7 @@ import { DomainError } from "@/errors";
 import { logger } from "@/lib/logger";
 import { auth } from "@/lib/server";
 import { addToCartSchema, favoriteSchema } from "@/schemas";
-import { cartService, ordersService } from "@/services";
+import { cartService, ordersService } from "@/container";
 import type { ActionResult } from "./types";
 
 export async function addToCart(

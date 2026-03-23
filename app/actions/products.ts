@@ -11,7 +11,7 @@ import {
   productUpdateSchema
 } from "@/schemas";
 import { z } from "@/schemas/zod-config";
-import { productsService } from "@/services";
+import { productsService } from "@/container";
 import type { ActionResult } from "./types";
 
 export async function createProduct(data: {

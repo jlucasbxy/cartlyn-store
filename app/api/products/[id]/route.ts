@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { handleServiceError } from "@/lib/server";
-import { productsService } from "@/services";
+import { productsService } from "@/container";
 
 // Get single product
 export async function GET(

@@ -3,7 +3,7 @@
 import { DomainError } from "@/errors";
 import { logger } from "@/lib/logger";
 import { auth } from "@/lib/server";
-import { accountService } from "@/services";
+import { accountService } from "@/container";
 import type { ActionResult } from "./types";
 
 export async function deactivateOrDeleteAccount(): Promise<ActionResult> {

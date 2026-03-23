@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { cacheLife, cacheTag } from "next/cache";
 import { PageLayout, ProductCard } from "@/components";
 import { auth } from "@/lib/server";
-import { favoritesService, productsService } from "@/services";
+import { favoritesService, productsService } from "@/container";
 import { StoreFilters } from "./store-filters";
 import { StorePagination } from "./store-pagination";
 

@@ -4,7 +4,7 @@ import { redirect } from "next/navigation";
 import type { ProductDTO } from "@/dtos";
 import { NotFoundError } from "@/errors";
 import { auth } from "@/lib/server";
-import { favoritesService, productsService } from "@/services";
+import { favoritesService, productsService } from "@/container";
 import { ProductDetailsClient } from "./product-details-client";
 
 async function getProduct(id: string) {

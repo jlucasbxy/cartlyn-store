@@ -3,7 +3,7 @@
 import { logger } from "@/lib/logger";
 import { checkActionRateLimit } from "@/lib/server/action-rate-limit";
 import { forgotPasswordSchema, resetPasswordServerSchema } from "@/schemas";
-import { passwordResetService } from "@/services/password-reset-service";
+import { passwordResetService } from "@/container";
 import type { ActionResult } from "./types";
 
 export async function requestPasswordReset(data: {
