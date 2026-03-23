@@ -1,5 +1,5 @@
 import crypto from "node:crypto";
-import { prisma, runBatch } from "@/prisma";
+import { prisma } from "@/prisma";
 import type { PrismaInstance } from "@/prisma";
 
 const TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
@@ -13,17 +13,18 @@ export function createPasswordResetRepository(deps: Deps) {
     return crypto.createHash("sha256").update(token).digest("hex");
   }
 
+  function deleteTokensByUser(userId: string) {
+    return deps.prisma.passwordResetToken.deleteMany({ where: { userId } });
+  }
+
   async function createToken(userId: string) {
     const rawToken = crypto.randomBytes(32).toString("hex");
     const hashedToken = hashToken(rawToken);
     const expiresAt = new Date(Date.now() + TOKEN_EXPIRY_MS);
 
-    await runBatch(deps.prisma, [
-      deps.prisma.passwordResetToken.deleteMany({ where: { userId } }),
-      deps.prisma.passwordResetToken.create({
-        data: { token: hashedToken, userId, expiresAt }
-      })
-    ]);
+    await deps.prisma.passwordResetToken.create({
+      data: { token: hashedToken, userId, expiresAt }
+    });
 
     return rawToken;
   }
@@ -46,7 +47,7 @@ export function createPasswordResetRepository(deps: Deps) {
     });
   }
 
-  return { createToken, findValidToken, deleteToken };
+  return { deleteTokensByUser, createToken, findValidToken, deleteToken };
 }
 
 export const passwordResetRepository = createPasswordResetRepository({

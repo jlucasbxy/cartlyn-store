@@ -34,7 +34,11 @@ export function createPasswordResetService(deps: Deps) {
     // Always resolve successfully to prevent email enumeration
     if (!user) return;
 
-    const rawToken = await deps.passwordResetRepository.createToken(user.id);
+    const rawToken = await deps.prisma.$transaction(async (tx) => {
+      const repo = createPasswordResetRepository({ prisma: tx });
+      await repo.deleteTokensByUser(user.id);
+      return repo.createToken(user.id);
+    });
     const resetUrl = `${env.nextAuthUrl}/reset-password?token=${rawToken}`;
 
     await deps.emailProvider.sendEmail({
