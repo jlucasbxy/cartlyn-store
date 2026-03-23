@@ -7,8 +7,10 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "biome lint --max-diagnostics=none .",
+    "lint:fix": "biome lint --write --unsafe --max-diagnostics=none .",
     "format": "biome format --write .",
-    "check": "biome check --write --max-diagnostics=none .",
+    "check": "biome check --max-diagnostics=none .",
+    "check:fix": "biome check --write --unsafe --max-diagnostics=none .",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
