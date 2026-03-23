@@ -64,6 +64,9 @@ export default function ForgotPasswordPage() {
                   <p className="text-sm text-red-600 dark:text-red-400">
                     {error}
                   </p>
+                  <p className="text-sm text-red-600 dark:text-red-400 mt-1">
+                    Clique em enviar novamente para tentar outra vez.
+                  </p>
                 </div>
               )}
               <FormInput
@@ -75,7 +78,11 @@ export default function ForgotPasswordPage() {
                 errorMsg={errors.email}
               />
               <Button type="submit" disabled={loading} fullWidth>
-                {loading ? "Enviando..." : "Enviar link de recuperação"}
+                {loading
+                  ? "Enviando..."
+                  : error
+                    ? "Enviar novamente"
+                    : "Enviar link de recuperação"}
               </Button>
             </form>
           )}

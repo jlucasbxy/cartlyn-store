@@ -4,6 +4,8 @@ import { formatZodError } from "@/lib/format-zod-error";
 import { forgotPasswordSchema } from "@/schemas";
 
 export function useForgotPasswordForm() {
+  const requestErrorMessage =
+    "Não foi possível enviar o e-mail de recuperação. Tente novamente.";
   const formRef = useRef<HTMLFormElement>(null);
   const [errors, setErrors] = useState<{ email?: string }>({});
   const [error, setError] = useState("");
@@ -16,7 +18,10 @@ export function useForgotPasswordForm() {
     setError("");
     setErrors({});
 
-    if (!formRef.current) return;
+    if (!formRef.current) {
+      setLoading(false);
+      return;
+    }
 
     const formData = new FormData(formRef.current);
     const data = { email: formData.get("email") as string };
@@ -31,12 +36,12 @@ export function useForgotPasswordForm() {
     try {
       const result = await requestPasswordReset(data);
       if ("error" in result) {
-        setError(result.error);
+        setError(requestErrorMessage);
       } else {
         setSuccess(true);
       }
     } catch {
-      setError("Erro ao processar solicitação");
+      setError(requestErrorMessage);
     } finally {
       setLoading(false);
     }
