@@ -1,8 +1,10 @@
 import { Prisma } from "@prisma/client";
+import { prisma } from "@/prisma";
 import type { OrderDTO } from "@/dtos";
 import { CartEmptyError, CartItemsUnavailableError } from "@/errors";
 import { toNumber } from "@/lib/price";
-import { cartRepository, ordersRepository } from "@/repositories";
+import { createCartRepository } from "@/repositories/cart-repository";
+import { createOrdersRepository } from "@/repositories/orders-repository";
 
 type SerializableOrderItem = {
   id: string;
@@ -45,43 +47,50 @@ function serializeOrder(order: SerializableOrder): OrderDTO {
 }
 
 type Deps = {
-  ordersRepository: typeof ordersRepository;
-  cartRepository: typeof cartRepository;
+  prisma: typeof prisma;
 };
 
 export function createOrdersService(deps: Deps) {
   async function getOrders(userId: string): Promise<OrderDTO[]> {
-    const orders = await deps.ordersRepository.findUserOrders(userId);
+    const orders = await createOrdersRepository({
+      prisma: deps.prisma
+    }).findUserOrders(userId);
     return orders.map(serializeOrder);
   }
 
   async function checkout(userId: string): Promise<OrderDTO> {
-    const cartItems = await deps.cartRepository.findUserCartForCheckout(userId);
+    const order = await deps.prisma.$transaction(async (tx) => {
+      const cartRepository = createCartRepository({ prisma: tx });
+      const ordersRepository = createOrdersRepository({ prisma: tx });
+      const cartItems = await cartRepository.findUserCartForCheckout(userId);
 
-    if (cartItems.length === 0) {
-      throw new CartEmptyError();
-    }
+      if (cartItems.length === 0) {
+        throw new CartEmptyError();
+      }
 
-    const inactiveProducts = cartItems.filter((item) => !item.product.active);
+      const inactiveProducts = cartItems.filter((item) => !item.product.active);
 
-    if (inactiveProducts.length > 0) {
-      throw new CartItemsUnavailableError({
-        inactiveProducts: inactiveProducts.map((item) => item.product.name)
-      });
-    }
+      if (inactiveProducts.length > 0) {
+        throw new CartItemsUnavailableError({
+          inactiveProducts: inactiveProducts.map((item) => item.product.name)
+        });
+      }
 
-    const total = cartItems
-      .reduce(
-        (sum, item) => sum.plus(item.product.price.mul(item.quantity)),
-        new Prisma.Decimal(0)
-      )
-      .toNumber();
+      const total = cartItems
+        .reduce(
+          (sum, item) => sum.plus(item.product.price.mul(item.quantity)),
+          new Prisma.Decimal(0)
+        )
+        .toNumber();
 
-    const order = await deps.ordersRepository.createOrderFromCart(
-      userId,
-      cartItems,
-      total
-    );
+      const createdOrder = await ordersRepository.createOrder(
+        userId,
+        cartItems,
+        total
+      );
+      await cartRepository.clearUserCart(userId);
+      return createdOrder;
+    });
 
     return serializeOrder(order);
   }
@@ -89,7 +98,4 @@ export function createOrdersService(deps: Deps) {
   return { getOrders, checkout };
 }
 
-export const ordersService = createOrdersService({
-  ordersRepository,
-  cartRepository
-});
+export const ordersService = createOrdersService({ prisma });
