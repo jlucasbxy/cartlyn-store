@@ -1,14 +1,25 @@
+import type { PrismaClient } from "@prisma/client";
+import { prisma } from "@/prisma";
 import { InvalidUserTypeError } from "@/errors";
-import { usersRepository } from "@/repositories";
+import { createUsersRepository } from "@/repositories/users-repository";
+import { createCartRepository } from "@/repositories/cart-repository";
+import { createFavoritesRepository } from "@/repositories/favorites-repository";
+import { createProductsRepository } from "@/repositories/products-repository";
 
 type Deps = {
-  usersRepository: typeof usersRepository;
+  prisma: PrismaClient;
 };
 
 export function createAccountService(deps: Deps) {
   async function deactivateOrDeleteAccount(userId: string, role: string) {
     if (role === "CLIENT") {
-      await deps.usersRepository.deactivateClientAccount(userId);
+      await deps.prisma.$transaction(async (tx) => {
+        await createUsersRepository({ prisma: tx }).deactivateUser(userId);
+        await createCartRepository({ prisma: tx }).clearUserCart(userId);
+        await createFavoritesRepository({ prisma: tx }).clearUserFavorites(
+          userId
+        );
+      });
       return {
         message:
           "Conta excluída com sucesso. Seu histórico de compras foi preservado."
@@ -16,7 +27,12 @@ export function createAccountService(deps: Deps) {
     }
 
     if (role === "SELLER") {
-      await deps.usersRepository.deactivateSellerAccount(userId);
+      await deps.prisma.$transaction(async (tx) => {
+        await createUsersRepository({ prisma: tx }).deactivateUser(userId);
+        await createProductsRepository({ prisma: tx }).deactivateAllBySeller(
+          userId
+        );
+      });
       return {
         message:
           "Conta desativada com sucesso. Todos os seus produtos foram ocultados da loja."
@@ -29,4 +45,4 @@ export function createAccountService(deps: Deps) {
   return { deactivateOrDeleteAccount };
 }
 
-export const accountService = createAccountService({ usersRepository });
+export const accountService = createAccountService({ prisma });
