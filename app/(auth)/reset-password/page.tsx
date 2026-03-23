@@ -1,10 +1,19 @@
 "use client";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import { Button, FormInput } from "@/components";
 import { useResetPasswordForm } from "@/hooks";
 
 export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<ResetPasswordFallback />}>
+      <ResetPasswordContent />
+    </Suspense>
+  );
+}
+
+function ResetPasswordContent() {
   const searchParams = useSearchParams();
   const token = searchParams.get("token") ?? "";
 
@@ -109,6 +118,16 @@ export default function ResetPasswordPage() {
           </p>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ResetPasswordFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-[#0f172a]">
+      <p className="text-sm text-gray-500 dark:text-gray-400">
+        Carregando recuperação de senha...
+      </p>
     </div>
   );
 }
