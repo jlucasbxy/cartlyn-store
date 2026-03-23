@@ -1,8 +1,8 @@
-import type { PrismaClient } from "@prisma/client";
 import { prisma } from "@/prisma";
+import type { PrismaInstance } from "@/prisma";
 
 type Deps = {
-  prisma: PrismaClient;
+  prisma: PrismaInstance;
 };
 
 export function createFavoritesRepository(deps: Deps) {
@@ -43,7 +43,16 @@ export function createFavoritesRepository(deps: Deps) {
     });
   }
 
-  return { findUserFavorites, createFavorite, deleteFavorite };
+  function clearUserFavorites(userId: string) {
+    return deps.prisma.favorite.deleteMany({ where: { userId } });
+  }
+
+  return {
+    findUserFavorites,
+    createFavorite,
+    deleteFavorite,
+    clearUserFavorites
+  };
 }
 
 export const favoritesRepository = createFavoritesRepository({ prisma });
