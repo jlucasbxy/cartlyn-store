@@ -5,6 +5,11 @@ const envSchema = z.object({
   NEXTAUTH_SECRET: z.string().min(32),
   NEXTAUTH_URL: z.string().min(1),
   REDIS_URL: z.string().min(1),
+  SMTP_HOST: z.string().min(1),
+  SMTP_PORT: z.coerce.number().int().positive(),
+  SMTP_USER: z.string().min(1),
+  SMTP_PASS: z.string().min(1),
+  EMAIL_FROM: z.string().min(1),
   LOG_LEVEL: z.string().optional(),
   NODE_ENV: z.enum(["development", "test", "production"]).default("production")
 });
@@ -30,6 +35,11 @@ export const env = {
   nextAuthSecret: parsed.NEXTAUTH_SECRET,
   nextAuthUrl: parsed.NEXTAUTH_URL,
   redisUrl: parsed.REDIS_URL,
+  smtpHost: parsed.SMTP_HOST,
+  smtpPort: parsed.SMTP_PORT,
+  smtpUser: parsed.SMTP_USER,
+  smtpPass: parsed.SMTP_PASS,
+  emailFrom: parsed.EMAIL_FROM,
   logLevel:
     parsed.NODE_ENV === "production" ? "warn" : (parsed.LOG_LEVEL ?? "info"),
   nodeEnv: parsed.NODE_ENV
