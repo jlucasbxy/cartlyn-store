@@ -1,4 +1,5 @@
 export { accountService } from "./account-service";
+export { passwordResetService } from "./password-reset-service";
 export { authService } from "./auth-service";
 export { cartService } from "./cart-service";
 export { favoritesService } from "./favorites-service";
