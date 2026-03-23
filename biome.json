@@ -5,10 +5,10 @@
       "**",
       "!**/dist",
       "!**/node_modules",
+      "!**/.next",
       "!*.generated.*",
       "!prisma/migrations",
-      "!package-lock.json",
-      "!.next"
+      "!package-lock.json"
     ]
   },
   "formatter": {
@@ -22,10 +22,10 @@
       "tailwindDirectives": true
     },
     "linter": {
-      "enabled": false
+      "enabled": true
     },
     "formatter": {
-      "enabled": false
+      "enabled": true
     }
   },
   "javascript": {
@@ -44,7 +44,12 @@
       },
       "suspicious": {
         "noEmptyBlockStatements": "off",
-        "noConsole": "error"
+        "noConsole": {
+          "level": "error",
+          "options": {
+            "allow": ["error", "warn"]
+          }
+        }
       }
     }
   }
