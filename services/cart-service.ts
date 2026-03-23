@@ -5,11 +5,12 @@ import {
   ProductNotFoundOrUnavailableError
 } from "@/errors";
 import { toNumber } from "@/lib/price";
-import { cartRepository, productsRepository } from "@/repositories";
+import { createCartRepository } from "@/repositories/cart-repository";
+import { createProductsRepository } from "@/repositories/products-repository";
 
 type Deps = {
-  cartRepository: typeof cartRepository;
-  productsRepository: typeof productsRepository;
+  cartRepository: ReturnType<typeof createCartRepository>;
+  productsRepository: ReturnType<typeof createProductsRepository>;
 };
 
 export function createCartService(deps: Deps) {
@@ -109,8 +110,3 @@ export function createCartService(deps: Deps) {
 
   return { getCart, addToCart, updateCartItem, removeFromCart };
 }
-
-export const cartService = createCartService({
-  cartRepository,
-  productsRepository
-});

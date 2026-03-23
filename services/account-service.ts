@@ -1,6 +1,5 @@
 import type { PrismaClient } from "@prisma/client";
 import { InvalidUserTypeError } from "@/errors";
-import { prisma } from "@/prisma";
 import { createCartRepository } from "@/repositories/cart-repository";
 import { createFavoritesRepository } from "@/repositories/favorites-repository";
 import { createProductsRepository } from "@/repositories/products-repository";
@@ -44,5 +43,3 @@ export function createAccountService(deps: Deps) {
 
   return { deactivateOrDeleteAccount };
 }
-
-export const accountService = createAccountService({ prisma });

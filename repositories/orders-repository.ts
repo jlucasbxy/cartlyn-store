@@ -1,6 +1,5 @@
 import type { Prisma } from "@prisma/client";
 import type { PrismaInstance } from "@/prisma";
-import { prisma } from "@/prisma";
 
 type TransactionCartItem = Prisma.CartItemGetPayload<{
   include: { product: true };
@@ -61,5 +60,3 @@ export function createOrdersRepository(deps: Deps) {
 
   return { findUserOrders, createOrder };
 }
-
-export const ordersRepository = createOrdersRepository({ prisma });

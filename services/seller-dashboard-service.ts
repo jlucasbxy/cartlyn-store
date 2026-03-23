@@ -1,10 +1,11 @@
 import type { DashboardDTO } from "@/dtos";
 import { toNumber } from "@/lib/price";
-import { productsRepository, sellerDashboardRepository } from "@/repositories";
+import { createProductsRepository } from "@/repositories/products-repository";
+import { createSellerDashboardRepository } from "@/repositories/seller-dashboard-repository";
 
 type Deps = {
-  sellerDashboardRepository: typeof sellerDashboardRepository;
-  productsRepository: typeof productsRepository;
+  sellerDashboardRepository: ReturnType<typeof createSellerDashboardRepository>;
+  productsRepository: ReturnType<typeof createProductsRepository>;
 };
 
 export function createSellerDashboardService(deps: Deps) {
@@ -38,8 +39,3 @@ export function createSellerDashboardService(deps: Deps) {
 
   return { getDashboard };
 }
-
-export const sellerDashboardService = createSellerDashboardService({
-  sellerDashboardRepository,
-  productsRepository
-});

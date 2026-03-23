@@ -8,14 +8,14 @@ import type {
 } from "@/dtos";
 import { ProductNotFoundError, UnauthorizedError } from "@/errors";
 import { toNumber } from "@/lib/price";
-import { productsRepository } from "@/repositories";
+import { createProductsRepository } from "@/repositories/products-repository";
 
 type SearchProductsFilters = SearchProductsDTO & {
   sellerId?: string;
 };
 
 type Deps = {
-  productsRepository: typeof productsRepository;
+  productsRepository: ReturnType<typeof createProductsRepository>;
 };
 
 export function createProductsService(deps: Deps) {
@@ -122,5 +122,3 @@ export function createProductsService(deps: Deps) {
     createBulkProducts
   };
 }
-
-export const productsService = createProductsService({ productsRepository });

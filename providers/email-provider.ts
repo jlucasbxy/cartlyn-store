@@ -40,7 +40,3 @@ export function createEmailProvider(deps: Deps) {
 
   return { sendEmail };
 }
-
-export const emailProvider = createEmailProvider({
-  createTransport: nodemailer.createTransport
-});

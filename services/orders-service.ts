@@ -2,7 +2,6 @@ import { Prisma } from "@prisma/client";
 import type { OrderDTO } from "@/dtos";
 import { CartEmptyError, CartItemsUnavailableError } from "@/errors";
 import { toNumber } from "@/lib/price";
-import { prisma } from "@/prisma";
 import { createCartRepository } from "@/repositories/cart-repository";
 import { createOrdersRepository } from "@/repositories/orders-repository";
 
@@ -97,5 +96,3 @@ export function createOrdersService(deps: Deps) {
 
   return { getOrders, checkout };
 }
-
-export const ordersService = createOrdersService({ prisma });

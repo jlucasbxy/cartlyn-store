@@ -2,11 +2,12 @@ import { Prisma } from "@prisma/client";
 import type { FavoriteDTO } from "@/dtos";
 import { ProductAlreadyFavoritedError, ProductNotFoundError } from "@/errors";
 import { toNumber } from "@/lib/price";
-import { favoritesRepository, productsRepository } from "@/repositories";
+import { createFavoritesRepository } from "@/repositories/favorites-repository";
+import { createProductsRepository } from "@/repositories/products-repository";
 
 type Deps = {
-  favoritesRepository: typeof favoritesRepository;
-  productsRepository: typeof productsRepository;
+  favoritesRepository: ReturnType<typeof createFavoritesRepository>;
+  productsRepository: ReturnType<typeof createProductsRepository>;
 };
 
 export function createFavoritesService(deps: Deps) {
@@ -49,8 +50,3 @@ export function createFavoritesService(deps: Deps) {
 
   return { getFavorites, addFavorite, removeFavorite };
 }
-
-export const favoritesService = createFavoritesService({
-  favoritesRepository,
-  productsRepository
-});

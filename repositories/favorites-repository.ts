@@ -1,5 +1,4 @@
 import type { PrismaInstance } from "@/prisma";
-import { prisma } from "@/prisma";
 
 type Deps = {
   prisma: PrismaInstance;
@@ -54,5 +53,3 @@ export function createFavoritesRepository(deps: Deps) {
     clearUserFavorites
   };
 }
-
-export const favoritesRepository = createFavoritesRepository({ prisma });

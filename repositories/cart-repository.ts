@@ -1,5 +1,4 @@
 import type { PrismaInstance } from "@/prisma";
-import { prisma } from "@/prisma";
 
 type Deps = {
   prisma: PrismaInstance;
@@ -93,5 +92,3 @@ export function createCartRepository(deps: Deps) {
     clearUserCart
   };
 }
-
-export const cartRepository = createCartRepository({ prisma });

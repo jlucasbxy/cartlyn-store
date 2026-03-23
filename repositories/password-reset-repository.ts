@@ -1,6 +1,5 @@
 import crypto from "node:crypto";
 import type { PrismaInstance } from "@/prisma";
-import { prisma } from "@/prisma";
 
 const TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
 
@@ -49,7 +48,3 @@ export function createPasswordResetRepository(deps: Deps) {
 
   return { deleteTokensByUser, createToken, findValidToken, deleteToken };
 }
-
-export const passwordResetRepository = createPasswordResetRepository({
-  prisma
-});

@@ -2,16 +2,9 @@ import type { PrismaClient } from "@prisma/client";
 import argon2 from "argon2";
 import { env } from "@/config/env.config";
 import { PasswordResetEmail } from "@/emails/password-reset-email";
-import { prisma } from "@/prisma";
-import { emailProvider } from "@/providers/email-provider";
-import {
-  createPasswordResetRepository,
-  passwordResetRepository
-} from "@/repositories/password-reset-repository";
-import {
-  createUsersRepository,
-  usersRepository
-} from "@/repositories/users-repository";
+import { createEmailProvider } from "@/providers/email-provider";
+import { createPasswordResetRepository } from "@/repositories/password-reset-repository";
+import { createUsersRepository } from "@/repositories/users-repository";
 
 const ARGON2_OPTIONS = {
   type: argon2.argon2id,
@@ -21,9 +14,9 @@ const ARGON2_OPTIONS = {
 } as const;
 
 type Deps = {
-  usersRepository: typeof usersRepository;
-  passwordResetRepository: typeof passwordResetRepository;
-  emailProvider: typeof emailProvider;
+  usersRepository: ReturnType<typeof createUsersRepository>;
+  passwordResetRepository: ReturnType<typeof createPasswordResetRepository>;
+  emailProvider: ReturnType<typeof createEmailProvider>;
   prisma: PrismaClient;
 };
 
@@ -70,10 +63,3 @@ export function createPasswordResetService(deps: Deps) {
 
   return { requestReset, resetPassword };
 }
-
-export const passwordResetService = createPasswordResetService({
-  usersRepository,
-  passwordResetRepository,
-  emailProvider,
-  prisma
-});

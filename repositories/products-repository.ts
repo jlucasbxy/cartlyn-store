@@ -1,6 +1,5 @@
 import type { Prisma } from "@prisma/client";
 import type { PrismaInstance } from "@/prisma";
-import { prisma } from "@/prisma";
 
 export type ProductSearchFilters = {
   query?: string;
@@ -204,5 +203,3 @@ export function createProductsRepository(deps: Deps) {
     findBasicById
   };
 }
-
-export const productsRepository = createProductsRepository({ prisma });

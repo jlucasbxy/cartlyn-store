@@ -1,10 +1,9 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
-import { prisma } from "@/prisma";
-import { productsRepository } from "@/repositories/products-repository";
+import { createProductsRepository } from "@/repositories/products-repository";
 
 type Deps = {
   prisma: PrismaClient;
-  productsRepository: typeof productsRepository;
+  productsRepository: ReturnType<typeof createProductsRepository>;
 };
 
 export function createSellerDashboardRepository(deps: Deps) {
@@ -60,8 +59,3 @@ export function createSellerDashboardRepository(deps: Deps) {
 
   return { getDashboardStats };
 }
-
-export const sellerDashboardRepository = createSellerDashboardRepository({
-  prisma,
-  productsRepository
-});

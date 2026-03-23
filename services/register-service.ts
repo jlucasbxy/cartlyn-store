@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import argon2 from "argon2";
 import type { RegisterDTO } from "@/dtos";
 import { EmailAlreadyExistsError } from "@/errors";
-import { usersRepository } from "@/repositories";
+import { createUsersRepository } from "@/repositories/users-repository";
 
 const ARGON2_OPTIONS = {
   type: argon2.argon2id,
@@ -12,7 +12,7 @@ const ARGON2_OPTIONS = {
 } as const;
 
 type Deps = {
-  usersRepository: typeof usersRepository;
+  usersRepository: ReturnType<typeof createUsersRepository>;
 };
 
 export function createRegisterService(deps: Deps) {
@@ -46,5 +46,3 @@ export function createRegisterService(deps: Deps) {
 
   return { registerUser };
 }
-
-export const registerService = createRegisterService({ usersRepository });

@@ -1,5 +1,4 @@
 import type { PrismaInstance } from "@/prisma";
-import { prisma } from "@/prisma";
 
 type Deps = {
   prisma: PrismaInstance;
@@ -59,5 +58,3 @@ export function createUsersRepository(deps: Deps) {
     deactivateUser
   };
 }
-
-export const usersRepository = createUsersRepository({ prisma });
