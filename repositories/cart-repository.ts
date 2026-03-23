@@ -1,8 +1,8 @@
-import type { PrismaClient } from "@prisma/client";
 import { prisma } from "@/prisma";
+import type { PrismaInstance } from "@/prisma";
 
 type Deps = {
-  prisma: PrismaClient;
+  prisma: PrismaInstance;
 };
 
 export function createCartRepository(deps: Deps) {
