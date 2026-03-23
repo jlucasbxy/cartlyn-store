@@ -1,4 +1,4 @@
-import { prisma, runBatch } from "@/prisma";
+import { prisma } from "@/prisma";
 import type { PrismaInstance } from "@/prisma";
 
 type Deps = {
@@ -37,28 +37,11 @@ export function createUsersRepository(deps: Deps) {
     });
   }
 
-  function deactivateClientAccount(userId: string) {
-    return runBatch(deps.prisma, [
-      deps.prisma.user.update({
-        where: { id: userId },
-        data: { active: false }
-      }),
-      deps.prisma.cartItem.deleteMany({ where: { userId } }),
-      deps.prisma.favorite.deleteMany({ where: { userId } })
-    ]);
-  }
-
-  function deactivateSellerAccount(userId: string) {
-    return runBatch(deps.prisma, [
-      deps.prisma.user.update({
-        where: { id: userId },
-        data: { active: false }
-      }),
-      deps.prisma.product.updateMany({
-        where: { sellerId: userId },
-        data: { active: false }
-      })
-    ]);
+  function deactivateUser(userId: string) {
+    return deps.prisma.user.update({
+      where: { id: userId },
+      data: { active: false }
+    });
   }
 
   function updatePassword(userId: string, password: string) {
@@ -73,8 +56,7 @@ export function createUsersRepository(deps: Deps) {
     findActiveByEmail,
     createUser,
     updatePassword,
-    deactivateClientAccount,
-    deactivateSellerAccount
+    deactivateUser
   };
 }
 
