@@ -6,6 +6,9 @@
     "dev": "NODE_OPTIONS='--trace-deprecation' next dev",
     "build": "prisma generate && next build",
     "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
     "lint": "biome lint --max-diagnostics=none .",
     "lint:fix": "biome lint --write --unsafe --max-diagnostics=none .",
     "format": "biome format --write .",
@@ -39,6 +42,8 @@
   "devDependencies": {
     "@biomejs/biome": "2.4.4",
     "@tailwindcss/postcss": "^4",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^20",
     "@types/nodemailer": "^7.0.11",
     "@types/papaparse": "^5.3.16",
@@ -46,9 +51,12 @@
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
     "@types/swagger-ui-react": "^5.18.0",
+    "@vitest/coverage-v8": "^4.1.1",
+    "jsdom": "^29.0.1",
     "tailwindcss": "^4",
     "tsx": "^4.20.6",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.1"
   },
   "engines": {
     "node": "24"
