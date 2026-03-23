@@ -1,6 +1,9 @@
 export { addToCartSchema } from "@/schemas/add-to-cart-schema";
 export { forgotPasswordSchema } from "@/schemas/forgot-password-schema";
-export { resetPasswordSchema } from "@/schemas/reset-password-schema";
+export {
+  resetPasswordSchema,
+  resetPasswordServerSchema
+} from "@/schemas/reset-password-schema";
 export { csvProductSchema } from "@/schemas/csv-product-schema";
 export { favoriteSchema } from "@/schemas/favorite-schema";
 export { loginSchema } from "@/schemas/login-schema";

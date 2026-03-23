@@ -1,7 +1,7 @@
 "use server";
 
 import { logger } from "@/lib/logger";
-import { forgotPasswordSchema, resetPasswordSchema } from "@/schemas";
+import { forgotPasswordSchema, resetPasswordServerSchema } from "@/schemas";
 import { passwordResetService } from "@/services/password-reset-service";
 import type { ActionResult } from "./types";
 
@@ -23,9 +23,8 @@ export async function requestPasswordReset(data: {
 export async function resetPassword(data: {
   token: string;
   password: string;
-  confirmPassword: string;
 }): Promise<ActionResult> {
-  const validated = resetPasswordSchema.safeParse(data);
+  const validated = resetPasswordServerSchema.safeParse(data);
   if (!validated.success) return { error: "Dados inválidos" };
 
   try {

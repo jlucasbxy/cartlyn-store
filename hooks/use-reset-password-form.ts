@@ -37,7 +37,10 @@ export function useResetPasswordForm(token: string) {
     }
 
     try {
-      const result = await resetPassword(data);
+      const result = await resetPassword({
+        token: data.token,
+        password: data.password
+      });
       if ("error" in result) {
         setError(result.error);
       } else {
