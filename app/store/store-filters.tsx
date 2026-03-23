@@ -1,7 +1,7 @@
 "use client";
 
-import type { SubmitEventHandler } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import type { SubmitEventHandler } from "react";
 import { Button, FormInput } from "@/components";
 
 export function StoreFilters() {

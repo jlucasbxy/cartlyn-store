@@ -2,8 +2,8 @@ import "server-only";
 
 import { headers } from "next/headers";
 import type { RateLimitTier } from "@/config/rate-limiter.config";
-import { checkRateLimit } from "@/lib/rate-limiter";
 import { logger } from "@/lib/logger";
+import { checkRateLimit } from "@/lib/rate-limiter";
 
 type ActionRateLimitResult =
   | { allowed: true }
