@@ -1,8 +1,16 @@
 import argon2 from "argon2";
+import type { PrismaClient } from "@prisma/client";
+import { prisma } from "@/prisma";
 import { env } from "@/config/env.config";
 import { emailProvider } from "@/providers/email-provider";
-import { passwordResetRepository } from "@/repositories/password-reset-repository";
-import { usersRepository } from "@/repositories";
+import {
+  passwordResetRepository,
+  createPasswordResetRepository
+} from "@/repositories/password-reset-repository";
+import {
+  usersRepository,
+  createUsersRepository
+} from "@/repositories/users-repository";
 import { PasswordResetEmail } from "@/emails/password-reset-email";
 
 const ARGON2_OPTIONS = {
@@ -16,6 +24,7 @@ type Deps = {
   usersRepository: typeof usersRepository;
   passwordResetRepository: typeof passwordResetRepository;
   emailProvider: typeof emailProvider;
+  prisma: PrismaClient;
 };
 
 export function createPasswordResetService(deps: Deps) {
@@ -44,8 +53,13 @@ export function createPasswordResetService(deps: Deps) {
 
     const hashedPassword = await argon2.hash(newPassword, ARGON2_OPTIONS);
 
-    await deps.usersRepository.updatePassword(record.user.id, hashedPassword);
-    await deps.passwordResetRepository.deleteToken(rawToken);
+    await deps.prisma.$transaction(async (tx) => {
+      await createUsersRepository({ prisma: tx }).updatePassword(
+        record.user.id,
+        hashedPassword
+      );
+      await createPasswordResetRepository({ prisma: tx }).deleteToken(rawToken);
+    });
 
     return true;
   }
@@ -56,5 +70,6 @@ export function createPasswordResetService(deps: Deps) {
 export const passwordResetService = createPasswordResetService({
   usersRepository,
   passwordResetRepository,
-  emailProvider
+  emailProvider,
+  prisma
 });
