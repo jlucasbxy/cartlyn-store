@@ -1,4 +1,6 @@
 export { useColorScheme } from "./use-color-scheme";
+export { useForgotPasswordForm } from "./use-forgot-password-form";
+export { useResetPasswordForm } from "./use-reset-password-form";
 export { useConfirm } from "./use-confirm";
 export { useCSVUpload } from "./use-csv-upload";
 export { useLoginForm } from "./use-login-form";
