@@ -1,10 +1,11 @@
 import type { PrismaInstance } from "@/prisma";
+import type { UsersRepository } from "./users-repository.interface";
 
 type Deps = {
   prisma: PrismaInstance;
 };
 
-export function createUsersRepository(deps: Deps) {
+export function createUsersRepository(deps: Deps): UsersRepository {
   async function checkEmailExists(email: string) {
     const user = await deps.prisma.user.findUnique({
       where: { email },
