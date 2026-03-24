@@ -36,12 +36,14 @@ Cartlyn Store é uma aplicação full-stack de e-commerce que permite:
 - **Next.js API Routes** - Backend separado via rotas API
 - **Prisma 7** - ORM para banco de dados
 - **PostgreSQL** - Banco de dados principal
-- **Redis** - Cache e rate limiting
-- **bcryptjs** - Hash de senhas
+- **Redis / ioredis** - Cache e rate limiting
+- **argon2** - Hash de senhas
 - **Zod** - Validação de dados
 - **Pino** - Logging estruturado
 - **rate-limiter-flexible** - Rate limiting
 - **PapaParse** - Parsing de arquivos CSV
+- **Nodemailer** - Envio de e-mails transacionais
+- **React Email** - Templates de e-mail
 - **Swagger/OpenAPI** - Documentação de API
 
 ### Qualidade de Código
@@ -63,8 +65,6 @@ Este projeto utiliza **API Routes do Next.js** para criar uma clara separação 
 /app/api/
 ├── auth/          # Autenticação e registro
 ├── products/      # CRUD de produtos (com bulk import)
-├── account/       # Gerenciamento de conta
-├── seller/        # Endpoints exclusivos para vendedores
 ├── health/        # Health check
 └── docs/          # Documentação OpenAPI (Swagger)
 ```
@@ -93,6 +93,7 @@ API Route → Service → Repository → Prisma Client → PostgreSQL
 
 ### Para Clientes
 - ✅ Cadastro e login
+- ✅ Recuperação de senha por e-mail
 - ✅ Navegação de produtos com busca e filtros
 - ✅ Adicionar produtos ao carrinho
 - ✅ Favoritar produtos
@@ -115,6 +116,7 @@ API Route → Service → Repository → Prisma Client → PostgreSQL
 - ✅ Paginação de resultados
 - ✅ Rate limiting com Redis
 - ✅ Logging estruturado com Pino
+- ✅ Envio de e-mails transacionais (recuperação de senha)
 - ✅ Documentação de API com Swagger
 - ✅ Dark mode
 - ✅ Design responsivo
@@ -172,21 +174,37 @@ npm run dev
 Crie um arquivo `.env` na raiz do projeto:
 
 ```env
-# Database (para o docker-compose)
-POSTGRES_USER=cartlyn
-POSTGRES_PASSWORD=cartlyn123
-POSTGRES_DB=cartlyn_store
-POSTGRES_PORT=5432
-
-# Prisma
-DATABASE_URL="postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:${POSTGRES_PORT}/${POSTGRES_DB}"
+# Database
+DATABASE_URL="postgresql://cartlyn:cartlyn123@localhost:5432/cartlyn_store?schema=public"
 
 # NextAuth
-NEXTAUTH_SECRET="chave-secreta-para-jwt"
+NEXTAUTH_SECRET="your-secret-key-here"
 NEXTAUTH_URL="http://localhost:3000"
 
 # Redis
 REDIS_URL="redis://localhost:6379"
+
+# SMTP (dev: mailpit em localhost:1025)
+SMTP_HOST="localhost"
+SMTP_PORT=1025
+SMTP_USER="mailpit"
+SMTP_PASS="mailpit"
+EMAIL_FROM="Cartlyn Store <no-reply@cartlyn.local>"
+
+NODE_ENV="development"
+
+# Log level (opcional, padrão "info"; deve ser "warn" em produção)
+LOG_LEVEL="info"
+
+# Rate limiter (points = máx requisições, duration = janela em segundos)
+RATE_LIMIT_STRICTEST_POINTS=5
+RATE_LIMIT_STRICTEST_DURATION=900
+RATE_LIMIT_STRICT_POINTS=10
+RATE_LIMIT_STRICT_DURATION=900
+RATE_LIMIT_MODERATE_POINTS=20
+RATE_LIMIT_MODERATE_DURATION=60
+RATE_LIMIT_DEFAULT_POINTS=60
+RATE_LIMIT_DEFAULT_DURATION=60
 ```
 
 ### Banco de Dados e Redis
@@ -205,14 +223,14 @@ cartlyn-store/
 │   ├── api/                      # Backend - API Routes
 │   │   ├── auth/                 # Autenticação e registro
 │   │   ├── products/             # CRUD Produtos + bulk import
-│   │   ├── account/              # Gerenciamento de conta
-│   │   ├── seller/               # Rotas do vendedor
 │   │   ├── health/               # Health check
 │   │   └── docs/                 # Documentação OpenAPI
 │   ├── actions/                  # Server Actions (cart, favorites)
 │   ├── (auth)/                   # Páginas de autenticação
 │   │   ├── login/
-│   │   └── register/
+│   │   ├── register/
+│   │   ├── forgot-password/
+│   │   └── reset-password/
 │   ├── api-docs/                 # Página de documentação Swagger
 │   ├── products/[id]/            # Detalhes do produto
 │   ├── seller/                   # Páginas do vendedor
@@ -249,11 +267,12 @@ cartlyn-store/
 │   ├── use-color-scheme.ts
 │   ├── use-confirm.ts
 │   ├── use-csv-upload.ts
+│   ├── use-forgot-password-form.ts
 │   ├── use-login-form.ts
 │   ├── use-product-form.ts
 │   ├── use-product-delete.ts
 │   ├── use-register-form.ts
-│   ├── use-seller-products.ts
+│   ├── use-reset-password-form.ts
 │   └── use-seller-products-page.ts
 ├── services/                     # Lógica de negócio
 │   ├── account-service.ts
@@ -261,6 +280,7 @@ cartlyn-store/
 │   ├── cart-service.ts
 │   ├── favorites-service.ts
 │   ├── orders-service.ts
+│   ├── password-reset-service.ts
 │   ├── products-service.ts
 │   ├── register-service.ts
 │   └── seller-dashboard-service.ts
@@ -268,12 +288,16 @@ cartlyn-store/
 │   ├── cart-repository.ts
 │   ├── favorites-repository.ts
 │   ├── orders-repository.ts
+│   ├── password-reset-repository.ts
 │   ├── products-repository.ts
 │   ├── seller-dashboard-repository.ts
 │   └── users-repository.ts
 ├── schemas/                      # Schemas de validação Zod
 │   ├── login-schema.ts
 │   ├── register-schema.ts
+│   ├── register-with-confirm-schema.ts
+│   ├── forgot-password-schema.ts
+│   ├── reset-password-schema.ts
 │   ├── product-schema.ts
 │   ├── product-update-schema.ts
 │   ├── csv-product-schema.ts
@@ -299,14 +323,24 @@ cartlyn-store/
 │   ├── env.config.ts             # Variáveis de ambiente
 │   └── rate-limiter.config.ts    # Configuração de rate limiting
 ├── lib/                          # Utilitários
-│   ├── auth.ts                   # Configuração Next-Auth
+│   ├── server/                   # Utilitários server-only
+│   │   ├── auth.ts               # Configuração Next-Auth (server)
+│   │   └── action-rate-limit.ts  # Rate limit para Server Actions
 │   ├── logger.ts                 # Logger Pino
 │   ├── price.ts                  # Formatação de preços
 │   ├── rate-limiter.ts           # Rate limiter
 │   ├── swagger.ts                # Configuração Swagger
 │   ├── format-zod-error.ts       # Formatação de erros Zod
 │   └── handle-service-error.ts   # Tratamento de erros de serviço
-├── types/                        # Tipos TypeScript globais
+├── providers/                    # Provedores de infraestrutura
+│   └── email-provider.ts         # Provedor de e-mail (Nodemailer)
+├── emails/                       # Templates de e-mail
+│   └── password-reset-email.tsx  # Template de recuperação de senha
+├── tests/                        # Testes automatizados
+│   ├── lib/
+│   ├── schemas/
+│   ├── services/
+│   └── setup.ts
 ├── prisma/                       # Configuração do Prisma
 │   ├── schema.prisma             # Schema do banco
 │   └── seed/                     # Seeds
@@ -324,10 +358,11 @@ O backend é organizado em camadas bem definidas (API → Service → Repository
 
 ### 2. Custom Hooks para Lógica Client-Side
 Toda a lógica client-side foi extraída para custom hooks, mantendo os componentes limpos e focados em UI:
-- `use-seller-products.ts` / `use-seller-products-page.ts` — Produtos do vendedor
+- `use-seller-products-page.ts` — Produtos do vendedor
 - `use-product-form.ts` — Formulário de produtos
 - `use-csv-upload.ts` — Upload CSV
 - `use-confirm.ts` — Modal de confirmação
+- `use-forgot-password-form.ts` / `use-reset-password-form.ts` — Recuperação de senha
 
 ### 3. Server Actions para Cart e Favorites
 Cart e Favorites utilizam **Server Actions** ao invés de client-side fetch, aproveitando a integração server-first do Next.js para essas operações frequentes.
