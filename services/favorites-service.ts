@@ -4,13 +4,14 @@ import { ProductAlreadyFavoritedError, ProductNotFoundError } from "@/errors";
 import { toNumber } from "@/lib/price";
 import { createFavoritesRepository } from "@/repositories/favorites-repository";
 import { createProductsRepository } from "@/repositories/products-repository";
+import type { FavoritesService } from "./favorites-service.interface";
 
 type Deps = {
   favoritesRepository: ReturnType<typeof createFavoritesRepository>;
   productsRepository: ReturnType<typeof createProductsRepository>;
 };
 
-export function createFavoritesService(deps: Deps) {
+export function createFavoritesService(deps: Deps): FavoritesService {
   async function getFavorites(userId: string): Promise<FavoriteDTO[]> {
     const favorites = await deps.favoritesRepository.findUserFavorites(userId);
 
