@@ -4,12 +4,13 @@ import { createCartRepository } from "@/repositories/cart-repository";
 import { createFavoritesRepository } from "@/repositories/favorites-repository";
 import { createProductsRepository } from "@/repositories/products-repository";
 import { createUsersRepository } from "@/repositories/users-repository";
+import type { AccountService } from "./account-service.interface";
 
 type Deps = {
   prisma: PrismaClient;
 };
 
-export function createAccountService(deps: Deps) {
+export function createAccountService(deps: Deps): AccountService {
   async function deactivateOrDeleteAccount(userId: string, role: string) {
     if (role === "CLIENT") {
       await deps.prisma.$transaction(async (tx) => {
