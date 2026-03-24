@@ -9,6 +9,7 @@ import type {
 import { ProductNotFoundError, UnauthorizedError } from "@/errors";
 import { toNumber } from "@/lib/price";
 import { createProductsRepository } from "@/repositories/products-repository";
+import type { ProductsService } from "./products-service.interface";
 
 type SearchProductsFilters = SearchProductsDTO & {
   sellerId?: string;
@@ -18,7 +19,7 @@ type Deps = {
   productsRepository: ReturnType<typeof createProductsRepository>;
 };
 
-export function createProductsService(deps: Deps) {
+export function createProductsService(deps: Deps): ProductsService {
   async function getProducts(
     filters: SearchProductsFilters
   ): Promise<ProductListDTO> {
