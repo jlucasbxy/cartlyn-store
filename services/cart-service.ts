@@ -7,13 +7,14 @@ import {
 import { toNumber } from "@/lib/price";
 import { createCartRepository } from "@/repositories/cart-repository";
 import { createProductsRepository } from "@/repositories/products-repository";
+import type { CartService } from "./cart-service.interface";
 
 type Deps = {
   cartRepository: ReturnType<typeof createCartRepository>;
   productsRepository: ReturnType<typeof createProductsRepository>;
 };
 
-export function createCartService(deps: Deps) {
+export function createCartService(deps: Deps): CartService {
   async function getCart(userId: string): Promise<CartDTO> {
     const cartItems = await deps.cartRepository.findUserCartForDisplay(userId);
 
