@@ -1,10 +1,11 @@
 import type { PrismaInstance } from "@/prisma";
+import type { FavoritesRepository } from "./favorites-repository.interface";
 
 type Deps = {
   prisma: PrismaInstance;
 };
 
-export function createFavoritesRepository(deps: Deps) {
+export function createFavoritesRepository(deps: Deps): FavoritesRepository {
   function findUserFavorites(userId: string) {
     return deps.prisma.favorite.findMany({
       where: { userId },
