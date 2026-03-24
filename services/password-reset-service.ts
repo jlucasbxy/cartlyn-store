@@ -5,6 +5,7 @@ import { PasswordResetEmail } from "@/emails/password-reset-email";
 import { createEmailProvider } from "@/providers/email-provider";
 import { createPasswordResetRepository } from "@/repositories/password-reset-repository";
 import { createUsersRepository } from "@/repositories/users-repository";
+import type { PasswordResetService } from "./password-reset-service.interface";
 
 const ARGON2_OPTIONS = {
   type: argon2.argon2id,
@@ -20,7 +21,7 @@ type Deps = {
   prisma: PrismaClient;
 };
 
-export function createPasswordResetService(deps: Deps) {
+export function createPasswordResetService(deps: Deps): PasswordResetService {
   async function requestReset(email: string) {
     const user = await deps.usersRepository.findActiveByEmail(email);
 
