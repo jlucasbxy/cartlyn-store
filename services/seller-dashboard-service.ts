@@ -2,13 +2,16 @@ import type { DashboardDTO } from "@/dtos";
 import { toNumber } from "@/lib/price";
 import { createProductsRepository } from "@/repositories/products-repository";
 import { createSellerDashboardRepository } from "@/repositories/seller-dashboard-repository";
+import type { SellerDashboardService } from "./seller-dashboard-service.interface";
 
 type Deps = {
   sellerDashboardRepository: ReturnType<typeof createSellerDashboardRepository>;
   productsRepository: ReturnType<typeof createProductsRepository>;
 };
 
-export function createSellerDashboardService(deps: Deps) {
+export function createSellerDashboardService(
+  deps: Deps
+): SellerDashboardService {
   async function getDashboard(sellerId: string): Promise<DashboardDTO> {
     const stats =
       await deps.sellerDashboardRepository.getDashboardStats(sellerId);
