@@ -4,6 +4,7 @@ import { CartEmptyError, CartItemsUnavailableError } from "@/errors";
 import { toNumber } from "@/lib/price";
 import { createCartRepository } from "@/repositories/cart-repository";
 import { createOrdersRepository } from "@/repositories/orders-repository";
+import type { OrdersService } from "./orders-service.interface";
 
 type SerializableOrderItem = {
   id: string;
@@ -49,7 +50,7 @@ type Deps = {
   prisma: typeof prisma;
 };
 
-export function createOrdersService(deps: Deps) {
+export function createOrdersService(deps: Deps): OrdersService {
   async function getOrders(userId: string): Promise<OrderDTO[]> {
     const orders = await createOrdersRepository({
       prisma: deps.prisma
