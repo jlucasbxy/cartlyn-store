@@ -1,12 +1,15 @@
 import type { Prisma, PrismaClient } from "@prisma/client";
 import { createProductsRepository } from "@/repositories/products-repository";
+import type { SellerDashboardRepository } from "./seller-dashboard-repository.interface";
 
 type Deps = {
   prisma: PrismaClient;
   productsRepository: ReturnType<typeof createProductsRepository>;
 };
 
-export function createSellerDashboardRepository(deps: Deps) {
+export function createSellerDashboardRepository(
+  deps: Deps
+): SellerDashboardRepository {
   async function getDashboardStats(sellerId: string) {
     const totalProducts = await deps.productsRepository.countBySeller(sellerId);
 
