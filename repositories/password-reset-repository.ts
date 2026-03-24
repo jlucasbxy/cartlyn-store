@@ -1,5 +1,6 @@
 import crypto from "node:crypto";
 import type { PrismaInstance } from "@/prisma";
+import type { PasswordResetRepository } from "./password-reset-repository.interface";
 
 const TOKEN_EXPIRY_MS = 60 * 60 * 1000; // 1 hour
 
@@ -7,7 +8,9 @@ type Deps = {
   prisma: PrismaInstance;
 };
 
-export function createPasswordResetRepository(deps: Deps) {
+export function createPasswordResetRepository(
+  deps: Deps
+): PasswordResetRepository {
   function hashToken(token: string) {
     return crypto.createHash("sha256").update(token).digest("hex");
   }
