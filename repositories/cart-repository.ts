@@ -1,10 +1,11 @@
 import type { PrismaInstance } from "@/prisma";
+import type { CartRepository } from "./cart-repository.interface";
 
 type Deps = {
   prisma: PrismaInstance;
 };
 
-export function createCartRepository(deps: Deps) {
+export function createCartRepository(deps: Deps): CartRepository {
   function findUserCartForDisplay(userId: string) {
     return deps.prisma.cartItem.findMany({
       where: { userId },
