@@ -3,6 +3,7 @@ import argon2 from "argon2";
 import type { RegisterDTO } from "@/dtos";
 import { EmailAlreadyExistsError } from "@/errors";
 import { createUsersRepository } from "@/repositories/users-repository";
+import type { RegisterService } from "./register-service.interface";
 
 const ARGON2_OPTIONS = {
   type: argon2.argon2id,
@@ -15,7 +16,7 @@ type Deps = {
   usersRepository: ReturnType<typeof createUsersRepository>;
 };
 
-export function createRegisterService(deps: Deps) {
+export function createRegisterService(deps: Deps): RegisterService {
   async function registerUser(data: RegisterDTO) {
     const emailExists = await deps.usersRepository.checkEmailExists(data.email);
 
