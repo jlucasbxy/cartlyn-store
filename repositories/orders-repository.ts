@@ -1,5 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import type { PrismaInstance } from "@/prisma";
+import type { OrdersRepository } from "./orders-repository.interface";
 
 type TransactionCartItem = Prisma.CartItemGetPayload<{
   include: { product: true };
@@ -9,7 +10,7 @@ type Deps = {
   prisma: PrismaInstance;
 };
 
-export function createOrdersRepository(deps: Deps) {
+export function createOrdersRepository(deps: Deps): OrdersRepository {
   function findUserOrders(userId: string) {
     return deps.prisma.order.findMany({
       where: { userId },
