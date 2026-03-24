@@ -1,5 +1,6 @@
 import type { Prisma } from "@prisma/client";
 import type { PrismaInstance } from "@/prisma";
+import type { ProductsRepository } from "./products-repository.interface";
 
 export type ProductSearchFilters = {
   query?: string;
@@ -25,7 +26,7 @@ type Deps = {
   prisma: PrismaInstance;
 };
 
-export function createProductsRepository(deps: Deps) {
+export function createProductsRepository(deps: Deps): ProductsRepository {
   function buildProductsWhere(
     filters: ProductSearchFilters
   ): Prisma.ProductWhereInput {
