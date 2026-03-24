@@ -1,5 +1,6 @@
 import argon2 from "argon2";
 import { createUsersRepository } from "@/repositories/users-repository";
+import type { AuthService } from "./auth-service.interface";
 
 const ARGON2_OPTIONS = {
   type: argon2.argon2id,
@@ -12,7 +13,7 @@ type Deps = {
   usersRepository: ReturnType<typeof createUsersRepository>;
 };
 
-export function createAuthService(deps: Deps) {
+export function createAuthService(deps: Deps): AuthService {
   async function validateCredentials(email: string, password: string) {
     const user = await deps.usersRepository.findActiveByEmail(email);
 
