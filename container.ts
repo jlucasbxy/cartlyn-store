@@ -3,6 +3,7 @@ import { createEmailProvider } from "@/providers/email-provider";
 import { createCartRepository } from "@/repositories/cart-repository";
 import { createFavoritesRepository } from "@/repositories/favorites-repository";
 import { createOrdersRepository } from "@/repositories/orders-repository";
+import { createOutboxEventRepository } from "@/repositories/outbox-event-repository";
 import { createPasswordResetRepository } from "@/repositories/password-reset-repository";
 import { createProductsRepository } from "@/repositories/products-repository";
 import { createSellerDashboardRepository } from "@/repositories/seller-dashboard-repository";
@@ -23,6 +24,7 @@ import nodemailer from "nodemailer";
 export const cartRepository = createCartRepository({ prisma });
 export const favoritesRepository = createFavoritesRepository({ prisma });
 export const ordersRepository = createOrdersRepository({ prisma });
+export const outboxEventRepository = createOutboxEventRepository({ prisma });
 export const passwordResetRepository = createPasswordResetRepository({
   prisma
 });
