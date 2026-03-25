@@ -134,3 +134,29 @@ model OrderItem {
   @@index([orderId])
   @@index([productId, quantity, price])
 }
+
+enum OutboxEventType {
+  CHARGE_PAYMENT
+}
+
+enum OutboxEventStatus {
+  PENDING
+  PROCESSED
+  FAILED
+}
+
+model OutboxEvent {
+  id           String            @id @default(uuid())
+  type         OutboxEventType
+  payload      Json
+  status       OutboxEventStatus @default(PENDING)
+  retryCount   Int               @default(0)
+  error        String?
+  createdAt    DateTime          @default(now())
+  scheduledFor DateTime?         @db.Timestamptz
+  processedAt  DateTime?         @db.Timestamptz
+  resourceId   String?
+
+  @@index([status, createdAt])
+  @@index([status, scheduledFor])
+}
