@@ -34,12 +34,15 @@ export function createOrdersRepository(deps: Deps): OrdersRepository {
   function createOrder(
     userId: string,
     cartItems: TransactionCartItem[],
-    total: number
+    total: number,
+    paymentId: string
   ) {
     return deps.prisma.order.create({
       data: {
         userId,
         total,
+        paymentId,
+        paymentStatus: "PAID",
         items: {
           create: cartItems.map((item) => ({
             productId: item.productId,

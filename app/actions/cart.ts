@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { DomainError } from "@/errors";
 import { logger } from "@/lib/logger";
 import { auth } from "@/lib/server";
-import { addToCartSchema, favoriteSchema } from "@/schemas";
+import { addToCartSchema, checkoutSchema, favoriteSchema } from "@/schemas";
 import { cartService, ordersService } from "@/container";
 import type { ActionResult } from "./types";
 
@@ -70,11 +70,15 @@ export async function removeFromCart(productId: string): Promise<ActionResult> {
   }
 }
 
-export async function checkout(): Promise<ActionResult> {
+export async function checkout(rawCard: unknown): Promise<ActionResult> {
+  const validated = checkoutSchema.safeParse(rawCard);
+  if (!validated.success) return { error: "Dados de pagamento inválidos" };
+
   const session = await auth();
   if (!session) return { error: "Nao autenticado" };
+
   try {
-    await ordersService.checkout(session.user.id);
+    await ordersService.checkout(session.user.id, validated.data);
   } catch (error) {
     if (error instanceof DomainError) return { error: error.message };
     logger.error({ err: error }, "checkout failed");

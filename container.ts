@@ -11,6 +11,7 @@ import { createAccountService } from "@/services/account-service";
 import { createAuthService } from "@/services/auth-service";
 import { createCartService } from "@/services/cart-service";
 import { createFavoritesService } from "@/services/favorites-service";
+import { createFakePaymentGatewayService } from "@/services/fake-payment-gateway-service";
 import { createOrdersService } from "@/services/orders-service";
 import { createPasswordResetService } from "@/services/password-reset-service";
 import { createProductsService } from "@/services/products-service";
@@ -35,6 +36,7 @@ export const usersRepository = createUsersRepository({ prisma });
 export const emailProvider = createEmailProvider({
   createTransport: nodemailer.createTransport
 });
+export const paymentGateway = createFakePaymentGatewayService();
 
 // Services
 export const accountService = createAccountService({ prisma });
@@ -47,7 +49,7 @@ export const favoritesService = createFavoritesService({
   favoritesRepository,
   productsRepository
 });
-export const ordersService = createOrdersService({ prisma });
+export const ordersService = createOrdersService({ prisma, paymentGateway });
 export const passwordResetService = createPasswordResetService({
   usersRepository,
   passwordResetRepository,

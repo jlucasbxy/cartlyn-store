@@ -18,6 +18,8 @@ export type OrderDTO = {
   id: string;
   userId: string;
   total: number;
+  paymentId: string | null;
+  paymentStatus: "PENDING" | "PAID" | "FAILED";
   createdAt: Date;
   items: OrderItemDTO[];
 };

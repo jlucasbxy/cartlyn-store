@@ -83,7 +83,15 @@ export function CartClient({ initialItems, total }: CartClientProps) {
 
     setCheckoutLoading(true);
     try {
-      const result = await checkout();
+      // TODO: replace with real card form input
+      const testCard = {
+        cardNumber: "4111111111111111",
+        cardHolderName: "Test User",
+        expiryMonth: 12,
+        expiryYear: 2030,
+        cvv: "123"
+      };
+      const result = await checkout(testCard);
       if (result && "error" in result) {
         toast.error(result.error);
       } else {

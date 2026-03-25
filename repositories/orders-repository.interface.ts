@@ -19,6 +19,7 @@ export interface OrdersRepository {
   createOrder(
     userId: string,
     cartItems: CartItemForCheckout[],
-    total: number
+    total: number,
+    paymentId: string
   ): Promise<OrderWithItems>;
 }

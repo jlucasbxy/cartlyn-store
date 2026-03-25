@@ -100,11 +100,19 @@ model PasswordResetToken {
   @@index([userId])
 }
 
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+}
+
 model Order {
-  id        String   @id @default(uuid())
-  userId    String
-  total     Decimal  @db.Decimal(10, 2)
-  createdAt DateTime @default(now())
+  id            String        @id @default(uuid())
+  userId        String
+  total         Decimal       @db.Decimal(10, 2)
+  paymentId     String?
+  paymentStatus PaymentStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
 
   user  User        @relation(fields: [userId], references: [id])
   items OrderItem[]

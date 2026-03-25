@@ -1,6 +1,10 @@
 import { Prisma } from "@prisma/client";
 
-import { CartEmptyError, CartItemsUnavailableError } from "@/errors";
+import {
+  CartEmptyError,
+  CartItemsUnavailableError,
+  PaymentFailedError
+} from "@/errors";
 import { createOrdersService } from "@/services/orders-service";
 
 vi.mock("@/repositories/cart-repository", () => ({
@@ -16,6 +20,14 @@ import { createOrdersRepository } from "@/repositories/orders-repository";
 
 const mockCreateCartRepo = vi.mocked(createCartRepository);
 const mockCreateOrdersRepo = vi.mocked(createOrdersRepository);
+
+const baseCard = {
+  cardNumber: "1234567890123456",
+  cardHolderName: "Test User",
+  expiryMonth: 12,
+  expiryYear: 2030,
+  cvv: "123"
+};
 
 function makeActiveCartItem(name: string, price: string, quantity: number) {
   return {
@@ -43,11 +55,17 @@ function makeInactiveCartItem(name: string, price: string, quantity: number) {
   };
 }
 
-function makeCreatedOrder(total: number) {
+function makeCreatedOrder(
+  total: number,
+  paymentId = "pay-1",
+  paymentStatus = "PAID" as const
+) {
   return {
     id: "order-1",
     userId: "u-1",
     total,
+    paymentId,
+    paymentStatus,
     createdAt: new Date("2026-01-01"),
     items: []
   };
@@ -59,34 +77,64 @@ describe("ordersService.checkout", () => {
   });
 
   it("throws CartEmptyError when cart is empty", async () => {
-    const txCartRepo = {
-      findUserCartForCheckout: vi.fn().mockResolvedValue([])
-    };
-    mockCreateCartRepo.mockReturnValue(txCartRepo as never);
+    const cartRepo = { findUserCartForCheckout: vi.fn().mockResolvedValue([]) };
+    mockCreateCartRepo.mockReturnValue(cartRepo as never);
 
-    const mockPrisma = {
-      $transaction: vi.fn((fn: (tx: unknown) => unknown) => fn({}))
-    };
-    const service = createOrdersService({ prisma: mockPrisma as never });
+    const mockPrisma = { $transaction: vi.fn() };
+    const mockPaymentGateway = { charge: vi.fn() };
+    const service = createOrdersService({
+      prisma: mockPrisma as never,
+      paymentGateway: mockPaymentGateway
+    });
 
-    await expect(service.checkout("u-1")).rejects.toThrow(CartEmptyError);
+    await expect(service.checkout("u-1", baseCard)).rejects.toThrow(
+      CartEmptyError
+    );
+    expect(mockPaymentGateway.charge).not.toHaveBeenCalled();
   });
 
   it("throws CartItemsUnavailableError when cart has inactive products", async () => {
     const items = [makeInactiveCartItem("Widget", "10.00", 1)];
-    const txCartRepo = {
+    const cartRepo = {
       findUserCartForCheckout: vi.fn().mockResolvedValue(items)
     };
-    mockCreateCartRepo.mockReturnValue(txCartRepo as never);
+    mockCreateCartRepo.mockReturnValue(cartRepo as never);
 
-    const mockPrisma = {
-      $transaction: vi.fn((fn: (tx: unknown) => unknown) => fn({}))
-    };
-    const service = createOrdersService({ prisma: mockPrisma as never });
+    const mockPrisma = { $transaction: vi.fn() };
+    const mockPaymentGateway = { charge: vi.fn() };
+    const service = createOrdersService({
+      prisma: mockPrisma as never,
+      paymentGateway: mockPaymentGateway
+    });
 
-    await expect(service.checkout("u-1")).rejects.toThrow(
+    await expect(service.checkout("u-1", baseCard)).rejects.toThrow(
       CartItemsUnavailableError
     );
+    expect(mockPaymentGateway.charge).not.toHaveBeenCalled();
+  });
+
+  it("throws PaymentFailedError when payment gateway declines", async () => {
+    const items = [makeActiveCartItem("Widget", "10.00", 1)];
+    const cartRepo = {
+      findUserCartForCheckout: vi.fn().mockResolvedValue(items)
+    };
+    mockCreateCartRepo.mockReturnValue(cartRepo as never);
+
+    const mockPrisma = { $transaction: vi.fn() };
+    const mockPaymentGateway = {
+      charge: vi
+        .fn()
+        .mockResolvedValue({ paymentId: "pay-x", status: "FAILED" })
+    };
+    const service = createOrdersService({
+      prisma: mockPrisma as never,
+      paymentGateway: mockPaymentGateway
+    });
+
+    await expect(service.checkout("u-1", baseCard)).rejects.toThrow(
+      PaymentFailedError
+    );
+    expect(mockPrisma.$transaction).not.toHaveBeenCalled();
   });
 
   it("creates order, clears cart, and returns serialized order", async () => {
@@ -126,13 +174,30 @@ describe("ordersService.checkout", () => {
     const mockPrisma = {
       $transaction: vi.fn((fn: (tx: unknown) => unknown) => fn({}))
     };
-    const service = createOrdersService({ prisma: mockPrisma as never });
+    const mockPaymentGateway = {
+      charge: vi.fn().mockResolvedValue({ paymentId: "pay-1", status: "PAID" })
+    };
+    const service = createOrdersService({
+      prisma: mockPrisma as never,
+      paymentGateway: mockPaymentGateway
+    });
 
-    const order = await service.checkout("u-1");
+    const order = await service.checkout("u-1", baseCard);
 
-    expect(txOrdersRepo.createOrder).toHaveBeenCalledWith("u-1", items, total);
+    expect(mockPaymentGateway.charge).toHaveBeenCalledWith(
+      baseCard,
+      Math.round(total * 100)
+    );
+    expect(txOrdersRepo.createOrder).toHaveBeenCalledWith(
+      "u-1",
+      items,
+      total,
+      "pay-1"
+    );
     expect(txCartRepo.clearUserCart).toHaveBeenCalledWith("u-1");
     expect(order.total).toBe(total);
+    expect(order.paymentId).toBe("pay-1");
+    expect(order.paymentStatus).toBe("PAID");
     expect(order.items[0].price).toBe(10);
     expect(order.items[1].price).toBe(5.5);
   });
@@ -145,6 +210,8 @@ describe("ordersService.getOrders", () => {
         id: "order-1",
         userId: "u-1",
         total: new Prisma.Decimal("50.00"),
+        paymentId: "pay-1",
+        paymentStatus: "PAID" as const,
         createdAt: new Date("2026-01-01"),
         items: [
           {
@@ -164,11 +231,17 @@ describe("ordersService.getOrders", () => {
     mockCreateOrdersRepo.mockReturnValue(ordersRepo as never);
 
     const mockPrisma = { $transaction: vi.fn() };
-    const service = createOrdersService({ prisma: mockPrisma as never });
+    const mockPaymentGateway = { charge: vi.fn() };
+    const service = createOrdersService({
+      prisma: mockPrisma as never,
+      paymentGateway: mockPaymentGateway
+    });
 
     const orders = await service.getOrders("u-1");
 
     expect(orders[0].total).toBe(50);
+    expect(orders[0].paymentId).toBe("pay-1");
+    expect(orders[0].paymentStatus).toBe("PAID");
     expect(orders[0].items[0].price).toBe(25);
   });
 });
