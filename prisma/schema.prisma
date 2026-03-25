@@ -26,8 +26,8 @@ model User {
   name      String
   role      UserRole
   active    Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
 
   // Relations
   products           Product[]
@@ -44,10 +44,10 @@ model Product {
   price       Decimal  @db.Decimal(10, 2)
   description String   @db.Text
   imageUrl    String
-  publishedAt DateTime @default(now())
+  publishedAt DateTime @default(now()) @db.Timestamptz
   active      Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime @default(now()) @db.Timestamptz
+  updatedAt   DateTime @updatedAt @db.Timestamptz
 
   // Relations
   sellerId   String
@@ -66,7 +66,7 @@ model Favorite {
   id        String   @id @default(uuid())
   userId    String
   productId String
-  createdAt DateTime @default(now())
+  createdAt DateTime @default(now()) @db.Timestamptz
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -79,8 +79,8 @@ model CartItem {
   userId    String
   productId String
   quantity  Int      @default(1)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now()) @db.Timestamptz
+  updatedAt DateTime @updatedAt @db.Timestamptz
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
   product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
@@ -92,8 +92,8 @@ model PasswordResetToken {
   id        String   @id @default(uuid())
   token     String   @unique
   userId    String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  expiresAt DateTime @db.Timestamptz
+  createdAt DateTime @default(now()) @db.Timestamptz
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -112,7 +112,7 @@ model Order {
   total         Decimal       @db.Decimal(10, 2)
   paymentId     String?
   paymentStatus PaymentStatus @default(PENDING)
-  createdAt     DateTime      @default(now())
+  createdAt     DateTime      @default(now()) @db.Timestamptz
 
   user  User        @relation(fields: [userId], references: [id])
   items OrderItem[]
@@ -152,7 +152,7 @@ model OutboxEvent {
   status       OutboxEventStatus @default(PENDING)
   retryCount   Int               @default(0)
   error        String?
-  createdAt    DateTime          @default(now())
+  createdAt    DateTime          @default(now()) @db.Timestamptz
   scheduledFor DateTime?         @db.Timestamptz
   processedAt  DateTime?         @db.Timestamptz
   resourceId   String?
