@@ -20,7 +20,7 @@ enum UserRole {
 }
 
 model User {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
   email     String   @unique
   password  String
   name      String
@@ -39,7 +39,7 @@ model User {
 }
 
 model Product {
-  id          String   @id @default(uuid())
+  id          String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
   name        String
   price       Decimal  @db.Decimal(10, 2)
   description String   @db.Text
@@ -50,7 +50,7 @@ model Product {
   updatedAt   DateTime @updatedAt @db.Timestamptz
 
   // Relations
-  sellerId   String
+  sellerId   String      @db.Uuid
   seller     User        @relation(fields: [sellerId], references: [id])
   favorites  Favorite[]
   cartItems  CartItem[]
@@ -63,9 +63,9 @@ model Product {
 }
 
 model Favorite {
-  id        String   @id @default(uuid())
-  userId    String
-  productId String
+  id        String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId    String   @db.Uuid
+  productId String   @db.Uuid
   createdAt DateTime @default(now()) @db.Timestamptz
 
   user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -75,9 +75,9 @@ model Favorite {
 }
 
 model CartItem {
-  id        String   @id @default(uuid())
-  userId    String
-  productId String
+  id        String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId    String   @db.Uuid
+  productId String   @db.Uuid
   quantity  Int      @default(1)
   createdAt DateTime @default(now()) @db.Timestamptz
   updatedAt DateTime @updatedAt @db.Timestamptz
@@ -89,9 +89,9 @@ model CartItem {
 }
 
 model PasswordResetToken {
-  id        String   @id @default(uuid())
+  id        String   @id @default(dbgenerated("uuidv7()")) @db.Uuid
   token     String   @unique
-  userId    String
+  userId    String   @db.Uuid
   expiresAt DateTime @db.Timestamptz
   createdAt DateTime @default(now()) @db.Timestamptz
 
@@ -107,8 +107,8 @@ enum PaymentStatus {
 }
 
 model Order {
-  id            String        @id @default(uuid())
-  userId        String
+  id            String        @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  userId        String        @db.Uuid
   total         Decimal       @db.Decimal(10, 2)
   paymentId     String?
   paymentStatus PaymentStatus @default(PENDING)
@@ -121,9 +121,9 @@ model Order {
 }
 
 model OrderItem {
-  id          String @id @default(uuid())
-  orderId     String
-  productId   String
+  id          String @id @default(dbgenerated("uuidv7()")) @db.Uuid
+  orderId     String @db.Uuid
+  productId   String @db.Uuid
   quantity    Int
   price       Decimal @db.Decimal(10, 2)
   productName String
@@ -148,7 +148,7 @@ enum OutboxEventStatus {
 }
 
 model OutboxEvent {
-  id           String            @id @default(uuid())
+  id           String            @id @default(dbgenerated("uuidv7()")) @db.Uuid
   type         OutboxEventType
   payload      Json
   status       OutboxEventStatus @default(PENDING)
