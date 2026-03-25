@@ -1,4 +1,5 @@
 export { addToCartSchema } from "@/schemas/add-to-cart-schema";
+export { checkoutSchema } from "@/schemas/checkout-schema";
 export { csvProductSchema } from "@/schemas/csv-product-schema";
 export { favoriteSchema } from "@/schemas/favorite-schema";
 export { forgotPasswordSchema } from "@/schemas/forgot-password-schema";
