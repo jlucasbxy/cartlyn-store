@@ -9,5 +9,6 @@ export { NotFoundError } from "./not-found-error";
 export { ProductAlreadyFavoritedError } from "./product-already-favorited-error";
 export { ProductNotFoundError } from "./product-not-found-error";
 export { ProductNotFoundOrUnavailableError } from "./product-not-found-or-unavailable-error";
+export { PaymentFailedError } from "./payment-failed-error";
 export { UnauthorizedError } from "./unauthorized-error";
 export { ValidationError } from "./validation-error";
