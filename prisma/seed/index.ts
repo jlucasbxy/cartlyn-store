@@ -210,11 +210,13 @@ async function main() {
   const allProducts = await prisma.product.findMany();
   const price = (index: number) => Number(allProducts[index].price);
 
-  // Order 1 - Client 1 buys from Seller 1
+  // Order 1 - Client 1 buys from Seller 1 (paid)
   await prisma.order.create({
     data: {
       userId: client1.id,
       total: price(0) * 1 + price(1) * 2,
+      paymentId: "pay_seed_001",
+      paymentStatus: "PAID",
       items: {
         create: [
           {
@@ -234,11 +236,13 @@ async function main() {
     }
   });
 
-  // Order 2 - Client 2 buys from Seller 2
+  // Order 2 - Client 2 buys from Seller 2 (paid)
   await prisma.order.create({
     data: {
       userId: client2.id,
       total: price(7) * 1 + price(9) * 1,
+      paymentId: "pay_seed_002",
+      paymentStatus: "PAID",
       items: {
         create: [
           {
@@ -258,11 +262,12 @@ async function main() {
     }
   });
 
-  // Order 3 - Client 1 buys from both sellers
+  // Order 3 - Client 1 buys from both sellers (pending)
   await prisma.order.create({
     data: {
       userId: client1.id,
       total: price(2) * 1 + price(10) * 3,
+      paymentStatus: "PENDING",
       items: {
         create: [
           {
