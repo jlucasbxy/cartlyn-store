@@ -23,6 +23,7 @@ export type {
   OrderItemDTO,
   OrderItemProductDTO
 } from "@/dtos/order.dto";
+export type { CreditCardPayload, PaymentResult } from "@/dtos/payment.dto";
 export type {
   CreateProductDTO,
   CsvProductDTO,
