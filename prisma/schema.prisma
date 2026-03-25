@@ -137,6 +137,8 @@ model OrderItem {
 
 enum OutboxEventType {
   CHARGE_PAYMENT
+  SEND_WELCOME_EMAIL
+  SEND_PASSWORD_RECOVERY_EMAIL
 }
 
 enum OutboxEventStatus {
