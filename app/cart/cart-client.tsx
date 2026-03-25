@@ -4,7 +4,12 @@ import { useRouter } from "next/navigation";
 import { startTransition, useState } from "react";
 import { toast } from "react-toastify";
 import { checkout, removeFromCart, updateCartItem } from "@/app/actions";
-import { ConfirmModal, EmptyState, PageLayout } from "@/components";
+import {
+  ConfirmModal,
+  EmptyState,
+  PageLayout,
+  PaymentModal
+} from "@/components";
 import { useConfirm } from "@/hooks";
 import { CartItemCard } from "./cart-item-card";
 import { OrderSummary } from "./order-summary";
@@ -32,6 +37,7 @@ export function CartClient({ initialItems, total }: CartClientProps) {
   const router = useRouter();
   const { confirm, confirmState, handleClose } = useConfirm();
   const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [paymentModalOpen, setPaymentModalOpen] = useState(false);
 
   const handleUpdateQuantity = async (
     productId: string,
@@ -66,35 +72,28 @@ export function CartClient({ initialItems, total }: CartClientProps) {
     toast.success("Item removido do carrinho");
   };
 
-  const handleCheckout = async () => {
+  const handleCheckout = () => {
     if (initialItems.length === 0) {
       toast.warning("Seu carrinho está vazio");
       return;
     }
+    setPaymentModalOpen(true);
+  };
 
-    const confirmed = await confirm({
-      title: "Finalizar Compra",
-      message: `Confirmar compra no valor de R$ ${total.toFixed(2)}?`,
-      confirmText: "Confirmar",
-      variant: "primary"
-    });
-
-    if (!confirmed) return;
-
+  const handlePaymentConfirm = async (cardData: {
+    cardNumber: string;
+    cardHolderName: string;
+    expiryMonth: number;
+    expiryYear: number;
+    cvv: string;
+  }) => {
     setCheckoutLoading(true);
     try {
-      // TODO: replace with real card form input
-      const testCard = {
-        cardNumber: "4111111111111111",
-        cardHolderName: "Test User",
-        expiryMonth: 12,
-        expiryYear: 2030,
-        cvv: "123"
-      };
-      const result = await checkout(testCard);
+      const result = await checkout(cardData);
       if (result && "error" in result) {
         toast.error(result.error);
       } else {
+        setPaymentModalOpen(false);
         toast.success("Compra finalizada com sucesso!");
         router.push("/orders");
       }
@@ -147,6 +146,14 @@ export function CartClient({ initialItems, total }: CartClientProps) {
           </div>
         </div>
       )}
+
+      <PaymentModal
+        isOpen={paymentModalOpen}
+        onClose={() => setPaymentModalOpen(false)}
+        onConfirm={handlePaymentConfirm}
+        total={total}
+        loading={checkoutLoading}
+      />
 
       <ConfirmModal
         isOpen={confirmState.isOpen}

@@ -8,6 +8,7 @@ export { Providers } from "./layout/providers";
 export { Button } from "./ui/button";
 export { Card } from "./ui/card";
 export { ConfirmModal } from "./ui/confirm-modal";
+export { PaymentModal } from "./ui/payment-modal";
 export { FileInput } from "./ui/file-input";
 export { FormInput } from "./ui/form-input";
 export { default as Loading } from "./ui/loading";
